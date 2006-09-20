@@ -1,0 +1,86 @@
+def getrss(tag = "", popular = 0, url = '', user = ""):
+    get posts from del.icio.us via parsing Rss
+    
+    tag (opt) sort by tag
+    popular (opt) look for the popular stuff
+    user (opt) get the posts by a user, this striks popular
+    url (opt) get the posts by url '''
+    
+
+def apiNew(user, passwd):
+    creates a new _DeliciousApi object
+    requires username and passwd
+
+
+class _DeliciousAPI:
+    def __init__(self, user, passwd):
+        initialize the api with username and passwd
+        
+    def tags_get(self):
+        get the tags
+        
+    def tags_rename(self, old, new):
+        rename a tag
+        
+    def posts_update(self):
+        when have the posts been updated
+        
+    def posts_dates(self, tag = ""):
+        when have the posts been posted
+        
+    def posts_get(self, tag="", dt="", url=""):
+        get the posts, filtering may help
+        
+    def posts_recent(self, tag="", count=""):
+        what have been the 'latest' posts
+        
+    def posts_all(self, tag=""):
+        get me all posts
+        
+    def posts_add(self, url, description="", extended="", tags="", dt="", replace="no"): 
+        add an post to del.icio.us
+        
+        url - the url of the page you like to add
+        description - a description of the page, often the title of the page
+        extended (opt) - an extended description, could be some kind of comment
+        tags - tags to sort your posts
+        dt (opt) - current date in format ...., if no date is given, the current
+                   date will be used
+
+    def posts_delete(self, url): 
+        delete a post by url
+        
+    def bundles_all(self):
+    
+    def bundles_set(self, bundle, tags):
+    
+    def bundles_delete(self, bundle):
+
+
+
+This are short functions for common api calls.
+
+def add(user, passwd, url, description, tags = "", extended = "", dt = "", replace="no"):
+def get(user, passwd, tag="", dt="",  count = 0):
+def get_all(user, passwd, tag = ""):
+def delete(user, passwd, url):
+def rename_tag(user, passwd, oldtag, newtag):
+def get_tags(user, passwd):
+
+This are short functions for getrss calls.
+
+def get_userposts(user):
+def get_tagposts(tag): 
+def get_urlposts(url): 
+def get_popular(tag = ""):
+
+
+Examples:
+>>> a = apiNew(user, passwd)
+>>> a.posts_add(url="http://my.com/", desciption="my.com", extended="the url is my.moc", tags="my com")
+True
+>>> len(a.posts_all())
+1
+>>> get_all(user, passwd)
+1
+>>> 
