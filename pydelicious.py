@@ -51,7 +51,7 @@ a.posts.get
 #  * rss parser muss auf viele möglichkeiten angepasst werden           
 
 
-import re, md5, httplib
+import re, md5, httplib, base64
 import urllib, urllib2, time
 # import datetime, 
 import StringIO
@@ -318,6 +318,11 @@ def _request(url, params = '', useUrlAsIs = 0, user = '', passwd = '', ):
     request = urllib2.Request(DWS_API + url + params)
     if useUrlAsIs: request = urllib2.Request(url)
     request.add_header('User-Agent', USER_AGENT)
+
+    # Always send the authentication credentials; avoid an extra round trip with 401
+    credentials = base64.encodestring("%s:%s" % (user, passwd))
+    request.add_header('Authorization', ('Basic %s' % credentials))
+
     if DEBUG: print "url:", request.get_full_url()
     try:
         o = urllib2.urlopen(request)            
@@ -340,7 +345,10 @@ def _handleXML(data):
         if (x.getroot().attrib.has_key("code") and x.getroot().attrib["code"] == 'done') or x.getroot().text in ['done', 'ok']:
             l = True
         else :
-            l = False
+            if x.getroot().attrib.has_key("code"):
+                l = x.getroot().attrib["code"]
+            else:
+                l = False
     elif mode == 'update':
         l = x.getroot().attrib['time']
     elif mode == 'dates':
