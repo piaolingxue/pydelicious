@@ -1,8 +1,8 @@
-# -*- coding: cp1252 -*-
+# -*- coding: utf-8 -*-
 '''Ich brauche mehr tests, so wie in feedparser aufgezogen?'''
 
 ##
-# License: pydelicious is released under the bsd license. 
+# License: pydelicious is released under the bsd license.
 # See 'license.txt' for more informations.
 #
 
@@ -26,16 +26,16 @@ class TestHelperFunctions(unittest.TestCase):
 
     def setUp(self):
         pass
-    
+
     def tearDown(self):
         pass
-    
+
     def teststr2uni(self):
-        t = {'a':u'a', u'a':u'a', 'ä':u'\xe4', u'ä':u'\xe4'}
+        t = {'a':u'a', u'a':u'a', 'Ã¤':u'\xe4', u'Ã¤':u'\xe4'}
         [self.assert_(pydelicious.str2uni(i) == t[i]) for i in t]
 
     def teststr2utf8(self):
-        t = {'a':'a', u'a':'a', 'ä':'\xc3\xa4', u'ä':'\xc3\xa4'}
+        t = {'a':'a', u'a':'a', 'Ã¤':'\xc3\xa4', u'Ã¤':'\xc3\xa4'}
         [self.assert_(pydelicious.str2utf8(i) == t[i]) for i in t]
 
     def testdict0(self):
@@ -84,14 +84,14 @@ class TestPosts(unittest.TestCase):
 class TestApiCalls(unittest.TestCase):
 
     def setUp(self):
-        self.a = pydelicious.apiNew(user, passwd)
+        self.a = pydelicious.DeliciousAPI(user, passwd)
 
     def test_tags_get(self):
         self.a.tags_get()
 
     def test_tags_rename(self):
-        self.a.tags_rename("tag", "taag")        
-        self.a.tags_rename("taag", "tag")        
+        self.a.tags_rename("tag", "taag")
+        self.a.tags_rename("taag", "tag")
 
     def test_posts_update(self):
         self.a.posts_update()
@@ -118,8 +118,8 @@ class TestAdd(unittest.TestCase):
     def testadd1(self):
         if not (user  and passwd): return ""
         p = pydelicious.add
-        self.assert_(p(user, passwd, "http://www.testurl.de/", "description", tags="täg tag tuck", replace="yes")==1)
-        self.assert_(p(user, passwd, "http://www.testurl.de/", "description", tags="täg tag tuck")==0)
+        self.assert_(p(user, passwd, "http://www.testurl.de/", "description", tags=u"tÃ¤g tag tuck", replace="yes")==1)
+        self.assert_(p(user, passwd, "http://www.testurl.de/", "description", tags=u"tÃ¤g tag tuck")==0)
 
 class TestDelete(unittest.TestCase):
 
@@ -137,12 +137,12 @@ class TestGetrss(unittest.TestCase):
         self.assert_(p()!={})
         self.assert_(p(popular=1)!={})
         self.assert_(p(tag="python")!={})
-        self.assert_(p(tag="öko")!={})
+        self.assert_(p(tag="Ã¶ko")!={})
         self.assert_(p(user="pydelicious")!={})
         self.assert_(p(url="http://deliciouspython.python-hosting.com/")!={})
 
 class TestBug(unittest.TestCase):
-    
+
     def testBug2(self):
         '''via deepak.jois@gmail.com
         missing "" in {"user":user}'''
@@ -157,7 +157,7 @@ if __name__ == '__main__':
         if passwd =="": passwd = user
         sys.argv.pop(1)
     else:
-        user = raw_input("Username (hit return to skip api test):")
-        if user:  passwd = raw_input("Passwd (hit return to skip api test):")
+        user = raw_input("Username (hit return to skip API test):")
+        if user:  passwd = raw_input("Passwd (hit return to skip API test):")
         else: passwd = ""
     unittest.main()
