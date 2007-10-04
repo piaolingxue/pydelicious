@@ -91,7 +91,11 @@ import md5, httplib
 import urllib, urllib2, time
 from StringIO import StringIO
 
-from elementtree.ElementTree import parse as parse_xml
+try:
+    from elementtree.ElementTree import parse as parse_xml
+except ImportError:
+    from  xml.etree.ElementTree import parse as parse_xml
+
 #import feedparser
 
 
