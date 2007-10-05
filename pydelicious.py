@@ -96,7 +96,7 @@ try:
 except ImportError:
     from  xml.etree.ElementTree import parse as parse_xml
 
-#import feedparser
+import feedparser
 
 
 ### Static config
@@ -107,10 +107,11 @@ __contributors__ = [
 	'Greg Pinero',
     'Berend van Berkum <berend+pydelicious@dotmpe.com>']
 __url__ = 'http://code.google.com/p/pydelicious/'
+__author_email__ = ""
 # Old URL: 'http://deliciouspython.python-hosting.com/'
 
-#DESCRIPTION = '''pydelicious.py allows you to access the web service of del.icio.us via it's API through python.'''
-#LONG_DESCRIPTION = '''the goal is to design an easy to use and fully functional python interface to del.icio.us. '''
+__description__ = '''pydelicious.py allows you to access the web service of del.icio.us via it's API through python.'''
+__long_description__ = '''the goal is to design an easy to use and fully functional python interface to del.icio.us. '''
 
 DLCS_OK_MESSAGES = ('done', 'ok') # Known text values of del.icio.us <result> answers
 DLCS_WAIT_TIME = 4
@@ -197,42 +198,41 @@ class DefaultErrorHandler(urllib2.HTTPDefaultErrorHandler):
         raise urllib2.HTTPError(req, code, throttled_message, headers, fp)
 
 
-#class post(dict):
-#    """Post object, contains href, description, hash, dt, tags,
-#    extended, user, count(, shared).
-#
-#    @xxx:bvb: Is this needed? Right now this is superfluous,
-#    """
-#    def __init__(self, href = "", description = "", hash = "", time = "", tag = "", extended = "", user = "", count = "",
-#                 tags = "", url = "", dt = ""): # tags or tag?
-#        self["href"] = href
-#        if url != "": self["href"] = url
-#        self["description"] = description
-#        self["hash"] = hash
-#        self["dt"] = dt
-#        if time != "": self["dt"] = time
-#        self["tags"] = tags
-#        if tag != "":  self["tags"] = tag     # tag or tags? # !! tags
-#        self["extended"] = extended
-#        self["user"] = user
-#        self["count"] = count
-#
-#    def __getattr__(self, name):
-#        try: return self[name]
-#        except: object.__getattribute__(self, name)
-#
-#
-#class posts(list):
-#    """@xxx:bvb: idem as class post, python structures (dict/list) might
-#    suffice or a more generic solution is needed.
-#    """
-#    def __init__(self, *args):
-#        for i in args: self.append(i)
-#
-#    def __getattr__(self, attr):
-#        try: return [p[attr] for p in self]
-#        except: object.__getattribute__(self, attr)
+class post(dict):
+    """Post object, contains href, description, hash, dt, tags,
+    extended, user, count(, shared).
 
+    @xxx:bvb: Is this needed? Right now this is superfluous,
+    """
+    def __init__(self, href = "", description = "", hash = "", time = "", tag = "", extended = "", user = "", count = "",
+                 tags = "", url = "", dt = ""): # tags or tag?
+        self["href"] = href
+        if url != "": self["href"] = url
+        self["description"] = description
+        self["hash"] = hash
+        self["dt"] = dt
+        if time != "": self["dt"] = time
+        self["tags"] = tags
+        if tag != "":  self["tags"] = tag     # tag or tags? # !! tags
+        self["extended"] = extended
+        self["user"] = user
+        self["count"] = count
+
+    def __getattr__(self, name):
+        try: return self[name]
+        except: object.__getattribute__(self, name)
+
+
+class posts(list):
+    """@xxx:bvb: idem as class post, python structures (dict/list) might
+    suffice or a more generic solution is needed.
+    """
+    def __init__(self, *args):
+        for i in args: self.append(i)
+
+    def __getattr__(self, attr):
+        try: return [p[attr] for p in self]
+        except: object.__getattribute__(self, attr)
 
 ### Utility functions
 
@@ -404,80 +404,80 @@ def dlcs_parse_xml(data, split_tags=False):
     else:
         raise PyDeliciousException, "Unknown XML document format '%s'" % fmt
 
-#def dlcs_rss_request(tag = "", popular = 0, user = "", url = ''):
-#    """Handle a request for RSS
-#
-#    @todo: translate from German
-#
-#    rss sollte nun wieder funktionieren, aber diese try, except scheisse ist so nicht schoen
-#
-#    rss wird unterschiedlich zusammengesetzt. ich kann noch keinen einheitlichen zusammenhang
-#    zwischen daten (url, desc, ext, usw) und dem feed erkennen. warum k[o]nnen die das nicht einheitlich machen?
-#    """
-#    tag = str2quote(tag)
-#    user = str2quote(user)
-#    if url != '':
-#        # http://del.icio.us/rss/url/efbfb246d886393d48065551434dab54
-#        url = DLCS_RSS + '''url/%s'''%md5.new(url).hexdigest()
-#    elif user != '' and tag != '':
-#        url = DLCS_RSS + '''%(user)s/%(tag)s'''%dict(user=user, tag=tag)
-#    elif user != '' and tag == '':
-#        # http://del.icio.us/rss/delpy
-#        url = DLCS_RSS + '''%s'''%user
-#    elif popular == 0 and tag == '':
-#        url = DLCS_RSS
-#    elif popular == 0 and tag != '':
-#        # http://del.icio.us/rss/tag/apple
-#        # http://del.icio.us/rss/tag/web2.0
-#        url = DLCS_RSS + "tag/%s"%tag
-#    elif popular == 1 and tag == '':
-#        url = DLCS_RSS + '''popular/'''
-#    elif popular == 1 and tag != '':
-#        url = DLCS_RSS + '''popular/%s'''%tag
-#    rss = http_request(url).read()
-#    rss = feedparser.parse(rss)
-#    # print rss
-##     for e in rss.entries: print e;print
-#    l = posts()
-#    for e in rss.entries:
-#        if e.has_key("links") and e["links"]!=[] and e["links"][0].has_key("href"):
-#            url = e["links"][0]["href"]
-#        elif e.has_key("link"):
-#            url = e["link"]
-#        elif e.has_key("id"):
-#            url = e["id"]
-#        else:
-#            url = ""
-#        if e.has_key("title"):
-#            description = e['title']
-#        elif e.has_key("title_detail") and e["title_detail"].has_key("title"):
-#            description = e["title_detail"]['value']
-#        else:
-#            description = ''
-#        try: tags = e['categories'][0][1]
-#        except:
-#            try: tags = e["category"]
-#            except: tags = ""
-#        if e.has_key("modified"):
-#            dt = e['modified']
-#        else:
-#            dt = ""
-#        if e.has_key("summary"):
-#            extended = e['summary']
-#        elif e.has_key("summary_detail"):
-#            e['summary_detail']["value"]
-#        else:
-#            extended = ""
-#        if e.has_key("author"):
-#            user = e['author']
-#        else:
-#            user = ""
-# time = dt ist weist auf ein problem hin
+def dlcs_rss_request(tag = "", popular = 0, user = "", url = ''):
+    """Handle a request for RSS
+
+    @todo: translate from German
+
+    rss sollte nun wieder funktionieren, aber diese try, except scheisse ist so nicht schoen
+
+    rss wird unterschiedlich zusammengesetzt. ich kann noch keinen einheitlichen zusammenhang
+    zwischen daten (url, desc, ext, usw) und dem feed erkennen. warum k[o]nnen die das nicht einheitlich machen?
+    """
+    tag = str2quote(tag)
+    user = str2quote(user)
+    if url != '':
+        # http://del.icio.us/rss/url/efbfb246d886393d48065551434dab54
+        url = DLCS_RSS + '''url/%s'''%md5.new(url).hexdigest()
+    elif user != '' and tag != '':
+        url = DLCS_RSS + '''%(user)s/%(tag)s'''%dict(user=user, tag=tag)
+    elif user != '' and tag == '':
+        # http://del.icio.us/rss/delpy
+        url = DLCS_RSS + '''%s'''%user
+    elif popular == 0 and tag == '':
+        url = DLCS_RSS
+    elif popular == 0 and tag != '':
+        # http://del.icio.us/rss/tag/apple
+        # http://del.icio.us/rss/tag/web2.0
+        url = DLCS_RSS + "tag/%s"%tag
+    elif popular == 1 and tag == '':
+        url = DLCS_RSS + '''popular/'''
+    elif popular == 1 and tag != '':
+        url = DLCS_RSS + '''popular/%s'''%tag
+    rss = http_request(url).read()
+    rss = feedparser.parse(rss)
+    # print rss
+#     for e in rss.entries: print e;print
+    l = posts()
+    for e in rss.entries:
+        if e.has_key("links") and e["links"]!=[] and e["links"][0].has_key("href"):
+            url = e["links"][0]["href"]
+        elif e.has_key("link"):
+            url = e["link"]
+        elif e.has_key("id"):
+            url = e["id"]
+        else:
+            url = ""
+        if e.has_key("title"):
+            description = e['title']
+        elif e.has_key("title_detail") and e["title_detail"].has_key("title"):
+            description = e["title_detail"]['value']
+        else:
+            description = ''
+        try: tags = e['categories'][0][1]
+        except:
+            try: tags = e["category"]
+            except: tags = ""
+        if e.has_key("modified"):
+            dt = e['modified']
+        else:
+            dt = ""
+        if e.has_key("summary"):
+            extended = e['summary']
+        elif e.has_key("summary_detail"):
+            e['summary_detail']["value"]
+        else:
+            extended = ""
+        if e.has_key("author"):
+            user = e['author']
+        else:
+            user = ""
+#  time = dt ist weist auf ein problem hin
 # die benennung der variablen ist nicht einheitlich
 #  api senden und
 #  xml bekommen sind zwei verschiedene schuhe :(
-#        l.append(post(url = url, description = description, tags = tags, dt = dt, extended = extended, user = user))
-#    return l
+        l.append(post(url = url, description = description, tags = tags, dt = dt, extended = extended, user = user))
+    return l
 
 
 ### Main module class

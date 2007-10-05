@@ -3,7 +3,7 @@
 # See 'license.txt' for more informations.
 #
 
-dev = 1
+dev = 0
 if dev:
     raise Exception, \
           ("""
@@ -16,12 +16,12 @@ import pydelicious
 
 setup(
     name='pydelicious',
-    version=pydelicious.VERSION,
-    author=pydelicious.AUTHOR,
-    author_email=pydelicious.AUTHOR_EMAIL,
-    url=pydelicious.PROJECT_URL,
-    description=pydelicious.DESCRIPTION,
-    long_description=pydelicious.LONG_DESCRIPTION,
+    version=pydelicious.__version__,
+    author=pydelicious.__author__,
+    author_email=pydelicious.__author_email__,
+    url=pydelicious.__url__,
+    description=pydelicious.__description__,
+    long_description=pydelicious.__long_description__,
     #packages=['pydeliciouslibs', 'pydeliciouslibs.elementtree','pydeliciouslibs.feedparser'],
     py_modules=['pydelicious'],
     )
