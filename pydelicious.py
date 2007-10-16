@@ -1,4 +1,3 @@
-# No main(), no executable #!/usr/bin/env python
 """Library to access del.icio.us data via Python.
 
 :examples:
@@ -104,7 +103,7 @@ import feedparser
 __version__ = '0.5.0'
 __author__ = 'Frank Timmermann <regenkind_at_gmx_dot_de>' # GP: does not respond to emails
 __contributors__ = [
-	'Greg Pinero',
+    'Greg Pinero',
     'Berend van Berkum <berend+pydelicious@dotmpe.com>']
 __url__ = 'http://code.google.com/p/pydelicious/'
 __author_email__ = ""
@@ -113,7 +112,7 @@ __author_email__ = ""
 __description__ = '''pydelicious.py allows you to access the web service of del.icio.us via it's API through python.'''
 __long_description__ = '''the goal is to design an easy to use and fully functional python interface to del.icio.us. '''
 
-DLCS_OK_MESSAGES = ('done', 'ok') # Known text values of del.icio.us <result> answers
+DLCS_OK_MESSAGES = ('done', 'ok') # Known text values of positive del.icio.us <result> answers
 DLCS_WAIT_TIME = 4
 DLCS_REQUEST_TIMEOUT = 444 # Seconds before socket triggers timeout
 #DLCS_API_REALM = 'del.icio.us API'
@@ -128,7 +127,7 @@ USER_AGENT = 'pydelicious.py/%s %s' % (__version__, __url__)
 
 DEBUG = 0
 if 'DLCS_DEBUG' in os.environ:
-	DEBUG = int(os.environ['DLCS_DEBUG'])
+    DEBUG = int(os.environ['DLCS_DEBUG'])
 
 
 # Taken from FeedParser.py
@@ -147,9 +146,9 @@ if DEBUG: print >>sys.stderr, "Set socket timeout to %s seconds" % DLCS_REQUEST_
 
 ### Utility classes
 
-class Waiter:
+class _Waiter:
     """Waiter makes sure a certain amount of time passes between
-    successive calls of `Waiter.call()`.
+    successive calls of `Waiter()`.
 
     Some attributes:
     :last: time of last call
@@ -163,23 +162,23 @@ class Waiter:
         self.waited = 0
         self.lastcall = 0;
 
-    def call(self):
+    def __call__(self):
         tt = time.time()
 
-        lastcall = tt - self.lastcall
+        timeago = tt - self.lastcall
 
         if self.lastcall and DEBUG>2:
             print >>sys.stderr, "Lastcall: %s seconds ago." % lastcall
 
-        if lastcall < self.wait:
+        if timeago <= self.wait:
             if DEBUG>0: print >>sys.stderr, "Waiting %s seconds." % self.wait
             time.sleep(self.wait)
             self.waited += 1
-            self.lastcall = time.time()
+            self.lastcall = tt + self.wait
         else:
             self.lastcall = tt
 
-Waiter = Waiter(DLCS_WAIT_TIME)
+Waiter = _Waiter(DLCS_WAIT_TIME)
 
 class PyDeliciousException(Exception):
     '''Std. pydelicious error'''
@@ -250,7 +249,7 @@ def str2quote(s):
     return urllib.quote_plus("".join([unichr(ord(i)).encode("utf-8") for i in s]))
 
 def dict0(d):
-	# Trims empty dict entries
+    # Trims empty dict entries
     # {'a':'a', 'b':'', 'c': 'c'} => {'a': 'a', 'c': 'c'}
     dd = dict()
     for i in d:
@@ -258,16 +257,14 @@ def dict0(d):
     return dd
 
 def delicious_datetime(str):
-	"""Parse a ISO 8601 formatted string to a Python datetime ...
-	"""
-	return datetime.datetime(*time.strptime(str, ISO_8601_DATETIME)[0:6])
+    """Parse a ISO 8601 formatted string to a Python datetime ...
+    """
+    return datetime.datetime(*time.strptime(str, ISO_8601_DATETIME)[0:6])
 
 def http_request(url, user_agent=USER_AGENT, retry=4):
     """Retrieve the contents referenced by the URL using urllib2.
 
-    Retries up to four times (default) on exceptions. @xxx:(We really
-    want the data, but should we back up a little and wait a
-    few seconds?).
+    Retries up to four times (default) on exceptions.
     """
     request = urllib2.Request(url, headers={'User-Agent':user_agent})
 
@@ -287,7 +284,7 @@ def http_request(url, user_agent=USER_AGENT, retry=4):
             # @xxx: Ugly check for time-out errors
 			#if len(e)>0 and 'timed out' in arg[0]:
 			print >> sys.stderr, "%s, %s tries left." % (e, tries)
-			Waiter.call()
+			Waiter()
 			tries = tries - 1
 			#else:
 			#	tries = None
@@ -324,7 +321,7 @@ def dlcs_api_request(path, params='', user='', passwd='', throttle=True):
     .. [#] http://del.icio.us/help/api/
     """
     if throttle:
-        Waiter.call()
+        Waiter()
 
     if params:
         # params come as a dict, strip empty entries and urlencode
@@ -494,14 +491,15 @@ class DeliciousAPI:
     def __init__(self, user, passwd, codec='iso-8859-1', api_request=dlcs_api_request, xml_parser=dlcs_parse_xml):
         """Initialize access to the API with ``user`` and ``passwd``.
 
-        The ``api_request`` and ``xml_parser`` parameters by default point to
-        standard implementations within this package to request and parse a
-        resource. See ``dlcs_api_request()`` and ``dlcs_parse_xml()``. Note
-        that ``api_request`` should return a file-like instance with an
-        HTTPMessage instance under ``info()``, see ``urllib2.openurl``.
+        ``codec`` sets the encoding of the arguments.
 
-		``codec`` sets the encoding of the function arguments.
-		"""
+        The ``api_request`` and ``xml_parser`` parameters by default point to
+        functions within this package with standard implementations to
+        request and parse a resource. See ``dlcs_api_request()`` and
+        ``dlcs_parse_xml()``. Note that ``api_request`` should return a
+        file-like instance with an HTTPMessage instance under ``info()``,
+        see ``urllib2.openurl`` for more info.
+        """
         assert user != ""
         self.user = user
         self.passwd = passwd
@@ -564,14 +562,13 @@ class DeliciousAPI:
             return rs
 
     def request_raw(self, path, **params):
-        """Calls the path in the API, returns the filehander. Returned
+        """Calls the path in the API, returns the filehandle. Returned
         file-like instances have an ``HTTPMessage`` instance with HTTP header
-        information available. Use ``filehandler.info()`` or refer to the
+        information available. Use ``filehandle.info()`` or refer to the
         ``urllib2.openurl`` documentation.
         """
-		# see `request()` on how the response can be handled
+        # see `request()` on how the response can be handled
         return self._call_server(path, **params)
-
 
     ### Explicit declarations of API paths, their parameters and docs
 
@@ -729,6 +726,30 @@ class DeliciousAPI:
         """
         return self.request("tags/bundles/delete", bundle=bundle, **kwds)
 
+    ### Utils
+
+    # Lookup table for del.icio.us url-path to DeliciousAPI method.
+    paths = {
+        'tags/get': tags_get,
+        'tags/rename': tags_rename,
+        'posts/update': posts_update,
+        'posts/dates': posts_dates,
+        'posts/get': posts_get,
+        'posts/recent': posts_recent,
+        'posts/all': posts_all,
+        'posts/add': posts_add,
+        'posts/delete': posts_delete,
+        'tags/bundles/all': bundles_all,
+        'tags/bundles/set': bundles_set,
+        'tags/bundles/delete': bundles_delete,
+    }
+
+    def get_url(self, url):
+        """Return the del.icio.us url at which the HTML page with posts for
+        ``url`` can be found.
+        """
+        return "http://del.icio.us/url/?url=%s" % (url,)
+
 
 ### Convenience functions on this package
 
@@ -785,7 +806,7 @@ def get_popular(tag = ""):
     return getrss(tag = tag, popular = 1)
 
 
-### @TODO: JSON functions
+### @TODO: implement JSON fetching
 def json_posts(user, count=15):
     """http://del.icio.us/feeds/json/mpe
     http://del.icio.us/feeds/json/mpe/art+history

@@ -1,24 +1,27 @@
 # Have look/guess at file encodings
-.:                                 directory
-./tools:                           directory
-./tools/dlcs.py:                   python script text executable
-./pydelicious.py:                  ASCII English text
-./var:                             directory
-./var/file-encodings.tab:          ASCII text
-./doc.txt:                         ASCII English text, with CRLF line terminators
-./README.rst:                      ASCII English text
-./doc:                             directory
-./doc/pydelicious.html:            ASCII text, with very long lines
-./doc/dlcs.html:                   ASCII text
-./tests:                           directory
-./tests/main.py:                   ASCII Java program text
-./tests/pydelicioustest.py:        ISO-8859 English text
-./tests/blackbox_api_latin1.py:    ISO-8859 Java program text
-./tests/pydelicious-test-utf-8.py: UTF-8 Unicode English text
-./tests/blackbox_api_unicode.py:   UTF-8 Unicode Java program text
-./tests/deliciousapi.py:           UTF-8 Unicode Java program text
-./tests/blackbox_api.py:           ASCII Java program text
-./license.txt:                     ASCII English text, with very long lines
-./README.xhtml:                    XML 1.0 document text
-./setup.py:                        ASCII English text
-./Makefile:                        ASCII text
+# BVB: i found this handy to examine the original source files, which used
+# non-ASCII encodings. To be removed... sometime.
+./tools/optest.py:                  a python script text executable
+./tools/optionparse.py:             ASCII Java program text
+./tools/dlcs.py:                    a python script text executable
+./pydelicious.py:                   a python script text executable
+./var/.file-encodings.tab.swp:      data
+./var/file-encodings.tab:           ASCII English text
+./doc.txt:                          ASCII English text, with CRLF line terminators
+./README.rst:                       ASCII English text
+./doc/pydelicious.html:             ASCII English text, with very long lines
+./doc/dlcs.html:                    ASCII text
+./tests/pydelicioustest_latin1.py:  UTF-8 Unicode Java program text
+./tests/main.py:                    ASCII Java program text
+./tests/pydelicioustest.py:         ISO-8859 Java program text
+./tests/blackbox_api_latin1.py:     ISO-8859 Java program text
+./tests/pydelicioustest_unicode.py: UTF-8 Unicode Java program text
+./tests/blackbox_api_unicode.py:    UTF-8 Unicode Java program text
+./tests/blackbox_api.py:            ASCII Java program text
+./license.txt:                      ASCII English text, with very long lines
+./README.xhtml:                     XML 1.0 document text
+./HACKING.xhtml:                    XML 1.0 document text
+./HACKING.rst:                      UTF-8 Unicode English text
+./setup.py:                         ASCII English text
+./Makefile:                         ASCII make commands text
+./json_mpe.py:                      ASCII text

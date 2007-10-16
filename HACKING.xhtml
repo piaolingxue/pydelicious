@@ -8,7 +8,7 @@
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
   <meta name="generator" content="Docutils 0.4: http://docutils.sourceforge.net/" />
 
-  <title>pydelicious</title>
+  <title></title>
 <style type="text/css">
 /*<![CDATA[*/
 
@@ -297,97 +297,37 @@ ul.auto-toc {
 </head>
 
 <body>
-  <div class="document" id="pydelicious">
-    <h1 class="title">pydelicious</h1>
+  <div class="document">
+    <p>This file is meant for developpers wishing to hack on this project. If thats you, welcome :)</p>
 
-    <p>Basicly, a Python library to access del.icio.us. Includes shell utility to manage a local collection of bookmarks.</p>
+    <p>First of all, there is no development plan, and mostly its pretty straighforward python hacking. If you want something from the del.icio.us service that is not here yet, just hack and introduce yourself/your ideas at the <a class="reference" href="http://code.google.com/p/pydelicious/">project homepage</a>.</p>
 
-    <p>Based on work done by Frank Timmermann<a class="footnote-reference" href="#id6" id="id1" name="id1"><sup>1</sup></a>. See <a class="reference" href="./license.txt">license.txt</a>.</p>
+    <p>Here are a few comments:</p>
 
-    <p>Installation:</p>
-    <pre class="literal-block">
-% python setup.py install
-</pre>
+    <ul>
+      <li>
+        <p class="first">Use 4 spaces for indent. Not 2, not 8, no tabs, 4 spaces.</p>
+      </li>
 
-    <div class="section">
-      <h1><a id="overview" name="overview">Overview</a></h1>
+      <li>
+        <p class="first">Test your code. Unittests are located in tests/</p>
+      </li>
 
-      <p>Access to the del.icio.us web service API is implemented in <a class="reference" href="./pydelicious.py">pydelicious.py</a>.</p>
-
-      <dl class="docutils">
-        <dt><a class="reference" href="./doc/">doc/</a></dt>
-
-        <dd>Documentation generated from source. Generate with <tt class="docutils literal"><span class="pre">make</span> <span class="pre">doc</span></tt></dd>
-
-        <dt><a class="reference" href="./tests">tests/</a></dt>
-
-        <dd>Unittests, run with <tt class="docutils literal"><span class="pre">make</span> <span class="pre">test</span></tt>.</dd>
-
-        <dt><a class="reference" href="./tools/dlcs.py">tools/dlcs.py</a></dt>
-
-        <dd>an executable script that offers command-line access to your bookmark collection by caching the Posts and Tags XML files locally.</dd>
-
-        <dt><a class="reference" href="./var">var/</a></dt>
-
-        <dd>Test data, etc.</dd>
-      </dl>
-    </div>
+      <li>
+        <p class="first"><a class="reference" href="http://code.google.com/p/pydelicious/issues/">Report bugs</a> (please!)</p>
+      </li>
+    </ul>
 
     <div class="section">
-      <h1><a id="documentation" name="documentation">Documentation</a></h1>
+      <h1><a id="what-s-there-to-do" name="what-s-there-to-do">What's there to do</a></h1>
 
-      <p>For help and TODO's, progress reports:</p>
-
-      <ul>
-        <li>
-          <p class="first"><a class="reference" href="./doc/pydelicious.html">pydelicious.py</a></p>
-        </li>
-
-        <li>
-          <p class="first"><a class="reference" href="./doc/dlcs.html">dlcs.py</a></p>
-        </li>
-      </ul>
-
-      <p>Other TODO's:</p>
-
-      <ul>
-        <li>
-          <p class="first">tests have encoding issues...</p>
-        </li>
-
-        <li>
-          <p class="first">do blackbox testing</p>
-        </li>
-
-        <li>
-          <p class="first">create a setup entry for dlcs? other module?</p>
-        </li>
-      </ul>
-    </div>
-
-    <div class="section">
-      <h1><a id="references" name="references">References</a></h1>
-
-      <table class="docutils footnote" frame="void" id="id6" rules="none">
-        <colgroup>
-          <col class="label" />
-          <col />
-        </colgroup>
-
-        <tbody valign="top">
-          <tr>
-            <td class="label"><a name="id6" id="id6">[1]</a></td>
-
-            <td>Google Code, <tt class="docutils literal"><span class="pre">pydelicious</span></tt> (<a class="reference" href="http://code.google.com/p/pydelicious/">http://code.google.com/p/pydelicious/</a>).</td>
-          </tr>
-        </tbody>
-      </table>
+      <p>Read the TODO/FIXME/XXX's throughout the code comments or examine the issue list at the <a class="reference" href="http://code.google.com/p/pydelicious/">project homepage</a>.</p>
     </div>
   </div>
 
   <div class="footer">
     <hr class="footer" />
-    Generated on: 2007-10-16.
+    Generated on: 2007-10-15.
   </div>
 </body>
 </html>

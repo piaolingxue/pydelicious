@@ -1,6 +1,12 @@
-#!/usr/bin/python -u
+#!/usr/bin/env python
 """dlcs - Operate on a del.icio.us bookmark collection from the command-line.
 
+! while most commands should be working properly, there are some issues to be
+resolved mostly with encoding. Be careful when editing, or do proper testing
+first.
+
+Overview
+--------
 `dlcs` is a simple wrapper around pydelicious.DeliciousAPI. If offers
 some facilities to get data from your online bookmark collection and
 to perfom operations. See::
@@ -20,6 +26,10 @@ Just start `dlcs` using::
 
     % dlcs -u <username>
 
+Post any URL using::
+
+    % dlcs postit <URL>
+
 Configuration
 -------------
 Your username and password can be stored in an INI formatted configuration
@@ -28,8 +38,27 @@ but this can be changed using command line options. If no username or
 password are provided `dlcs` will guess the username and prompt for the
 password.
 
+Limitation
+----------
+- Bundle sizes are restricted by the maximum URL size [@xxx:length?], the
+  del.icio.us interface allows bigger bundles.
+
+Integration
+-----------
+To bookmark http URLs with lynx, put the following line in your lynx.cfg::
+
+    EXTERNAL:http:dlcs postit %s
+
+For the elinks browser, create a uri_passing rule in the configuration file.
+Something like the following::
+
+    set document.uri_passing.dlcs = "bash -c \"dlcs postit %c\""
+
 TODO
 ----
+- Output formatting (--outf)
+- Pretty JSON printer
+- Append recent posts (and tags) to cache
 - Some intelligent statistics on the tag collection (tag size, usage)
 - Other users, is it possible to: list all posters for a URL, all tags for a URL? Popular tags?
 - There are no commands to work on date lists (but 'req' could)
@@ -45,6 +74,7 @@ import locale
 import codecs
 from os.path import expanduser, getmtime, exists, abspath
 from ConfigParser import ConfigParser
+import pydelicious
 from pydelicious import DeliciousAPI, dlcs_parse_xml, PyDeliciousException
 
 try:
@@ -56,39 +86,83 @@ except:
     try:
         from json import read as jsonread, write as jsonwrite
     except:
-        print >>sys.stderr, "No JSON decoder installed, using standard Python printing"
-        jsonwrite = sys.stdout.write
+        print >>sys.stderr, "No JSON decoder installed"
 
 __cmds__ = [
-    'req',
-    'info',
-    'stats',
-    'posts',
-    'postsupdate',
-    'updateposts',
-    'getposts',
-    'findposts',
-    'deleteposts',
-    'recent',
-    'tagged',
-    'rename',
-    'tags',
-    'tag',
-    'untag',
-    'gettags',
-    'findtag',
     'bundle',
-    'bundles',
-    'getbundle',
-    'deletebundle',
     'bundleadd',
     'bundleremove',
-    'clearcache']
-__all__ = __cmds__ + ['main', 'parse_argv', 'http_dump']
+    'bundles',
+    'clearcache',
+    'deletebundle',
+    'deleteposts',
+    'findposts',
+    'findtags',
+    'getbundle',
+    'getposts',
+    'gettags',
+    'help',
+    'info',
+    'post',
+    'postit',
+    'posts',
+    'postsupdate',
+    'recent',
+    'rename',
+    'req',
+    'stats',
+    'tag',
+    'tags',
+    'tagged',
+    'untag',
+]
+
+__usage__ = """Usage: %prog [options] [command] [args...]
+
+    -c, --config=DLCS_CONFIG
+        Use custom config file [%default]
+
+    -C, --keep-cache=False
+        Don't update locally cached file(s) if they're out of date.
+
+    -e, --encoding=ENCODING
+        Use custom character encoding [locale: %default]
+
+    -u, --username
+        del.icio.us username (defaults to config or loginname)
+
+    -p, --password
+        Password for the del.icio.us user (usage not recommended, but this will override the config)
+
+    -I, --ignore-case=False
+        Ignore case for string searches
+
+    -d, --dump
+        Dump entire response (`req` only)
+
+    -o, --outf=[text | json | prettyjson]
+        Output formatting
+
+    -s, --shared=[True | False]
+        When posting a URL, set the 'shared' parameter.
+
+    -r, --replace=[no | yes]
+        When posting a URL, set the 'replace' parameter.
+
+    -v, --verboseness=0
+        TODO: Increase or set DEBUG (defaults to 0 or the DLCS_DEBUG env. var.)
+
+""" + """command can be one of:
+%s
+
+Use `help` to get more information about a command."""\
+    % (", ".join(__cmds__))
+
 
 DEBUG = 0
 if 'DLCS_DEBUG' in os.environ:
-	DEBUG = int(os.environ['DLCS_DEBUG'])
+    DEBUG = int(os.environ['DLCS_DEBUG'])
+    pydelicious.DEBUG = DEBUG
 
 if 'DLCS_CONFIG' in os.environ:
     DLCS_CONFIG = os.environ['DLCS_CONFIG']
@@ -97,20 +171,72 @@ elif exists(abspath('./.dlcs-rc')):
 else:
     DLCS_CONFIG = expanduser('~/.dlcs-rc')
 
+def prettify_json(json, level=0):
+
+    """Formats a JSON string to separated, indented lines.
+    """
+    #TODO: prettify json
+    return json
+
+    lines = []
+    prefix = '\t'*level
+    line_buffer = ''
+
+    for c in json:
+        if c in ',':
+            lines.append(prefix + line_buffer + c)
+            line_buffer = ''
+
+        elif c in '[{(':
+            for line in prettify_json:
+                lines.append()
+
+        else:
+            line_buffer += c
+
+    return "\n".join(lines)
+
+# TODO: write output formatting for text
+def output_text(data):
+    return "\n\n".join([txt_post(p) for p in data])
+
+def output_rst(data):
+    return "\n\n".join([rst_post(p) for p in data])
+
+def output_json(data):
+    return jsonwrite(data)
+
+def output_prettyjson(data):
+    return prettify_json(jsonwrite(data))
+
+def output(cmd, opts, data):
+    return data
+    #TODO:
+    return globals()['output_'+opts['outf']](data)
 
 ### Main
 
 def main(argv):
+
     """This will prepare al input data and call a command function to perform
     the operations. Default command is `info()`.
 
-    Arguments are parsed by parse_argv().
-
     Configuration file is loaded and used to store username/password.
     """
+
+    argv.pop(0) # scriptname
+
     ### Parse argument vector
-    optparser, opts, args = parse_argv(argv)
-    args.pop(0) # scriptname
+    import optionparse
+    defaults = {
+        'DLCS_CONFIG': DLCS_CONFIG,
+        'ENCODING': locale.getpreferredencoding()}
+    optparser, opts, args = optionparse.parse(__usage__, argv, defaults=defaults)
+
+    if opts['verboseness']:
+        v = int(opts['verboseness'])
+        DEBUG = v
+        pydelicious.DEBUG = v
 
     # First argument is command
     if len(args) > 0:
@@ -119,12 +245,11 @@ def main(argv):
         cmdid = 'info'
 
     if not cmdid in __cmds__:
-        #optparser.error("! cmd must be one of %s" % ", ".join(__cmds__))
-        return "Command must be one of %s" % ", ".join(__cmds__)
+        optionparse.exit("Command must be one of %s" % ", ".join(__cmds__))
 
     ### Parse config file
     conf = ConfigParser()
-    conf_file = opts['conf_file']
+    conf_file = opts['config']
     conf.read(conf_file)
 
     # Check for default section
@@ -147,6 +272,7 @@ def main(argv):
                 conf.set('local-files', 'posts', expanduser("~/.dlcs-posts.xml"))
                 conf.write(open(conf_file, 'w'))
                 return "Config written. Just run dlcs again or review the default config first."
+
             else:
                 return "Aborted"
 
@@ -161,22 +287,50 @@ def main(argv):
     # Force output encoding
     sys.stdout = codecs.getwriter(options['encoding'])(sys.stdout)
 
+    # DeliciousAPI instance to pass to the command functions
+    dlcs = DeliciousAPI(options['username'], options['password'],
+        codec=options['encoding'])
+
     ### Defer processing to command function
     cmd = getattr(sys.modules[__name__], cmdid)
     try:
-        return cmd(conf, args, **options)
+        return cmd(conf, dlcs, *args, **options)
     except PyDeliciousException, e:
         print >> sys.stderr, e
 
 
 ### Command functions
 
-def info(conf, args, **opts):
+def help(conf, dlcs, cmd='', **opts):
+
+    """Prints the docstring for a command or DeliciousAPI method.
+    """
+
+    thismod = sys.modules['__main__']
+
+    if cmd == 'api':
+        print "Available API paths: %s " % (DeliciousAPI.paths.keys(),)
+
+    elif cmd in DeliciousAPI.paths.keys():
+        # cmd is an API path
+        print DeliciousAPI.paths[cmd].__doc__
+
+    elif not cmd:
+        print thismod.__doc__
+
+    elif not hasattr(thismod, cmd):
+        print "No such command or API path: %s" % (cmd,)
+
+    elif not hasattr(getattr(thismod, cmd), '__doc__'):
+        print "No docstring for %s" % (cmd,)
+
+    else:
+        print getattr(thismod, cmd).__doc__
+
+def info(conf, dlcs, **opts):
+
     """Default command.
     """
-    if args: return "'info' takes no arguments"
-
-    dlcs = DeliciousAPI(opts['username'], opts['password'], codec=opts['encoding'])
 
     u = dlcs.posts_update()['update']['time']
     print "Posts last updated on: %s (UTC)" % time.strftime("%c", u)
@@ -198,15 +352,13 @@ def info(conf, args, **opts):
     if (exists(tags_file) and u > time.gmtime(tagsupd)) or (exists(posts_file) and u > time.gmtime(postsupd)):
         print "Cache is out of date"
 
-def stats(conf, args, **opts):
+def stats(conf, dlcs, **opts):
+
     """Statistics
     """
-    if args: return "'stats' takes no arguments"
 
-    dlcs = DeliciousAPI(opts['username'], opts['password'], codec=opts['encoding'])
-
-    posts = cached_posts(conf, dlcs, opts['keep_cached'])
-    tags = cached_tags(conf, dlcs, opts['keep_cached'])
+    posts = cached_posts(conf, dlcs, opts['keep_cache'])
+    tags = cached_tags(conf, dlcs, opts['keep_cache'])
 
     # @TODO: Some more intel gathering on tags would be nice
     print "Tags: %s" % len(tags['tags'])
@@ -224,15 +376,16 @@ def stats(conf, args, **opts):
 
     print "Tags per post (min/max): %s/%s" % (taggedlow, taggedhigh)
 
-def req(conf, args, **opts):
+def req(conf, dlcs, path, **opts):
+
     """Request data from a (URI-)path using pydelicious.DeliciousAPI. E.g.::
 
         % dlcs req posts/get?tag=energy
-        % dlcs req --raw tags/bundles/all
+        % dlcs req --outf=raw tags/bundles/all
         % dlcs req -d posts/update
 
-    The `raw` option causes the bare XML response to be printed, `dump`
-    prints the entire HTTP response. Note that since the v1 API is not RESTful
+    The `raw` option causes the response XML to be printed as JSON, `dump`
+    prints the entire HTTP XML response. Note that since the v1 API is not RESTful
     you can change data using this function too. E.g.::
 
         % dlcs req "tags/bundles/set?bundle=foo&tags=bar%20baz"
@@ -240,90 +393,151 @@ def req(conf, args, **opts):
 
     Ofcourse URL encoding and shell-escaping is up to you.
     """
-    if args == []:
-        print >>sys.stderr, "! Argument indicating path (within API) required."
-        return 1
 
-    dlcs = DeliciousAPI(opts['username'], opts['password'], codec=opts['encoding'])
-
-    if opts['raw']:
-        fl = dlcs.request_raw(args[0])
-        print fl.read()
-
-    elif opts['dump']:
-        fl = dlcs.request_raw(args[0])
+    if 'dump' in opts and opts['dump']:
+        fl = dlcs.request_raw(path)
         print http_dump(fl)
 
     else:
-        print jsonwrite(dlcs.request(args[0]))
+        data = dlcs.request(path)
+        print output(`req`, opts, data)
 
-def post(conf, args, **opts):
+def post(conf, dlcs, url, description, extended, *tags, **opts):
+
     """Do a standard post to del.icio.us::
 
-        % dlcs post URL DESCRIPTION EXTENDED tag1 tag2...
+        % dlcs post "URL" "DESCRIPTION" "EXTENDED" tag1 tag2...
     """
-    dlcs = DeliciousAPI(opts['username'], opts['password'], codec=opts['encoding'])
 
-    url = args.pop(0)
-    description = args.pop(0)
-    extended = args.pop(0)
+    tags = " ".join(tags)
 
-    v = dlcs.posts_add(replace="yes",
-        shared="True",
+    replace = 'no'
+    if 'replace' in opts:
+        replace = opts['replace']
+
+    shared = 'yes'
+    if 'shared' in opts:
+        shared = opts['shared']
+
+    v = dlcs.posts_add(replace=replace,
+        shared=shared,
         description=description,
         extended=extended,
         url=url,
-        tags=args)
+        tags=tags)
 
-    print '* Posted "%s <%s>": %s' % (description, url, v['result'][1])
+    print '* Post: "%s <%s>": %s' % \
+        (description, url, v['result'][1])
 
-def posts(conf, args, **opts):
+def postit(conf, dlcs, url, shared='yes', replace='no', **opts):
+
+    """Create and edit posts.
+    """
+
+    assert 'EDITOR' in os.environ, \
+        "postit needs the environmental variable 'EDITOR' set"
+
+    description, extended, tags = '', '', []
+
+    # Use ConfigParser as key/value parser
+    conf = ConfigParser()
+    tmpf = os.tmpnam() + '.ini'
+    os.mknod(tmpf)
+    tmpfl = open(tmpf, 'w+')
+
+    # Prepare dictionary for use in ini file
+    p = { 'description': description, 'extended': extended,
+        'tag': " ".join(tags),
+        'shared': shared, 'replace': replace, }
+
+    # Look for existing post
+    posts = dlcs.posts_get(url=url)
+    if posts['posts']:
+        p.update(posts['posts'][0])
+        p['replace'] = 'Yes'
+
+    # Fill ini file
+    conf.add_section(url)
+    for key in p:
+        conf.set(url, key, p[key])
+    conf.write(tmpfl)
+    tmpfl.close()
+
+    #Let user edit file
+    mtime = os.stat(tmpf)[8]
+
+    os.system("%s %s" % (os.environ['EDITOR'], tmpf))
+
+    if mtime == os.stat(tmpf)[8]:
+        return "! No changes, aborted"
+
+    # Parse data back into locals
+    conf.read(tmpf)
+
+    opts['shared'] = conf.get(url, 'shared')
+    opts['replace'] = conf.get(url, 'replace')
+
+    description = conf.get(url, 'description')
+    extended = conf.get(url, 'extended')
+    tags = conf.get(url, 'tag').split(' ')
+    if conf.has_option(url, 'href'):
+        url = conf.get(url, 'href')
+
+    # Let post handle rest of command
+    post(conf, dlcs, url, description, extended, *tags, **opts)
+
+def posts(conf, dlcs, **opts):
+
     """Retrieves ALL posts and prints the URLs.
     """
-    if args: return "'posts' takes no arguments"
 
-    dlcs = DeliciousAPI(opts['username'], opts['password'], codec=opts['encoding'])
-
-    posts = cached_posts(conf, dlcs, opts['keep_cached'])
+    posts = cached_posts(conf, dlcs, opts['keep_cache'])
     for post in posts['posts']:
         print post['href']
 
-def postsupdate(conf, args, **opts):
+def postsupdate(conf, dlcs, **opts):
+
     """Print last update time.
     """
-    if args: return "'postsupdate' takes no arguments"
 
-    dlcs = DeliciousAPI(opts['username'], opts['password'], codec=opts['encoding'])
     u = dlcs.posts_update()
     print str(u['update']['time'])
 
-def updateposts(conf, args, **opts):
-    dlcs = DeliciousAPI(opts['username'], opts['password'], codec=opts['encoding'])
-    rs = dlcs.posts_recent()
-    append_cache(rs, opts)
-    print rs
+def updateposts(conf, dlcs, **opts):
 
-def getposts(conf, args, **opts):
+    """TODO: Retrieve 15 most recent posts and add to local cache,
+    (after which it will be considered up-to-date again).
+    """
+
+    fl = dlcs.posts_recent(_raw=True)
+    print fl
+    append_cache(fl, opts)
+
+def getposts(conf, dlcs, *urls, **opts):
+
     """Print the posts for the given URLs in JSON.
     """
-    dlcs = DeliciousAPI(opts['username'], opts['password'], codec=opts['encoding'])
 
     out = []
-    for url in args:
-        out.append(dlcs.posts_get(url=url)['posts'][0])
+    for url in urls:
+        posts = dlcs.posts_get(url=url)['posts']
 
-    print jsonwrite(out)
+        if not len(posts)>0:
+            print >>sys.stderr,"No posts for %s" % (url,)
 
-def findposts(conf, args, **opts):
+        else:
+            out.extend(posts)
+
+    print output('getposts', opts, out)
+
+def findposts(conf, dlcs, keyword, **opts):
+
     """Search all text fields of all posts for the keyword and print machting URLs.
 
         % dlcs findposts keyword
     """
-    dlcs = DeliciousAPI(opts['username'], opts['password'], codec=opts['encoding'])
 
-    keyword = args.pop(0)
-
-    posts = cached_posts(conf, dlcs, opts['keep_cached'])
+    posts = cached_posts(conf, dlcs, opts['keep_cache'])
     for post in posts['posts']:
         fields = post['tag']+post['href']+post['description']+post['extended']
 
@@ -334,59 +548,53 @@ def findposts(conf, args, **opts):
         elif fields.find(keyword) > -1:
             print post['href']
 
-def deleteposts(conf, args, **opts):
+def deleteposts(conf, dlcs, *urls, **opts):
+
     """Delete one or more URLs.
     """
-    dlcs = DeliciousAPI(opts['username'], opts['password'], codec=opts['encoding'])
 
-    for url in args:
+    for url in urls:
         v = dlcs.posts_delete(url)
         print '* Deleted "%s": %s' % (url, v['result'][1])
 
-def recent(conf, args, **opts):
-    """
-    """
-    if args: return "'recentposts' takes no arguments"
+def recent(conf, dlcs, **opts):
 
-    dlcs = DeliciousAPI(opts['username'], opts['password'], codec=opts['encoding'])
+    """Fetch the 15 most recent posts.
+    """
 
     rs = dlcs.posts_recent()
     for post in rs['posts']:
         print post['href']
 
-def rename(conf, args, **opts):
+def rename(conf, dlcs, oldtag, *newtags, **opts):
+
     """rename a tag to one or more tags.
 
         % dlcs rename oldtag newtag(s)
     """
-    dlcs = DeliciousAPI(opts['username'], opts['password'], codec=opts['encoding'])
 
-    old = args.pop(0)
-    new = " ".join(args)
-    v = dlcs.tags_rename(old, new)
+    new = " ".join(newtags)
+    v = dlcs.tags_rename(oldtag, new)
     if not v['result'][0]:
-        print >>sys.stderr, 'Error renaming "%s" to "%s": %s' % (old, new, v['result'][1])
+        print >>sys.stderr, 'Error renaming "%s" to "%s": %s' % (oldtag, new, v['result'][1])
     else:
-        print '* "%s" -> "%s": %s' % (old, new, v['result'][1])
+        print '* "%s" -> "%s": %s' % (oldtag, new, v['result'][1])
 
-def bundle(conf, args, **opts):
+def bundle(conf, dlcs, name, *tags, **opts):
+
     """Bundle some tags under a name, replaces previous bundle contents::
 
         % dlcs bundle bundlename tag(s)
     """
-    dlcs = DeliciousAPI(opts['username'], opts['password'], codec=opts['encoding'])
 
-    name = args.pop(0)
-    tags = " ".join(args)
+    tags = " ".join(tags)
     v = dlcs.bundles_set(name, tags)
     print '* "%s" -> "%s" %s' % (name, tags, v['result'][1])
 
-def bundles(conf, args, **opts):
+def bundles(conf, dlcs, **opts):
+
     """Retrieve all bundles and print their names.
     """
-    if args: return "'bundles' takes no arguments"
-
-    dlcs = DeliciousAPI(opts['username'], opts['password'], codec=opts['encoding'])
 
     bundles = dlcs.bundles_all()['bundles']
     for bundle in bundles:
@@ -394,12 +602,10 @@ def bundles(conf, args, **opts):
 
     print
 
-def getbundle(conf, args, **opts):
+def getbundle(conf, dlcs, name, **opts):
+
     """Retrieve all tags within a bundle.
     """
-    dlcs = DeliciousAPI(opts['username'], opts['password'], codec=opts['encoding'])
-
-    name = args.pop(0)
 
     bundles = dlcs.bundles_all()['bundles']
     for bundle in bundles:
@@ -407,27 +613,23 @@ def getbundle(conf, args, **opts):
             print bundle['tags']
             return
 
-def deletebundle(conf, args, **opts):
+def deletebundle(conf, dlcs, name, **opts):
+
     """Delete an entire bundle.
     """
-    dlcs = DeliciousAPI(opts['username'], opts['password'], codec=opts['encoding'])
-
-    name = args.pop(0)
 
     v = dlcs.bundles_delete(name)
     print '* delete bundle "%s": %s' % (name, str(v))
 
-def bundleadd(conf, args, **opts):
+def bundleadd(conf, dlcs, name, *tags, **opts):
+
     """Add one or more tags to a bundle. Retrieves current bundles, adds the
     tags to the indicated bundle and posts it back to del.icio.us::
 
         % dlcs bundleadd bundlename tag(s)
     """
 
-    dlcs = DeliciousAPI(opts['username'], opts['password'], codec=opts['encoding'])
-
-    name = args.pop(0)
-    tags = " ".join(args)
+    tags = " ".join(tags)
 
     bundles = dlcs.bundles_all()['bundles']
     for bundle in bundles:
@@ -437,16 +639,13 @@ def bundleadd(conf, args, **opts):
             print '* "%s" -> "%s": %s' % (name, tags, v['result'][1])
             return
 
-def bundleremove(conf, args, **opts):
+def bundleremove(conf, dlcs, name, *tags, **opts):
+
     """Remove one or more tags from a bundle. Retrieves current bundles, removes
     the tags from the indicated bundle and posts it back to del.icio.us::
 
         % dlcs bundleremove bundlename tag(s)
     """
-    dlcs = DeliciousAPI(opts['username'], opts['password'], codec=opts['encoding'])
-
-    name = args.pop(0)
-    tags = args
 
     bundles = dlcs.bundles_all()['bundles']
     for bundle in bundles:
@@ -456,10 +655,12 @@ def bundleremove(conf, args, **opts):
                 if tag in curcontents: curcontents.remove(tag)
                 else: print >>sys.stderr, "%s not in bundle %s" % (tag, name)
             v = dlcs.bundles_set(name, curcontents)
-            print '* "%s" -> "%s" %s' % (name, ", ".join(curcontents), v['result'][1])
+            print '* "%s" -> "%s" %s' % (name,
+                ", ".join(curcontents), v['result'][1])
             return
 
-def tag(conf, args, **opts):
+def tag(conf, dlcs, tags, *urls, **opts):
+
     """Tag all URLs with the given tag(s)::
 
         % dlcs tag "tag1 tag2" http://... http://...
@@ -468,10 +669,6 @@ def tag(conf, args, **opts):
     replace the post at del.icio.us. URLs not in the collection cause
     a message to stderr and are ignored.
     """
-    dlcs = DeliciousAPI(opts['username'], opts['password'], codec=opts['encoding'])
-
-    tags = args.pop(0)
-    urls = args
 
     for url in urls:
         posts = dlcs.request('posts/get', url=url)
@@ -487,7 +684,7 @@ def tag(conf, args, **opts):
             if not 'shared' in post:
                 post['shared'] = "True"
 
-            # @xxx: del.icio.us takes care of duplicates...
+            # XXX: del.icio.us takes care of duplicates...
             post['tag'] += ' '+tags
 
             v = dlcs.posts_add(replace="yes",
@@ -498,18 +695,14 @@ def tag(conf, args, **opts):
                 tags=post['tag'],
                 time=post['time'])
 
-            print '* tagged "%s" with "%s": %s' % (url, post['tag'], v['result'][1])
+            print '* tagged "%s" with "%s": %s' % (url,
+                post['tag'], v['result'][1])
 
-def untag(conf, args, **opts):
+def untag(conf, dlcs, tags, *urls, **opts):
+
     """Reverse of tag, remove given tags from the given URLs.
     Tags and URLs not found are ignored.
     """
-    dlcs = DeliciousAPI(opts['username'], opts['password'], codec=opts['encoding'])
-
-    #@XXX: no ignore case...
-
-    tags = args.pop(0).split(' ')
-    urls = args
 
     for url in urls:
         posts = dlcs.request('posts/get', url=url)
@@ -541,18 +734,17 @@ def untag(conf, args, **opts):
                 tags=post['tag'],
                 time=post['time'])
 
-            print '* untagged "%s" from "%s": %s' % (" ".join(untagged), url, v['result'][1])
+            print '* untagged "%s" from "%s": %s' % (" ".join(untagged),
+                url, v['result'][1])
 
-def tagged(conf, args, **opts):
+def tagged(conf, dlcs, tag, **opts):
+
     """Request all posts for a tag and print their URLs.
 
         % dlcs tagged tag
     """
-    dlcs = DeliciousAPI(opts['username'], opts['password'], codec=opts['encoding'])
 
-    tag = args.pop(0)
-
-    posts = cached_posts(conf, dlcs, opts['keep_cached'])
+    posts = cached_posts(conf, dlcs, opts['keep_cache'])
     for post in posts['posts']:
 
         if opts['ignore_case']:
@@ -565,61 +757,54 @@ def tagged(conf, args, **opts):
         elif tag in tags:
             print post['href']
 
-def tags(conf, args, **opts):
+def tags(conf, dlcs, **opts):
+
     """Print all tags.
     """
-    if args: return "'tags' takes no arguments"
 
-    dlcs = DeliciousAPI(opts['username'], opts['password'], codec=opts['encoding'])
-
-    tags = cached_tags(conf, dlcs, opts['keep_cached'])
+    tags = cached_tags(conf, dlcs, opts['keep_cache'])
 
     for tag in tags['tags']:
         # @XXX: encoding...
         print tag['tag'].encode('utf-8'),
 
-def gettags(conf, args, **opts):
-    """Print JSON dictionary for each given tag.
+def gettags(conf, dlcs, *tags, **opts):
+
+    """Print info about tag.
     """
-    dlcs = DeliciousAPI(opts['username'], opts['password'], codec=opts['encoding'])
 
-    findtags = args
     if opts['ignore_case']:
-        findtags = [t.lower() for t in findtags]
+        tags = [t.lower() for t in tags]
 
-    tags = cached_tags(conf, dlcs, opts['keep_cached'])
-
-    for tag in tags['tags']:
+    for tag in cached_tags(conf, dlcs, opts['keep_cache'])['tags']:
         if tag['tag'] in findtags or \
-            (opts['ignore_case'] and tag['tag'].lower() in findtags):
+                (opts['ignore_case'] and tag['tag'].lower() in findtags):
             print jsonwrite(tag)
 
-def findtag(conf, args, **opts):
+def findtags(conf, dlcs, *tags, **opts):
+
     """Search all tags with (a part of) a tag.
     """
-    dlcs = DeliciousAPI(opts['username'], opts['password'], codec=opts['encoding'])
 
-    findtag = args.pop(0)
-
-    tags = cached_tags(conf, dlcs, opts['keep_cached'])
-    for tag in tags['tags']:
+    for tag in cached_tags(conf, dlcs, opts['keep_cache'])['tags']:
         tag = tag['tag']
 
-        if opts['ignore_case']:
-            if tag.lower().find(findtag.lower()) > -1:
+        for findtag in tags:
+            if opts['ignore_case']:
+                if tag.lower().find(findtag.lower()) > -1:
+                    print tag
+
+            elif tag.find(findtag) > -1:
                 print tag
 
-        elif tag.find(findtag) > -1:
-            print tag
+def clearcache(conf, dlcs, *clear, **opts):
 
-def clearcache(conf, args, **opts):
     """Delete all locally cached data::
 
         % dlcs clear [tags | posts]
     """
-    if args:
-        clear = args
-    else:
+
+    if not clear:
         clear = ['tags', 'posts']
 
     if 'tags' in clear:
@@ -637,61 +822,8 @@ def clearcache(conf, args, **opts):
         except: pass
 
 ### Utils
-
-def parse_argv(argv):
-    """Parse the argument vector to options and a list of arguments.
-
-    Returns tuple with ConfigParser instance, options dictionary and
-    arguments list.
-    """
-
-    # construct 'usage' string from all cmd function __doc__'s
-    usage = """usage: %% dlcs [options] cmdid [args ...]
-
-commands:
-%s""" % "\n".join(["  %s: %s" %
-        (cmdid, getattr(sys.modules[__name__], cmdid).__doc__)
-        for cmdid in __cmds__])
-
-    parser = optparse.OptionParser(usage)
-
-    # define options
-    parser.add_option("-c", "--config", dest="conf_file", default=DLCS_CONFIG,
-            help="Use custom config file [%default]")
-    parser.add_option("-C", "--cache", dest="keep_cached", action="store_true", default=False,
-            help="Don't update locally cached file(s) if they're out of date.")
-    parser.add_option("-e", "--encoding", dest="encoding", default=locale.getpreferredencoding(),
-            help="Use custom character encoding [locale: %default]")
-    parser.add_option("-u", "--user", dest="username",
-            help="del.icio.us username (defaults to config or loginname)")
-    parser.add_option("-p", "--pass", dest="password",
-            help="Password for the del.icio.us user (usage not recommended, but this will override the config)")
-    parser.add_option("-I", "--ignore-case", dest="ignore_case", action="store_true", default=False,
-            help="Ignore case for string searches")
-    parser.add_option("-d", "--dump", dest="dump", action="store_true", default=False,
-            help="Print entire HTTP response")
-
-    parser.add_option("-j", "--json", dest="raw", action="store_true", default=False,
-            help="Print JSON")
-
-    optsv, args = parser.parse_args(argv)
-
-    args = [a.decode('utf-8', 'replace') for a in args]
-
-    # Convert the optsv instance to a real dictionary...
-    opts = {}
-    for opt in ('conf_file', 'username', 'password', 'ignore_case', 'raw', 'dump', 'keep_cached', 'encoding'):
-        val = getattr(optsv, opt)
-        if isinstance(val, bool):
-            opts[opt] = val
-        elif isinstance(val, basestring):
-            opts[opt] = val.decode('utf-8')
-        elif val:
-            opts[opt] = val
-
-    return parser, opts, args
-
 def http_dump(fl):
+
     """Format fileobject wrapped in urllib.addinfourl as HTTP message string
     and return.
     """
@@ -704,7 +836,7 @@ def http_dump(fl):
 def cache_file(fn, data):
     open(fn, 'w').write(data.read())
 
-def cache_append_posts(posts, ):
+def cache_append_posts(fl, ):
     pass
 
 def cached_tags(conf, dlcs, noupdate=False):
@@ -743,11 +875,10 @@ def cached_posts(conf, dlcs, noupdate=False):
     posts = dlcs_parse_xml(open(posts_file))
     return posts
 
+
 if __name__ == '__main__':
     try:
         sys.exit(main(sys.argv))
     except KeyboardInterrupt:
-        print >>sys.stderr, "Program interrupted"
-    else:
-        raise
+        print >>sys.stderr, "User interrupt"
 # vim:set expandtab:
