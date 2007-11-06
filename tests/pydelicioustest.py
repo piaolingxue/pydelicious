@@ -25,13 +25,26 @@ class TestWaiter(unittest.TestCase):
 
     def testwait1(self):
         wt = pydelicious.DLCS_WAIT_TIME
-        t = time.time()
 
+        # First call, no wait needed
+        t = time.time()
         pydelicious.Waiter()
-        waited = time.time() - t
+        waited = round(time.time() - t, 1)
         self.assert_(waited < wt,
                 "unneeded wait of %s" % (waited,))
 
+        # Some values between full wait intervals
+        for w in .4, .7, 1.5:
+            time.sleep(w)
+            t = time.time()
+            pydelicious.Waiter()
+            waited = round(time.time() - t, 1)
+            self.assert_(waited <= pydelicious.DLCS_WAIT_TIME,
+                    "unneeded wait of %s (not %s)" % (w,
+                        pydelicious.DLCS_WAIT_TIME-w))
+
+        # Some more regular intervals
+        t = time.time()
         for i in range(0, 2):
             pydelicious.Waiter()
             waited = time.time() - t

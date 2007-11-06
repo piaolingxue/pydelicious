@@ -164,17 +164,16 @@ class _Waiter:
 
     def __call__(self):
         tt = time.time()
+        wait = self.wait
 
         timeago = tt - self.lastcall
 
-        if self.lastcall and DEBUG>2:
-            print >>sys.stderr, "Lastcall: %s seconds ago." % lastcall
-
-        if timeago <= self.wait:
-            if DEBUG>0: print >>sys.stderr, "Waiting %s seconds." % self.wait
-            time.sleep(self.wait)
+        if timeago < wait:
+            wait = wait - timeago
+            if DEBUG>0: print >>sys.stderr, "Waiting %s seconds." % wait
+            time.sleep(wait)
             self.waited += 1
-            self.lastcall = tt + self.wait
+            self.lastcall = tt + wait
         else:
             self.lastcall = tt
 
