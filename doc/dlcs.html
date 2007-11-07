@@ -11,6 +11,10 @@
 ><font color="#ffffff" face="helvetica, arial"><a href=".">index</a><br><a href="file:/home/berend/src/pydelicious/svn/tools/dlcs.py">/home/berend/src/pydelicious/svn/tools/dlcs.py</a></font></td></tr></table>
     <p><tt>dlcs&nbsp;-&nbsp;Operate&nbsp;on&nbsp;a&nbsp;del.icio.us&nbsp;bookmark&nbsp;collection&nbsp;from&nbsp;the&nbsp;command-line.<br>
 &nbsp;<br>
+!&nbsp;while&nbsp;most&nbsp;commands&nbsp;should&nbsp;be&nbsp;working&nbsp;properly,&nbsp;there&nbsp;are&nbsp;some&nbsp;issues&nbsp;to&nbsp;be<br>
+resolved&nbsp;mostly&nbsp;with&nbsp;encoding.&nbsp;Be&nbsp;careful&nbsp;when&nbsp;editing,&nbsp;or&nbsp;do&nbsp;proper&nbsp;testing<br>
+first.<br>
+&nbsp;<br>
 Overview<br>
 --------<br>
 `dlcs`&nbsp;is&nbsp;a&nbsp;simple&nbsp;wrapper&nbsp;around&nbsp;pydelicious.DeliciousAPI.&nbsp;If&nbsp;offers<br>
@@ -46,7 +50,7 @@ password.<br>
 &nbsp;<br>
 Limitation<br>
 ----------<br>
--&nbsp;Bundle&nbsp;sizes&nbsp;are&nbsp;restricted&nbsp;by&nbsp;the&nbsp;maximum&nbsp;URL&nbsp;size&nbsp;[@xxx:length?],&nbsp;the<br>
+-&nbsp;Bundle&nbsp;sizes&nbsp;are&nbsp;restricted&nbsp;by&nbsp;the&nbsp;maximum&nbsp;URL&nbsp;size&nbsp;[xxx:length?],&nbsp;the<br>
 &nbsp;&nbsp;del.icio.us&nbsp;interface&nbsp;allows&nbsp;bigger&nbsp;bundles.<br>
 &nbsp;<br>
 Integration<br>
@@ -64,6 +68,7 @@ TODO<br>
 ----<br>
 -&nbsp;Output&nbsp;formatting&nbsp;(--outf)<br>
 -&nbsp;Pretty&nbsp;JSON&nbsp;printer<br>
+-&nbsp;Append&nbsp;recent&nbsp;posts&nbsp;(and&nbsp;tags)&nbsp;to&nbsp;cache<br>
 -&nbsp;Some&nbsp;intelligent&nbsp;statistics&nbsp;on&nbsp;the&nbsp;tag&nbsp;collection&nbsp;(tag&nbsp;size,&nbsp;usage)<br>
 -&nbsp;Other&nbsp;users,&nbsp;is&nbsp;it&nbsp;possible&nbsp;to:&nbsp;list&nbsp;all&nbsp;posters&nbsp;for&nbsp;a&nbsp;URL,&nbsp;all&nbsp;tags&nbsp;for&nbsp;a&nbsp;URL?&nbsp;Popular&nbsp;tags?<br>
 -&nbsp;There&nbsp;are&nbsp;no&nbsp;commands&nbsp;to&nbsp;work&nbsp;on&nbsp;date&nbsp;lists&nbsp;(but&nbsp;'req'&nbsp;could)<br>
@@ -121,7 +126,7 @@ del.icio.us&nbsp;posts/update,&nbsp;which&nbsp;only&nbsp;notes&nbsp;new&nbsp;pos
  <dl><dt><a name="-getbundle"><strong>getbundle</strong></a>(conf, dlcs, name, **opts)</dt><dd><tt>Retrieve&nbsp;all&nbsp;tags&nbsp;within&nbsp;a&nbsp;bundle.</tt></dd></dl>
  <dl><dt><a name="-getposts"><strong>getposts</strong></a>(conf, dlcs, *urls, **opts)</dt><dd><tt>Print&nbsp;the&nbsp;posts&nbsp;for&nbsp;the&nbsp;given&nbsp;URLs&nbsp;in&nbsp;JSON.</tt></dd></dl>
  <dl><dt><a name="-gettags"><strong>gettags</strong></a>(conf, dlcs, *tags, **opts)</dt><dd><tt>Print&nbsp;info&nbsp;about&nbsp;tag.</tt></dd></dl>
- <dl><dt><a name="-help"><strong>help</strong></a>(conf, dlcs, cmd, **opts)</dt><dd><tt>Prints&nbsp;the&nbsp;docstring&nbsp;for&nbsp;a&nbsp;command&nbsp;or&nbsp;DeliciousAPI&nbsp;method.</tt></dd></dl>
+ <dl><dt><a name="-help"><strong>help</strong></a>(conf, dlcs, cmd<font color="#909090">=''</font>, **opts)</dt><dd><tt>Prints&nbsp;the&nbsp;docstring&nbsp;for&nbsp;a&nbsp;command&nbsp;or&nbsp;DeliciousAPI&nbsp;method.</tt></dd></dl>
  <dl><dt><a name="-http_dump"><strong>http_dump</strong></a>(fl)</dt><dd><tt>Format&nbsp;fileobject&nbsp;wrapped&nbsp;in&nbsp;urllib.addinfourl&nbsp;as&nbsp;HTTP&nbsp;message&nbsp;string<br>
 and&nbsp;return.</tt></dd></dl>
  <dl><dt><a name="-info"><strong>info</strong></a>(conf, dlcs, **opts)</dt><dd><tt>Default&nbsp;command.</tt></dd></dl>

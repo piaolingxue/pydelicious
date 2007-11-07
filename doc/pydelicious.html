@@ -21,14 +21,14 @@
 &nbsp;&nbsp;&gt;&gt;&gt;&nbsp;a.tags_get()&nbsp;#&nbsp;Same&nbsp;as:<br>
 &nbsp;&nbsp;&gt;&gt;&gt;&nbsp;a.request('tags/get',&nbsp;)<br>
 &nbsp;<br>
-&nbsp;&nbsp;Or&nbsp;by&nbsp;calling&nbsp;the&nbsp;'convenience'&nbsp;methods&nbsp;on&nbsp;the&nbsp;module.<br>
+&nbsp;&nbsp;Or&nbsp;by&nbsp;calling&nbsp;one&nbsp;of&nbsp;the&nbsp;methods&nbsp;on&nbsp;the&nbsp;module:<br>
 &nbsp;<br>
-&nbsp;&nbsp;-&nbsp;def&nbsp;<a href="#-add">add</a>(user,&nbsp;passwd,&nbsp;url,&nbsp;description,&nbsp;tags&nbsp;=&nbsp;"",&nbsp;extended&nbsp;=&nbsp;"",&nbsp;dt&nbsp;=&nbsp;"",&nbsp;replace="no"):<br>
-&nbsp;&nbsp;-&nbsp;def&nbsp;<a href="#-get">get</a>(user,&nbsp;passwd,&nbsp;tag="",&nbsp;dt="",&nbsp;&nbsp;count&nbsp;=&nbsp;0):<br>
-&nbsp;&nbsp;-&nbsp;def&nbsp;<a href="#-get_all">get_all</a>(user,&nbsp;passwd,&nbsp;tag&nbsp;=&nbsp;""):<br>
-&nbsp;&nbsp;-&nbsp;def&nbsp;<a href="#-delete">delete</a>(user,&nbsp;passwd,&nbsp;url):<br>
-&nbsp;&nbsp;-&nbsp;def&nbsp;<a href="#-rename_tag">rename_tag</a>(user,&nbsp;passwd,&nbsp;oldtag,&nbsp;newtag):<br>
-&nbsp;&nbsp;-&nbsp;def&nbsp;<a href="#-get_tags">get_tags</a>(user,&nbsp;passwd):<br>
+&nbsp;&nbsp;-&nbsp;<a href="#-add">add</a>(user,&nbsp;passwd,&nbsp;url,&nbsp;description,&nbsp;tags&nbsp;=&nbsp;"",&nbsp;extended&nbsp;=&nbsp;"",&nbsp;dt&nbsp;=&nbsp;"",&nbsp;replace="no")<br>
+&nbsp;&nbsp;-&nbsp;<a href="#-get">get</a>(user,&nbsp;passwd,&nbsp;tag="",&nbsp;dt="",&nbsp;&nbsp;count&nbsp;=&nbsp;0)<br>
+&nbsp;&nbsp;-&nbsp;<a href="#-get_all">get_all</a>(user,&nbsp;passwd,&nbsp;tag&nbsp;=&nbsp;"")<br>
+&nbsp;&nbsp;-&nbsp;<a href="#-delete">delete</a>(user,&nbsp;passwd,&nbsp;url)<br>
+&nbsp;&nbsp;-&nbsp;<a href="#-rename_tag">rename_tag</a>(user,&nbsp;passwd,&nbsp;oldtag,&nbsp;newtag)<br>
+&nbsp;&nbsp;-&nbsp;<a href="#-get_tags">get_tags</a>(user,&nbsp;passwd)<br>
 &nbsp;<br>
 &nbsp;&nbsp;&gt;&gt;&gt;&nbsp;a&nbsp;=&nbsp;<a href="#-apiNew">apiNew</a>(user,&nbsp;passwd)<br>
 &nbsp;&nbsp;&gt;&gt;&gt;&nbsp;a.posts_add(url="<a href="http://my.com/">http://my.com/</a>",&nbsp;desciption="my.com",&nbsp;extended="the&nbsp;url&nbsp;is&nbsp;my.moc",&nbsp;tags="my&nbsp;com")<br>
@@ -55,43 +55,27 @@ def&nbsp;<a href="#-get_popular">get_popular</a>(tag&nbsp;=&nbsp;""):<br>
 :License:&nbsp;pydelicious&nbsp;is&nbsp;released&nbsp;under&nbsp;the&nbsp;BSD&nbsp;license.&nbsp;See&nbsp;'license.txt'<br>
 &nbsp;for&nbsp;more&nbsp;informations.<br>
 &nbsp;<br>
-:berend:<br>
+:todo,&nbsp;bvb:<br>
 &nbsp;-&nbsp;Rewriting&nbsp;comments&nbsp;to&nbsp;english.&nbsp;More&nbsp;documentation,&nbsp;examples.<br>
 &nbsp;-&nbsp;Added&nbsp;JSON-like&nbsp;return&nbsp;values&nbsp;for&nbsp;XML&nbsp;data&nbsp;(del.icio.us&nbsp;also&nbsp;serves&nbsp;some&nbsp;JSON...)<br>
 &nbsp;-&nbsp;better&nbsp;error/exception&nbsp;classes&nbsp;and&nbsp;handling,&nbsp;work&nbsp;in&nbsp;progress.<br>
-&nbsp;-&nbsp;Encoding&nbsp;seems&nbsp;to&nbsp;be&nbsp;working&nbsp;(using&nbsp;UTF-8&nbsp;here).<br>
 &nbsp;<br>
-:@todo:<br>
+:todo:<br>
 &nbsp;-&nbsp;Source&nbsp;code&nbsp;SHOULD&nbsp;BE&nbsp;ASCII!<br>
 &nbsp;-&nbsp;More&nbsp;tests.<br>
-&nbsp;-&nbsp;Parse&nbsp;datetimes&nbsp;in&nbsp;XML.<br>
-&nbsp;-&nbsp;Salvage&nbsp;and&nbsp;test&nbsp;RSS&nbsp;functionality?<br>
-&nbsp;-&nbsp;Setup&nbsp;not&nbsp;used,&nbsp;Still&nbsp;works?&nbsp;Should&nbsp;setup.py&nbsp;be&nbsp;tested?<br>
-&nbsp;-&nbsp;API&nbsp;functions&nbsp;need&nbsp;required&nbsp;argument&nbsp;checks.<br>
-&nbsp;<br>
-&nbsp;*&nbsp;lizense&nbsp;einbinden&nbsp;und&nbsp;auch&nbsp;via&nbsp;setup.py&nbsp;verteilen<br>
-&nbsp;*&nbsp;readme&nbsp;auch&nbsp;schreiben&nbsp;und&nbsp;via&nbsp;setup.py&nbsp;verteilen<br>
-&nbsp;*&nbsp;auch&nbsp;auf&nbsp;anderen&nbsp;systemen&nbsp;testen&nbsp;(linux&nbsp;-&gt;&nbsp;uni)<br>
-&nbsp;*&nbsp;automatisch&nbsp;releases&nbsp;bauen&nbsp;lassen,&nbsp;richtig&nbsp;benennen&nbsp;und&nbsp;in&nbsp;das<br>
-&nbsp;&nbsp;&nbsp;richtige&nbsp;verzeichnis&nbsp;verschieben.<br>
-&nbsp;*&nbsp;was&nbsp;k[o]nnen&nbsp;die&nbsp;anderen&nbsp;librarys&nbsp;denn&nbsp;noch&nbsp;so?&nbsp;(ruby,&nbsp;java,&nbsp;perl,&nbsp;etc)<br>
-&nbsp;*&nbsp;was&nbsp;wollen&nbsp;die,&nbsp;die&nbsp;es&nbsp;benutzen?<br>
-&nbsp;*&nbsp;wof[u]r&nbsp;k[o]nnte&nbsp;ich&nbsp;es&nbsp;benutzen?<br>
-&nbsp;*&nbsp;entschlacken?<br>
-&nbsp;<br>
-:done:<br>
-&nbsp;*&nbsp;Refactored&nbsp;the&nbsp;API&nbsp;class,&nbsp;much&nbsp;cleaner&nbsp;now&nbsp;and&nbsp;functions&nbsp;dlcs_api_request,&nbsp;dlcs_parse_xml&nbsp;are&nbsp;available&nbsp;for&nbsp;who&nbsp;wants&nbsp;them.<br>
-&nbsp;*&nbsp;stimmt&nbsp;das&nbsp;so?&nbsp;muss&nbsp;eher&nbsp;noch&nbsp;t[a]g&nbsp;str2utf8&nbsp;konvertieren<br>
+&nbsp;-&nbsp;handling&nbsp;different&nbsp;encodings,&nbsp;what,&nbsp;how?<br>
 &nbsp;&nbsp;&nbsp;&gt;&gt;&gt;&nbsp;pydelicious.<a href="#-getrss">getrss</a>(tag="t[a]g")<br>
 &nbsp;&nbsp;&nbsp;url:&nbsp;<a href="http://del.icio.us/rss/tag/t[a]g">http://del.icio.us/rss/tag/t[a]g</a><br>
-&nbsp;*&nbsp;requester&nbsp;muss&nbsp;eine&nbsp;sekunde&nbsp;warten<br>
-&nbsp;*&nbsp;__init__.py&nbsp;gibt&nbsp;die&nbsp;funktionen&nbsp;weiter<br>
-&nbsp;*&nbsp;html&nbsp;parser&nbsp;funktioniert&nbsp;noch&nbsp;nicht,&nbsp;gar&nbsp;nicht<br>
-&nbsp;*&nbsp;alte&nbsp;funktionen&nbsp;fehlen,&nbsp;get_posts_by_url,&nbsp;etc.<br>
-&nbsp;*&nbsp;<a href="#post">post</a>&nbsp;funktion&nbsp;erstellen,&nbsp;die&nbsp;auch&nbsp;die&nbsp;fehlenden&nbsp;attribs&nbsp;addiert.<br>
-&nbsp;*&nbsp;die&nbsp;api&nbsp;muss&nbsp;ich&nbsp;noch&nbsp;weiter&nbsp;machen<br>
-&nbsp;*&nbsp;requester&nbsp;muss&nbsp;die&nbsp;503er&nbsp;abfangen<br>
-&nbsp;*&nbsp;rss&nbsp;parser&nbsp;muss&nbsp;auf&nbsp;viele&nbsp;m[o]glichkeiten&nbsp;angepasst&nbsp;werden</tt></p>
+&nbsp;-&nbsp;Parse&nbsp;datetimes&nbsp;in&nbsp;XML.<br>
+&nbsp;-&nbsp;Test&nbsp;RSS&nbsp;functionality?&nbsp;HTML&nbsp;scraping&nbsp;doesn't&nbsp;work&nbsp;yet?<br>
+&nbsp;-&nbsp;API&nbsp;functions&nbsp;need&nbsp;required&nbsp;argument&nbsp;checks.<br>
+&nbsp;-&nbsp;interesting&nbsp;functionality&nbsp;in&nbsp;other&nbsp;libraries&nbsp;(ruby,&nbsp;java,&nbsp;perl,&nbsp;etc)?<br>
+&nbsp;-&nbsp;what&nbsp;is&nbsp;pydelicious&nbsp;used&nbsp;for?<br>
+&nbsp;-&nbsp;license,&nbsp;readme&nbsp;docs&nbsp;via&nbsp;setup.py&nbsp;verdelen?<br>
+&nbsp;-&nbsp;automatic&nbsp;releas&nbsp;build<br>
+&nbsp;<br>
+:done:<br>
+&nbsp;*&nbsp;Refactored&nbsp;the&nbsp;API&nbsp;class,&nbsp;much&nbsp;cleaner&nbsp;now&nbsp;and&nbsp;functions&nbsp;dlcs_api_request,&nbsp;dlcs_parse_xml&nbsp;are&nbsp;available&nbsp;for&nbsp;who&nbsp;wants&nbsp;them.</tt></p>
 <p>
 <table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
 <tr bgcolor="#aa55cc">
@@ -151,7 +135,7 @@ def&nbsp;<a href="#-get_popular">get_popular</a>(tag&nbsp;=&nbsp;""):<br>
 <font color="#000000" face="helvetica, arial"><a name="DefaultErrorHandler">class <strong>DefaultErrorHandler</strong></a>(<a href="urllib2.html#HTTPDefaultErrorHandler">urllib2.HTTPDefaultErrorHandler</a>)</font></td></tr>
     
 <tr bgcolor="#ffc8d8"><td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
-<td colspan=2><tt>@xxx:bvb:&nbsp;Where&nbsp;is&nbsp;this&nbsp;used?&nbsp;should&nbsp;it&nbsp;be&nbsp;registered&nbsp;somewhere&nbsp;with&nbsp;urllib2?<br>
+<td colspan=2><tt>xxx,&nbsp;bvb:&nbsp;Where&nbsp;is&nbsp;this&nbsp;used?&nbsp;should&nbsp;it&nbsp;be&nbsp;registered&nbsp;somewhere&nbsp;with&nbsp;urllib2?<br>
 &nbsp;<br>
 Handles&nbsp;HTTP&nbsp;Error,&nbsp;currently&nbsp;only&nbsp;503.<br>&nbsp;</tt></td></tr>
 <tr><td>&nbsp;</td>
@@ -387,7 +371,7 @@ Data and other attributes defined here:<br>
 <td colspan=2><tt>Post&nbsp;object,&nbsp;contains&nbsp;href,&nbsp;description,&nbsp;hash,&nbsp;dt,&nbsp;tags,<br>
 extended,&nbsp;user,&nbsp;count(,&nbsp;shared).<br>
 &nbsp;<br>
-@xxx:bvb:&nbsp;Is&nbsp;this&nbsp;needed?&nbsp;Right&nbsp;now&nbsp;this&nbsp;is&nbsp;superfluous,<br>&nbsp;</tt></td></tr>
+xxx,&nbsp;bvb:&nbsp;Not&nbsp;used&nbsp;in&nbsp;<a href="#DeliciousAPI">DeliciousAPI</a><br>&nbsp;</tt></td></tr>
 <tr><td>&nbsp;</td>
 <td width="100%"><dl><dt>Method resolution order:</dt>
 <dd><a href="pydelicious.html#post">post</a></dd>
@@ -484,10 +468,7 @@ v&nbsp;defaults&nbsp;to&nbsp;None.</tt></dl>
 <td colspan=3 valign=bottom>&nbsp;<br>
 <font color="#000000" face="helvetica, arial"><a name="posts">class <strong>posts</strong></a>(<a href="__builtin__.html#list">__builtin__.list</a>)</font></td></tr>
     
-<tr bgcolor="#ffc8d8"><td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
-<td colspan=2><tt>@xxx:bvb:&nbsp;idem&nbsp;as&nbsp;class&nbsp;<a href="#post">post</a>,&nbsp;python&nbsp;structures&nbsp;(<a href="__builtin__.html#dict">dict</a>/<a href="__builtin__.html#list">list</a>)&nbsp;might<br>
-suffice&nbsp;or&nbsp;a&nbsp;more&nbsp;generic&nbsp;solution&nbsp;is&nbsp;needed.<br>&nbsp;</tt></td></tr>
-<tr><td>&nbsp;</td>
+<tr><td bgcolor="#ffc8d8"><tt>&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
 <td width="100%"><dl><dt>Method resolution order:</dt>
 <dd><a href="pydelicious.html#posts">posts</a></dd>
 <dd><a href="__builtin__.html#list">__builtin__.list</a></dd>
@@ -602,10 +583,10 @@ requires&nbsp;user(name)&nbsp;and&nbsp;passwd</tt></dd></dl>
 This&nbsp;implements&nbsp;a&nbsp;minimum&nbsp;interval&nbsp;between&nbsp;calls&nbsp;to&nbsp;avoid<br>
 throttling.&nbsp;[#]_&nbsp;Use&nbsp;param&nbsp;'throttle'&nbsp;to&nbsp;turn&nbsp;this&nbsp;behaviour&nbsp;off.<br>
 &nbsp;<br>
-@todo:&nbsp;back&nbsp;off&nbsp;on&nbsp;503's&nbsp;(HTTPError,&nbsp;URLError?&nbsp;@todo:&nbsp;testing).<br>
+todo:&nbsp;back&nbsp;off&nbsp;on&nbsp;503's&nbsp;(HTTPError,&nbsp;URLError?&nbsp;testing<br>
 &nbsp;<br>
 Returned&nbsp;XML&nbsp;does&nbsp;not&nbsp;always&nbsp;correspond&nbsp;with&nbsp;given&nbsp;del.icio.us&nbsp;examples<br>
-@todo:&nbsp;(cf.&nbsp;help/api/...&nbsp;and&nbsp;<a href="#post">post</a>'s&nbsp;attributes)<br>
+[#]_.<br>
 &nbsp;<br>
 ..&nbsp;[#]&nbsp;<a href="http://del.icio.us/help/api/">http://del.icio.us/help/api/</a></tt></dd></dl>
  <dl><dt><a name="-dlcs_parse_xml"><strong>dlcs_parse_xml</strong></a>(data, split_tags<font color="#909090">=False</font>)</dt><dd><tt>Parse&nbsp;any&nbsp;del.icio.us&nbsp;XML&nbsp;document&nbsp;and&nbsp;return&nbsp;Python&nbsp;data&nbsp;structure.<br>
@@ -618,11 +599,11 @@ Returned&nbsp;instance&nbsp;is&nbsp;always&nbsp;a&nbsp;dictionary.&nbsp;Examples
 &nbsp;{'<a href="#posts">posts</a>':&nbsp;[{'url':'...','hash':'...',},],}<br>
 &nbsp;{'tags':['tag1',&nbsp;'tag2',]}<br>
 &nbsp;{'dates':&nbsp;[{'count':'...','date':'...'},],&nbsp;'tag':'',&nbsp;'user':'...'}<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{'result':(True,&nbsp;"done")}<br>
+&nbsp;{'result':(True,&nbsp;"done")}<br>
 &nbsp;#&nbsp;etcetera.</tt></dd></dl>
  <dl><dt><a name="-dlcs_rss_request"><strong>dlcs_rss_request</strong></a>(tag<font color="#909090">=''</font>, popular<font color="#909090">=0</font>, user<font color="#909090">=''</font>, url<font color="#909090">=''</font>)</dt><dd><tt>Handle&nbsp;a&nbsp;request&nbsp;for&nbsp;RSS<br>
 &nbsp;<br>
-@todo:&nbsp;translate&nbsp;from&nbsp;German<br>
+todo:&nbsp;translate&nbsp;from&nbsp;German<br>
 &nbsp;<br>
 rss&nbsp;sollte&nbsp;nun&nbsp;wieder&nbsp;funktionieren,&nbsp;aber&nbsp;diese&nbsp;try,&nbsp;except&nbsp;scheisse&nbsp;ist&nbsp;so&nbsp;nicht&nbsp;schoen<br>
 &nbsp;<br>
@@ -635,9 +616,9 @@ zwischen&nbsp;daten&nbsp;(url,&nbsp;desc,&nbsp;ext,&nbsp;usw)&nbsp;und&nbsp;dem&
  <dl><dt><a name="-get_tags"><strong>get_tags</strong></a>(user, passwd)</dt></dl>
  <dl><dt><a name="-get_urlposts"><strong>get_urlposts</strong></a>(url)</dt></dl>
  <dl><dt><a name="-get_userposts"><strong>get_userposts</strong></a>(user)</dt></dl>
- <dl><dt><a name="-getrss"><strong>getrss</strong></a>(tag<font color="#909090">=''</font>, popular<font color="#909090">=0</font>, url<font color="#909090">=''</font>, user<font color="#909090">=''</font>)</dt><dd><tt>get&nbsp;<a href="#posts">posts</a>&nbsp;from&nbsp;del.icio.us&nbsp;via&nbsp;parsing&nbsp;RSS&nbsp;@bvb[or&nbsp;HTML]<br>
+ <dl><dt><a name="-getrss"><strong>getrss</strong></a>(tag<font color="#909090">=''</font>, popular<font color="#909090">=0</font>, url<font color="#909090">=''</font>, user<font color="#909090">=''</font>)</dt><dd><tt>get&nbsp;<a href="#posts">posts</a>&nbsp;from&nbsp;del.icio.us&nbsp;via&nbsp;parsing&nbsp;RSS&nbsp;(bvb:or&nbsp;HTML)<br>
 &nbsp;<br>
-&nbsp;&nbsp;&nbsp;&nbsp;@bvb[not&nbsp;tested]<br>
+todo:&nbsp;not&nbsp;tested<br>
 &nbsp;<br>
 tag&nbsp;(opt)&nbsp;sort&nbsp;by&nbsp;tag<br>
 popular&nbsp;(opt)&nbsp;look&nbsp;for&nbsp;the&nbsp;popular&nbsp;stuff<br>

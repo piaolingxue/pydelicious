@@ -10,14 +10,14 @@
   >>> a.tags_get() # Same as:
   >>> a.request('tags/get', )
 
-  Or by calling the 'convenience' methods on the module.
+  Or by calling one of the methods on the module:
 
-  - def add(user, passwd, url, description, tags = "", extended = "", dt = "", replace="no"):
-  - def get(user, passwd, tag="", dt="",  count = 0):
-  - def get_all(user, passwd, tag = ""):
-  - def delete(user, passwd, url):
-  - def rename_tag(user, passwd, oldtag, newtag):
-  - def get_tags(user, passwd):
+  - add(user, passwd, url, description, tags = "", extended = "", dt = "", replace="no")
+  - get(user, passwd, tag="", dt="",  count = 0)
+  - get_all(user, passwd, tag = "")
+  - delete(user, passwd, url)
+  - rename_tag(user, passwd, oldtag, newtag)
+  - get_tags(user, passwd)
 
   >>> a = apiNew(user, passwd)
   >>> a.posts_add(url="http://my.com/", desciption="my.com", extended="the url is my.moc", tags="my com")
@@ -44,43 +44,27 @@ def get_popular(tag = ""):
 :License: pydelicious is released under the BSD license. See 'license.txt'
  for more informations.
 
-:berend:
+:todo, bvb:
  - Rewriting comments to english. More documentation, examples.
  - Added JSON-like return values for XML data (del.icio.us also serves some JSON...)
  - better error/exception classes and handling, work in progress.
- - Encoding seems to be working (using UTF-8 here).
 
-:@todo:
+:todo:
  - Source code SHOULD BE ASCII!
  - More tests.
+ - handling different encodings, what, how?
+   >>> pydelicious.getrss(tag="t[a]g")
+   url: http://del.icio.us/rss/tag/t[a]g
  - Parse datetimes in XML.
- - Salvage and test RSS functionality?
- - Setup not used, Still works? Should setup.py be tested?
+ - Test RSS functionality? HTML scraping doesn't work yet?
  - API functions need required argument checks.
-
- * lizense einbinden und auch via setup.py verteilen
- * readme auch schreiben und via setup.py verteilen
- * auch auf anderen systemen testen (linux -> uni)
- * automatisch releases bauen lassen, richtig benennen und in das
-   richtige verzeichnis verschieben.
- * was k[o]nnen die anderen librarys denn noch so? (ruby, java, perl, etc)
- * was wollen die, die es benutzen?
- * wof[u]r k[o]nnte ich es benutzen?
- * entschlacken?
+ - interesting functionality in other libraries (ruby, java, perl, etc)?
+ - what is pydelicious used for?
+ - license, readme docs via setup.py verdelen?
+ - automatic releas build
 
 :done:
  * Refactored the API class, much cleaner now and functions dlcs_api_request, dlcs_parse_xml are available for who wants them.
- * stimmt das so? muss eher noch t[a]g str2utf8 konvertieren
-   >>> pydelicious.getrss(tag="t[a]g")
-   url: http://del.icio.us/rss/tag/t[a]g
- * requester muss eine sekunde warten
- * __init__.py gibt die funktionen weiter
- * html parser funktioniert noch nicht, gar nicht
- * alte funktionen fehlen, get_posts_by_url, etc.
- * post funktion erstellen, die auch die fehlenden attribs addiert.
- * die api muss ich noch weiter machen
- * requester muss die 503er abfangen
- * rss parser muss auf viele m[o]glichkeiten angepasst werden
 """
 import sys
 import os
@@ -184,11 +168,11 @@ class PyDeliciousException(Exception):
     pass
 
 class DeliciousError(Exception):
-	"""Raised when the server responds with a negative answer"""
+    """Raised when the server responds with a negative answer"""
 
 
 class DefaultErrorHandler(urllib2.HTTPDefaultErrorHandler):
-    '''@xxx:bvb: Where is this used? should it be registered somewhere with urllib2?
+    '''xxx, bvb: Where is this used? should it be registered somewhere with urllib2?
 
     Handles HTTP Error, currently only 503.
     '''
@@ -200,10 +184,10 @@ class post(dict):
     """Post object, contains href, description, hash, dt, tags,
     extended, user, count(, shared).
 
-    @xxx:bvb: Is this needed? Right now this is superfluous,
+    xxx, bvb: Not used in DeliciousAPI
     """
-    def __init__(self, href = "", description = "", hash = "", time = "", tag = "", extended = "", user = "", count = "",
-                 tags = "", url = "", dt = ""): # tags or tag?
+    def __init__(self, href="", description="", hash="", time="", tag="", extended="", user="", count="",
+                 tags="", url="", dt=""): # tags or tag?
         self["href"] = href
         if url != "": self["href"] = url
         self["description"] = description
@@ -222,9 +206,6 @@ class post(dict):
 
 
 class posts(list):
-    """@xxx:bvb: idem as class post, python structures (dict/list) might
-    suffice or a more generic solution is needed.
-    """
     def __init__(self, *args):
         for i in args: self.append(i)
 
@@ -280,13 +261,13 @@ def http_request(url, user_agent=USER_AGENT, retry=4):
             raise PyDeliciousException, "%s" % e
 
         except urllib2.URLError, e:
-            # @xxx: Ugly check for time-out errors
-			#if len(e)>0 and 'timed out' in arg[0]:
-			print >> sys.stderr, "%s, %s tries left." % (e, tries)
-			Waiter()
-			tries = tries - 1
-			#else:
-			#	tries = None
+            # xxx: Ugly check for time-out errors
+            #if len(e)>0 and 'timed out' in arg[0]:
+            print >> sys.stderr, "%s, %s tries left." % (e, tries)
+            Waiter()
+            tries = tries - 1
+            #else:
+            #	tries = None
 
     # Give up
     raise PyDeliciousException, \
@@ -312,10 +293,10 @@ def dlcs_api_request(path, params='', user='', passwd='', throttle=True):
     This implements a minimum interval between calls to avoid
     throttling. [#]_ Use param 'throttle' to turn this behaviour off.
 
-    @todo: back off on 503's (HTTPError, URLError? @todo: testing).
+    todo: back off on 503's (HTTPError, URLError? testing
 
     Returned XML does not always correspond with given del.icio.us examples
-    @todo: (cf. help/api/... and post's attributes)
+    [#]_.
 
     .. [#] http://del.icio.us/help/api/
     """
@@ -333,7 +314,7 @@ def dlcs_api_request(path, params='', user='', passwd='', throttle=True):
     try:
         return http_auth_request(url, DLCS_API_HOST, user, passwd, USER_AGENT)
 
-    # @bvb: Is this ever raised? When?
+    # bvb: Is this ever raised? When?
     except DefaultErrorHandler, e:
         print >>sys.stderr, "%s" % e
 
@@ -348,7 +329,7 @@ def dlcs_parse_xml(data, split_tags=False):
      {'posts': [{'url':'...','hash':'...',},],}
      {'tags':['tag1', 'tag2',]}
      {'dates': [{'count':'...','date':'...'},], 'tag':'', 'user':'...'}
-	 {'result':(True, "done")}
+     {'result':(True, "done")}
      # etcetera.
     """
 
@@ -361,7 +342,7 @@ def dlcs_parse_xml(data, split_tags=False):
     root = doc.getroot()
     fmt = root.tag
 
-	# Split up into three cases: Data, Result or Update
+    # Split up into three cases: Data, Result or Update
     if fmt in ('tags', 'posts', 'dates', 'bundles'):
 
         # Data: expect a list of data elements, 'resources'.
@@ -386,7 +367,7 @@ def dlcs_parse_xml(data, split_tags=False):
         else:
             msg = root.text
 
-		# Return {'result':(True, msg)} for /known/ O.K. messages,
+        # Return {'result':(True, msg)} for /known/ O.K. messages,
         # use (False, msg) otherwise
         v = msg in DLCS_OK_MESSAGES
         return {fmt: (v, msg)}
@@ -395,7 +376,7 @@ def dlcs_parse_xml(data, split_tags=False):
 
         # Update: "time"
         #return {fmt: root.attrib}
-		return {fmt: {'time':time.strptime(root.attrib['time'], ISO_8601_DATETIME)}}
+        return {fmt: {'time':time.strptime(root.attrib['time'], ISO_8601_DATETIME)}}
 
     else:
         raise PyDeliciousException, "Unknown XML document format '%s'" % fmt
@@ -403,7 +384,7 @@ def dlcs_parse_xml(data, split_tags=False):
 def dlcs_rss_request(tag = "", popular = 0, user = "", url = ''):
     """Handle a request for RSS
 
-    @todo: translate from German
+    todo: translate from German
 
     rss sollte nun wieder funktionieren, aber diese try, except scheisse ist so nicht schoen
 
@@ -468,10 +449,10 @@ def dlcs_rss_request(tag = "", popular = 0, user = "", url = ''):
             user = e['author']
         else:
             user = ""
-#  time = dt ist weist auf ein problem hin
-# die benennung der variablen ist nicht einheitlich
-#  api senden und
-#  xml bekommen sind zwei verschiedene schuhe :(
+        #  time = dt ist weist auf ein problem hin
+        # die benennung der variablen ist nicht einheitlich
+        #  api senden und
+        #  xml bekommen sind zwei verschiedene schuhe :(
         l.append(post(url = url, description = description, tags = tags, dt = dt, extended = extended, user = user))
     return l
 
@@ -551,7 +532,7 @@ class DeliciousAPI:
             fl = self._call_server(path, **params)
             rs = self._parse_response(fl)
 
-			# Raise an error for negative 'result' answers
+            # Raise an error for negative 'result' answers
             if type(rs) == dict and rs == 'result' and not rs['result'][0]:
                 errmsg = ""
                 if len(rs['result'])>0:
@@ -599,7 +580,7 @@ class DeliciousAPI:
         ::
 
             <update time="CCYY-MM-DDThh:mm:ssZ">
-		"""
+        """
         return self.request("posts/update", **kwds)
 
     def posts_dates(self, tag="", **kwds):
@@ -755,7 +736,7 @@ class DeliciousAPI:
 def apiNew(user, passwd):
     """creates a new DeliciousAPI object.
     requires user(name) and passwd
-	"""
+    """
     return DeliciousAPI(user=user, passwd=passwd)
 
 def add(user, passwd, url, description, tags="", extended="", dt="", replace="no"):
@@ -779,17 +760,17 @@ def get_tags(user, passwd):
     return apiNew(user=user, passwd=passwd).tags_get()
 
 
-### RSS functions @bvb: still working...?
+### RSS functions bvb: still working...?
 def getrss(tag="", popular=0, url='', user=""):
-    """get posts from del.icio.us via parsing RSS @bvb[or HTML]
+    """get posts from del.icio.us via parsing RSS (bvb:or HTML)
 
-	@bvb[not tested]
+    todo: not tested
 
     tag (opt) sort by tag
     popular (opt) look for the popular stuff
     user (opt) get the posts by a user, this striks popular
     url (opt) get the posts by url
-	"""
+    """
     return dlcs_rss_request(tag=tag, popular=popular, user=user, url=url)
 
 def get_userposts(user):
@@ -805,7 +786,7 @@ def get_popular(tag = ""):
     return getrss(tag = tag, popular = 1)
 
 
-### @TODO: implement JSON fetching
+### TODO: implement JSON fetching
 def json_posts(user, count=15):
     """http://del.icio.us/feeds/json/mpe
     http://del.icio.us/feeds/json/mpe/art+history

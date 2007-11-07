@@ -40,7 +40,7 @@ password.
 
 Limitation
 ----------
-- Bundle sizes are restricted by the maximum URL size [@xxx:length?], the
+- Bundle sizes are restricted by the maximum URL size [xxx:length?], the
   del.icio.us interface allows bigger bundles.
 
 Integration
@@ -78,9 +78,9 @@ import pydelicious
 from pydelicious import DeliciousAPI, dlcs_parse_xml, PyDeliciousException
 
 try:
-    # @bvb: simplejson thinks it should be different and deprecated read()
+    # bvb: simplejson thinks it should be different and deprecated read()
     # and write() not sure why...
-    # @XXX: simplejson has UTF-8 default, json uses ASCII I think?
+    # XXX: simplejson has UTF-8 default, json uses ASCII I think?
     from simplejson import dumps as jsonwrite, loads as jsonread
 except:
     try:
@@ -360,7 +360,7 @@ def stats(conf, dlcs, **opts):
     posts = cached_posts(conf, dlcs, opts['keep_cache'])
     tags = cached_tags(conf, dlcs, opts['keep_cache'])
 
-    # @TODO: Some more intel gathering on tags would be nice
+    # TODO: Some more intel gathering on tags would be nice
     print "Tags: %s" % len(tags['tags'])
     print "Posts: %s" % len(posts['posts'])
 
@@ -765,7 +765,7 @@ def tags(conf, dlcs, **opts):
     tags = cached_tags(conf, dlcs, opts['keep_cache'])
 
     for tag in tags['tags']:
-        # @XXX: encoding...
+        # XXX: encoding...
         print tag['tag'].encode('utf-8'),
 
 def gettags(conf, dlcs, *tags, **opts):
