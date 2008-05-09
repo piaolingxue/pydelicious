@@ -744,7 +744,7 @@ def add(user, passwd, url, description, tags="", extended="", dt="", replace="no
 
 def get(user, passwd, tag="", dt="",  count = 0):
     posts = apiNew(user, passwd).posts_get(tag=tag,dt=dt)
-    if count != 0: posts = posts[0:count]
+    if count != 0: posts = posts["posts"][0:count]
     return posts
 
 def get_all(user, passwd, tag=""):
