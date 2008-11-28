@@ -62,8 +62,8 @@ pre-dist: doc clean-pyc
 clean-pyc:
 	-find -name '*.pyc' | xargs rm
 
-zip: pydelicious.py Makefile $(RST) $(TRGTS)
-	zip -9 pydelicious-0.5.2-rc1.zip $^
+zip: pydelicious.py Makefile $(RST) $(TRGTS) var/* tests/*
+	zip -9 pydelicious-0.5.2-rc1.zip $^ 
 
 
 # Generic targets
