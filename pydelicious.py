@@ -41,7 +41,7 @@ import feedparser
 
 ### Static config
 
-__version__ = '0.5.0'
+__version__ = '0.5.1'
 __author__ = 'Frank Timmermann <regenkind_at_gmx_dot_de>' # GP: does not respond to emails
 __contributors__ = [
     'Greg Pinero',
@@ -504,6 +504,9 @@ class DeliciousAPI:
                         params[key] = 'yes'
                     else:
                         params[key] = 'no'
+
+                elif isinstance(params[key], int):
+                    params[key] = str(params[key])
 
                 elif not params[key]:
                     del params[key]
