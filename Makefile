@@ -56,6 +56,9 @@ pre-dist: doc clean-pyc
 clean-pyc:
 	-find -name '*.pyc' | xargs rm
 
+zip: pydelicious.py $(TRGTS)
+	zip -9 pydelicious-0.5.1.zip $^
+
 
 # Generic targets
 
