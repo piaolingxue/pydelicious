@@ -4,4 +4,5 @@
     Now raising errors on API failures. API acts silently (when successful).
     Removed post and posts class (will only get back, as needed, in a slightly better form).
     tools/dlcs is not tested and not included in zipped package.
+    Feedparser is now optional.
 
