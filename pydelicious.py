@@ -36,7 +36,10 @@ try:
 except ImportError:
     from  xml.etree.ElementTree import parse as parse_xml
 
-import feedparser
+try:    
+    import feedparser
+except ImportError:
+    feedparser = None
 
 
 ### Static config
@@ -319,6 +322,7 @@ def dlcs_parse_xml(data, split_tags=False):
 def dlcs_rss_request(tag="", popular=0, user="", url=''):
     """Parse a RSS request.
     """
+    assert feedparser
 
     tag = quote_plus(tag)
     user = quote_plus(user)
