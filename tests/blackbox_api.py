@@ -1,9 +1,10 @@
+import os
 import sys
 import time
 import getpass
 import unittest
 
-from pydelicious import DeliciousAPI
+from pydelicious import DeliciousAPI, PyDeliciousException
 
 
 class ApiSystemTest(unittest.TestCase):
@@ -14,61 +15,110 @@ class ApiSystemTest(unittest.TestCase):
 
     def setUpApi(self, codec='latin-1'):
         "Setup API with custom encoding."
-        if usr == '' or pwd == '':
+        global pwd, usr
+        if not (usr or pwd):
             self.api = None;
         else:
             self.creds = usr, pwd
             self.api = DeliciousAPI(usr, pwd, codec)
+            # stat or fail
+            try:
+                self.api.posts_update()
+            except PyDeliciousException, e:
+                sys.exit("Cannot stat server, check credentials (error: %s)" % e)
 
     def setUp(self):
         "Default setUp before each ApiSystemTest testcase"
         return self.setUpApi()
 
+    def assertContains(self, container, object):
+        self.failUnless(object in container, "%s not in %s" %(object, container))
 
 class TestApiCalls(ApiSystemTest):
 
-    """Test wether simply calling stuff goes smoothly
+    """
+    Test only wether calling stuff goes smoothly
     """
 
-    def test_tags_get(self):
-        self.api.tags_get()
+    def test_01_tags_get(self):
+        self.assertEqual( type({}),
+                type( self.api.tags_get() ) )
 
-    def test_tags_rename(self):
-        self.api.tags_rename("tag", "taag")
-        self.api.tags_rename("taag", "tag")
+    def test_02_tags_rename(self):
+        self.assertEqual( type({}),
+                type( self.api.tags_rename("", "") ))
 
-    def test_posts_update(self):
-        self.api.posts_update()
+    def test_03_posts_update(self):
+        self.assertEqual( type({}),
+                type( self.api.posts_update() ))
 
-    def test_posts_dates(self):
-        self.api.posts_dates()
+    def test_04_posts_dates(self):
+        self.assertEqual( type({}),
+                type( self.api.posts_dates() ))
 
-    def test_post_get(self):
-        self.api.posts_get(tag="akjs")
+    def test_05_post_get(self):
+        self.assertEqual( type({}),
+                type( self.api.posts_get(tag="") ))
 
-    def test_posts_recent(self):
-        self.api.posts_recent()
+    def test_06_posts_recent(self):
+        self.assertEqual( type({}),
+                type( self.api.posts_recent() ))
 
-    def test_posts_all(self):
-        self.api.posts_all()
+    def test_07_posts_all(self):
+        self.assertEqual( type({}),
+                type( self.api.posts_all() ))
 
-    def test_posts_add(self):
-        self.api.posts_add("http://url.de/", "desc")
-        self.api.posts_delete("http://url.de/")
+    def test_08_posts_add_remove(self):
+        self.assertEqual( type({}),
+                type( self.api.posts_add("http://sub.dom.tl/", "desc") ))
+        self.assertEqual( type({}),
+                type( self.api.posts_delete("http://sub.dom.tl/") ))
+
+
+# used to store credentials
+DLCS_TESTER = os.path.expanduser('~/.dlcs-tester')
 
 def get_credentials():
-    if len(sys.argv)>1 and sys.argv[1][0:4]=="--p=":
-        user, passwd = sys.argv[1][4:].split(":")
-        if passwd == "":
-            passwd = user
-        sys.argv.pop(1)
-    else:
+    user, passwd = None, None
+
+    if len(sys.argv)>1:
+        _a = iter(sys.argv[1:])
+        while _a:
+            a = _a.next()
+            if a[0] == '-':
+                a = a.lstrip('-')
+
+                if a.startswith('p'):
+                    if '=' in a:
+                        a, passwd = a.split('=')
+                    # XXX: take passwd from cmdline?
+                    else:
+                        passwd = _a.next()
+
+
+                elif a.startswith('u'):
+                    if '=' in a:
+                        a, user = a.split('=')
+                    else:
+                        user = _a.next()
+
+    if not (user or passwd) and os.path.exists(DLCS_TESTER):
+        user, passwd = open(DLCS_TESTER).read().strip().split(',')
+
+    if not user:                        
         print "Enter del.icio.us test account login (hit return to skip API tests)"
         user = raw_input("Username: ")
-        if user:
-            passwd = getpass.getpass("Password for %s: " % user)
-        else:
-            passwd = ""
+
+    if user:
+        if not passwd:            
+            passwd = getpass.getpass("Password required for %s: " % user)
+    
+    if not os.path.exists(DLCS_TESTER):
+        try:
+            open(DLCS_TESTER, 'w+').write("%s,%s" % (user, passwd))
+            os.chmod(0600, DLCS_TESTER)
+        except Exception, e:            
+            print >>sys.stderr,"Unable to save credentials to %s, error: %s" % (DLCS_TESTER, e)
 
     return user, passwd
 

@@ -8,74 +8,27 @@
 <td valign=bottom>&nbsp;<br>
 <font color="#ffffff" face="helvetica, arial">&nbsp;<br><big><big><strong>pydelicious</strong></big></big> (version 0.5.0)</font></td
 ><td align=right valign=bottom
-><font color="#ffffff" face="helvetica, arial"><a href=".">index</a><br><a href="file:/home/berend/src/pydelicious/svn/pydelicious.py">/home/berend/src/pydelicious/svn/pydelicious.py</a></font></td></tr></table>
+><font color="#ffffff" face="helvetica, arial"><a href=".">index</a><br><a href="file:/home/berend/project/pydelicious/trunk/pydelicious.py">/home/berend/project/pydelicious/trunk/pydelicious.py</a></font></td></tr></table>
     <p><tt>Library&nbsp;to&nbsp;access&nbsp;del.icio.us&nbsp;data&nbsp;via&nbsp;Python.<br>
 &nbsp;<br>
-:examples:<br>
+An&nbsp;introduction&nbsp;to&nbsp;the&nbsp;project&nbsp;is&nbsp;given&nbsp;in&nbsp;the&nbsp;README.<br>
+pydelicious&nbsp;is&nbsp;released&nbsp;under&nbsp;the&nbsp;BSD&nbsp;license.&nbsp;See&nbsp;license.txt&nbsp;for&nbsp;details&nbsp;<br>
+and&nbsp;the&nbsp;copyright&nbsp;holders.<br>
 &nbsp;<br>
-&nbsp;&nbsp;Using&nbsp;the&nbsp;API&nbsp;class&nbsp;directly:<br>
+THIS&nbsp;SOFTWARE&nbsp;IS&nbsp;PROVIDED&nbsp;BY&nbsp;THE&nbsp;COPYRIGHT&nbsp;HOLDERS&nbsp;AND&nbsp;CONTRIBUTORS&nbsp;"AS&nbsp;IS"&nbsp;AND<br>
+ANY&nbsp;EXPRESS&nbsp;OR&nbsp;IMPLIED&nbsp;WARRANTIES,&nbsp;INCLUDING,&nbsp;BUT&nbsp;NOT&nbsp;LIMITED&nbsp;TO,&nbsp;THE&nbsp;IMPLIED<br>
+WARRANTIES&nbsp;OF&nbsp;MERCHANTABILITY&nbsp;AND&nbsp;FITNESS&nbsp;FOR&nbsp;A&nbsp;PARTICULAR&nbsp;PURPOSE&nbsp;ARE<br>
+DISCLAIMED.&nbsp;IN&nbsp;NO&nbsp;EVENT&nbsp;SHALL&nbsp;THE&nbsp;COPYRIGHT&nbsp;OWNER&nbsp;OR&nbsp;CONTRIBUTORS&nbsp;BE&nbsp;LIABLE&nbsp;FOR<br>
+ANY&nbsp;DIRECT,&nbsp;INDIRECT,&nbsp;INCIDENTAL,&nbsp;SPECIAL,&nbsp;EXEMPLARY,&nbsp;OR&nbsp;CONSEQUENTIAL&nbsp;DAMAGES<br>
+(INCLUDING,&nbsp;BUT&nbsp;NOT&nbsp;LIMITED&nbsp;TO,&nbsp;PROCUREMENT&nbsp;OF&nbsp;SUBSTITUTE&nbsp;GOODS&nbsp;OR&nbsp;SERVICES;<br>
+LOSS&nbsp;OF&nbsp;USE,&nbsp;DATA,&nbsp;OR&nbsp;PROFITS;&nbsp;OR&nbsp;BUSINESS&nbsp;INTERRUPTION)&nbsp;HOWEVER&nbsp;CAUSED&nbsp;AND&nbsp;ON<br>
+ANY&nbsp;THEORY&nbsp;OF&nbsp;LIABILITY,&nbsp;WHETHER&nbsp;IN&nbsp;CONTRACT,&nbsp;STRICT&nbsp;LIABILITY,&nbsp;OR&nbsp;TORT<br>
+(INCLUDING&nbsp;NEGLIGENCE&nbsp;OR&nbsp;OTHERWISE)&nbsp;ARISING&nbsp;IN&nbsp;ANY&nbsp;WAY&nbsp;OUT&nbsp;OF&nbsp;THE&nbsp;USE&nbsp;OF&nbsp;THIS<br>
+SOFTWARE,&nbsp;EVEN&nbsp;IF&nbsp;ADVISED&nbsp;OF&nbsp;THE&nbsp;POSSIBILITY&nbsp;OF&nbsp;SUCH&nbsp;DAMAGE.<br>
 &nbsp;<br>
-&nbsp;&nbsp;&gt;&gt;&gt;&nbsp;a&nbsp;=&nbsp;pydelicious.<a href="#-apiNew">apiNew</a>('user',&nbsp;'passwd')<br>
-&nbsp;&nbsp;&gt;&gt;&gt;&nbsp;#&nbsp;or:<br>
-&nbsp;&nbsp;&gt;&gt;&gt;&nbsp;a&nbsp;=&nbsp;<a href="#DeliciousAPI">DeliciousAPI</a>('user',&nbsp;'passwd')<br>
-&nbsp;&nbsp;&gt;&gt;&gt;&nbsp;a.tags_get()&nbsp;#&nbsp;Same&nbsp;as:<br>
-&nbsp;&nbsp;&gt;&gt;&gt;&nbsp;a.request('tags/get',&nbsp;)<br>
-&nbsp;<br>
-&nbsp;&nbsp;Or&nbsp;by&nbsp;calling&nbsp;one&nbsp;of&nbsp;the&nbsp;methods&nbsp;on&nbsp;the&nbsp;module:<br>
-&nbsp;<br>
-&nbsp;&nbsp;-&nbsp;<a href="#-add">add</a>(user,&nbsp;passwd,&nbsp;url,&nbsp;description,&nbsp;tags&nbsp;=&nbsp;"",&nbsp;extended&nbsp;=&nbsp;"",&nbsp;dt&nbsp;=&nbsp;"",&nbsp;replace="no")<br>
-&nbsp;&nbsp;-&nbsp;<a href="#-get">get</a>(user,&nbsp;passwd,&nbsp;tag="",&nbsp;dt="",&nbsp;&nbsp;count&nbsp;=&nbsp;0)<br>
-&nbsp;&nbsp;-&nbsp;<a href="#-get_all">get_all</a>(user,&nbsp;passwd,&nbsp;tag&nbsp;=&nbsp;"")<br>
-&nbsp;&nbsp;-&nbsp;<a href="#-delete">delete</a>(user,&nbsp;passwd,&nbsp;url)<br>
-&nbsp;&nbsp;-&nbsp;<a href="#-rename_tag">rename_tag</a>(user,&nbsp;passwd,&nbsp;oldtag,&nbsp;newtag)<br>
-&nbsp;&nbsp;-&nbsp;<a href="#-get_tags">get_tags</a>(user,&nbsp;passwd)<br>
-&nbsp;<br>
-&nbsp;&nbsp;&gt;&gt;&gt;&nbsp;a&nbsp;=&nbsp;<a href="#-apiNew">apiNew</a>(user,&nbsp;passwd)<br>
-&nbsp;&nbsp;&gt;&gt;&gt;&nbsp;a.posts_add(url="<a href="http://my.com/">http://my.com/</a>",&nbsp;desciption="my.com",&nbsp;extended="the&nbsp;url&nbsp;is&nbsp;my.moc",&nbsp;tags="my&nbsp;com")<br>
-&nbsp;&nbsp;True<br>
-&nbsp;&nbsp;&gt;&gt;&gt;&nbsp;len(a.posts_all())<br>
-&nbsp;&nbsp;1<br>
-&nbsp;&nbsp;&gt;&gt;&gt;&nbsp;<a href="#-get_all">get_all</a>(user,&nbsp;passwd)<br>
-&nbsp;&nbsp;1<br>
-&nbsp;<br>
-&nbsp;&nbsp;This&nbsp;are&nbsp;short&nbsp;functions&nbsp;for&nbsp;getrss&nbsp;calls.<br>
-&nbsp;<br>
-&nbsp;&nbsp;&gt;&gt;&gt;&nbsp;rss_<br>
-&nbsp;<br>
-def&nbsp;<a href="#-get_userposts">get_userposts</a>(user):<br>
-def&nbsp;<a href="#-get_tagposts">get_tagposts</a>(tag):<br>
-def&nbsp;<a href="#-get_urlposts">get_urlposts</a>(url):<br>
-def&nbsp;<a href="#-get_popular">get_popular</a>(tag&nbsp;=&nbsp;""):<br>
-&nbsp;<br>
-&nbsp;&nbsp;&gt;&gt;&gt;&nbsp;<a href="#-json_posts">json_posts</a>()<br>
-&nbsp;&nbsp;&gt;&gt;&gt;&nbsp;<a href="#-json_tags">json_tags</a>()<br>
-&nbsp;&nbsp;&gt;&gt;&gt;&nbsp;<a href="#-json_network">json_network</a>()<br>
-&nbsp;&nbsp;&gt;&gt;&gt;&nbsp;<a href="#-json_fans">json_fans</a>()<br>
-&nbsp;<br>
-:License:&nbsp;pydelicious&nbsp;is&nbsp;released&nbsp;under&nbsp;the&nbsp;BSD&nbsp;license.&nbsp;See&nbsp;'license.txt'<br>
-&nbsp;for&nbsp;more&nbsp;informations.<br>
-&nbsp;<br>
-:todo,&nbsp;bvb:<br>
-&nbsp;-&nbsp;Rewriting&nbsp;comments&nbsp;to&nbsp;english.&nbsp;More&nbsp;documentation,&nbsp;examples.<br>
-&nbsp;-&nbsp;Added&nbsp;JSON-like&nbsp;return&nbsp;values&nbsp;for&nbsp;XML&nbsp;data&nbsp;(del.icio.us&nbsp;also&nbsp;serves&nbsp;some&nbsp;JSON...)<br>
-&nbsp;-&nbsp;better&nbsp;error/exception&nbsp;classes&nbsp;and&nbsp;handling,&nbsp;work&nbsp;in&nbsp;progress.<br>
-&nbsp;<br>
-:todo:<br>
-&nbsp;-&nbsp;Source&nbsp;code&nbsp;SHOULD&nbsp;BE&nbsp;ASCII!<br>
-&nbsp;-&nbsp;More&nbsp;tests.<br>
-&nbsp;-&nbsp;handling&nbsp;different&nbsp;encodings,&nbsp;what,&nbsp;how?<br>
-&nbsp;&nbsp;&nbsp;&gt;&gt;&gt;&nbsp;pydelicious.<a href="#-getrss">getrss</a>(tag="t[a]g")<br>
-&nbsp;&nbsp;&nbsp;url:&nbsp;<a href="http://del.icio.us/rss/tag/t[a]g">http://del.icio.us/rss/tag/t[a]g</a><br>
-&nbsp;-&nbsp;Parse&nbsp;datetimes&nbsp;in&nbsp;XML.<br>
-&nbsp;-&nbsp;Test&nbsp;RSS&nbsp;functionality?&nbsp;HTML&nbsp;scraping&nbsp;doesn't&nbsp;work&nbsp;yet?<br>
-&nbsp;-&nbsp;API&nbsp;functions&nbsp;need&nbsp;required&nbsp;argument&nbsp;checks.<br>
-&nbsp;-&nbsp;interesting&nbsp;functionality&nbsp;in&nbsp;other&nbsp;libraries&nbsp;(ruby,&nbsp;java,&nbsp;perl,&nbsp;etc)?<br>
-&nbsp;-&nbsp;what&nbsp;is&nbsp;pydelicious&nbsp;used&nbsp;for?<br>
-&nbsp;-&nbsp;license,&nbsp;readme&nbsp;docs&nbsp;via&nbsp;setup.py&nbsp;verdelen?<br>
-&nbsp;-&nbsp;automatic&nbsp;releas&nbsp;build<br>
-&nbsp;<br>
-:done:<br>
-&nbsp;*&nbsp;Refactored&nbsp;the&nbsp;API&nbsp;class,&nbsp;much&nbsp;cleaner&nbsp;now&nbsp;and&nbsp;functions&nbsp;dlcs_api_request,&nbsp;dlcs_parse_xml&nbsp;are&nbsp;available&nbsp;for&nbsp;who&nbsp;wants&nbsp;them.</tt></p>
+TODO:<br>
+&nbsp;-&nbsp;distribute&nbsp;license,&nbsp;readme&nbsp;docs&nbsp;via&nbsp;setup.py?<br>
+&nbsp;-&nbsp;automatic&nbsp;releas&nbsp;build</tt></p>
 <p>
 <table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
 <tr bgcolor="#aa55cc">
@@ -86,12 +39,12 @@ def&nbsp;<a href="#-get_popular">get_popular</a>(tag&nbsp;=&nbsp;""):<br>
 <td width="100%"><table width="100%" summary="list"><tr><td width="25%" valign=top><a href="datetime.html">datetime</a><br>
 <a href="feedparser.html">feedparser</a><br>
 <a href="httplib.html">httplib</a><br>
-</td><td width="25%" valign=top><a href="md5.html">md5</a><br>
+</td><td width="25%" valign=top><a href="locale.html">locale</a><br>
+<a href="md5.html">md5</a><br>
 <a href="os.html">os</a><br>
-<a href="socket.html">socket</a><br>
-</td><td width="25%" valign=top><a href="sys.html">sys</a><br>
+</td><td width="25%" valign=top><a href="socket.html">socket</a><br>
+<a href="sys.html">sys</a><br>
 <a href="time.html">time</a><br>
-<a href="urllib.html">urllib</a><br>
 </td><td width="25%" valign=top><a href="urllib2.html">urllib2</a><br>
 </td></tr></table></td></tr></table><p>
 <table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
@@ -101,23 +54,16 @@ def&nbsp;<a href="#-get_popular">get_popular</a>(tag&nbsp;=&nbsp;""):<br>
     
 <tr><td bgcolor="#ee77aa"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
 <td width="100%"><dl>
-<dt><font face="helvetica, arial"><a href="__builtin__.html#dict">__builtin__.dict</a>(<a href="__builtin__.html#object">__builtin__.object</a>)
-</font></dt><dd>
-<dl>
-<dt><font face="helvetica, arial"><a href="pydelicious.html#post">post</a>
-</font></dt></dl>
-</dd>
-<dt><font face="helvetica, arial"><a href="__builtin__.html#list">__builtin__.list</a>(<a href="__builtin__.html#object">__builtin__.object</a>)
-</font></dt><dd>
-<dl>
-<dt><font face="helvetica, arial"><a href="pydelicious.html#posts">posts</a>
-</font></dt></dl>
-</dd>
 <dt><font face="helvetica, arial"><a href="exceptions.html#Exception">exceptions.Exception</a>
 </font></dt><dd>
 <dl>
 <dt><font face="helvetica, arial"><a href="pydelicious.html#DeliciousError">DeliciousError</a>
-</font></dt><dt><font face="helvetica, arial"><a href="pydelicious.html#PyDeliciousException">PyDeliciousException</a>
+</font></dt><dd>
+<dl>
+<dt><font face="helvetica, arial"><a href="pydelicious.html#DeliciousItemExistsError">DeliciousItemExistsError</a>
+</font></dt></dl>
+</dd>
+<dt><font face="helvetica, arial"><a href="pydelicious.html#PyDeliciousException">PyDeliciousException</a>
 </font></dt></dl>
 </dd>
 <dt><font face="helvetica, arial"><a href="pydelicious.html#DeliciousAPI">DeliciousAPI</a>
@@ -135,7 +81,8 @@ def&nbsp;<a href="#-get_popular">get_popular</a>(tag&nbsp;=&nbsp;""):<br>
 <font color="#000000" face="helvetica, arial"><a name="DefaultErrorHandler">class <strong>DefaultErrorHandler</strong></a>(<a href="urllib2.html#HTTPDefaultErrorHandler">urllib2.HTTPDefaultErrorHandler</a>)</font></td></tr>
     
 <tr bgcolor="#ffc8d8"><td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
-<td colspan=2><tt>xxx,&nbsp;bvb:&nbsp;Where&nbsp;is&nbsp;this&nbsp;used?&nbsp;should&nbsp;it&nbsp;be&nbsp;registered&nbsp;somewhere&nbsp;with&nbsp;urllib2?<br>
+<td colspan=2><tt>xxx,&nbsp;bvb:&nbsp;Where&nbsp;is&nbsp;this&nbsp;used?&nbsp;should&nbsp;it&nbsp;be&nbsp;registered&nbsp;somewhere&nbsp;with&nbsp;<br>
+urllib2?<br>
 &nbsp;<br>
 Handles&nbsp;HTTP&nbsp;Error,&nbsp;currently&nbsp;only&nbsp;503.<br>&nbsp;</tt></td></tr>
 <tr><td>&nbsp;</td>
@@ -174,21 +121,27 @@ Data and other attributes inherited from <a href="urllib2.html#BaseHandler">urll
 <td colspan=2><tt>Class&nbsp;providing&nbsp;main&nbsp;interace&nbsp;to&nbsp;del.icio.us&nbsp;API.<br>
 &nbsp;<br>
 Methods&nbsp;``request``&nbsp;and&nbsp;``request_raw``&nbsp;represent&nbsp;the&nbsp;core.&nbsp;For&nbsp;all&nbsp;API<br>
-paths&nbsp;there&nbsp;are&nbsp;furthermore&nbsp;methods&nbsp;(e.g.&nbsp;posts_add&nbsp;for&nbsp;'<a href="#posts">posts</a>/all')&nbsp;with<br>
+paths&nbsp;there&nbsp;are&nbsp;furthermore&nbsp;methods&nbsp;(e.g.&nbsp;posts_add&nbsp;for&nbsp;'posts/all')&nbsp;with<br>
 an&nbsp;explicit&nbsp;declaration&nbsp;of&nbsp;the&nbsp;parameters&nbsp;and&nbsp;documentation.&nbsp;These&nbsp;all&nbsp;call<br>
-``request``&nbsp;and&nbsp;pass&nbsp;on&nbsp;extra&nbsp;keywords&nbsp;like&nbsp;``_raw``.<br>&nbsp;</tt></td></tr>
+``request``&nbsp;and&nbsp;pass&nbsp;on&nbsp;extra&nbsp;keywords&nbsp;like&nbsp;``_raw``&nbsp;(which&nbsp;bypassing<br>
+parsint&nbsp;the&nbsp;result&nbsp;XML).<br>&nbsp;</tt></td></tr>
 <tr><td>&nbsp;</td>
 <td width="100%">Methods defined here:<br>
-<dl><dt><a name="DeliciousAPI-__init__"><strong>__init__</strong></a>(self, user, passwd, codec<font color="#909090">='iso-8859-1'</font>, api_request<font color="#909090">=&lt;function dlcs_api_request&gt;</font>, xml_parser<font color="#909090">=&lt;function dlcs_parse_xml&gt;</font>)</dt><dd><tt>Initialize&nbsp;access&nbsp;to&nbsp;the&nbsp;API&nbsp;with&nbsp;``user``&nbsp;and&nbsp;``passwd``.<br>
+<dl><dt><a name="DeliciousAPI-__init__"><strong>__init__</strong></a>(self, user, passwd, codec<font color="#909090">='UTF-8'</font>, api_request<font color="#909090">=&lt;function dlcs_api_request&gt;</font>, xml_parser<font color="#909090">=&lt;function dlcs_parse_xml&gt;</font>)</dt><dd><tt>Initialize&nbsp;access&nbsp;to&nbsp;the&nbsp;API&nbsp;for&nbsp;``user``&nbsp;with&nbsp;``passwd``.<br>
 &nbsp;<br>
 ``codec``&nbsp;sets&nbsp;the&nbsp;encoding&nbsp;of&nbsp;the&nbsp;arguments.<br>
 &nbsp;<br>
 The&nbsp;``api_request``&nbsp;and&nbsp;``xml_parser``&nbsp;parameters&nbsp;by&nbsp;default&nbsp;point&nbsp;to<br>
 functions&nbsp;within&nbsp;this&nbsp;package&nbsp;with&nbsp;standard&nbsp;implementations&nbsp;to<br>
 request&nbsp;and&nbsp;parse&nbsp;a&nbsp;resource.&nbsp;See&nbsp;``<a href="#-dlcs_api_request">dlcs_api_request</a>()``&nbsp;and<br>
-``<a href="#-dlcs_parse_xml">dlcs_parse_xml</a>()``.&nbsp;Note&nbsp;that&nbsp;``api_request``&nbsp;should&nbsp;return&nbsp;a<br>
-file-like&nbsp;instance&nbsp;with&nbsp;an&nbsp;HTTPMessage&nbsp;instance&nbsp;under&nbsp;``info()``,<br>
-see&nbsp;``urllib2.openurl``&nbsp;for&nbsp;more&nbsp;info.</tt></dd></dl>
+``<a href="#-dlcs_parse_xml">dlcs_parse_xml</a>()``.&nbsp;<br>
+&nbsp;<br>
+Note&nbsp;that&nbsp;``api_request``&nbsp;should&nbsp;return&nbsp;a&nbsp;file-like&nbsp;instance&nbsp;with&nbsp;an&nbsp;<br>
+HTTPMessage&nbsp;instance&nbsp;under&nbsp;``info()``&nbsp;(see&nbsp;``urllib2.openurl``&nbsp;for&nbsp;info).<br>
+The&nbsp;``xml_parser``&nbsp;should&nbsp;return&nbsp;the&nbsp;parsed&nbsp;del.icio.us&nbsp;data&nbsp;that&nbsp;is&nbsp;to<br>
+be&nbsp;returned&nbsp;by&nbsp;API&nbsp;method&nbsp;implementations&nbsp;on&nbsp;this&nbsp;class.</tt></dd></dl>
+
+<dl><dt><a name="DeliciousAPI-__repr__"><strong>__repr__</strong></a>(self)</dt></dl>
 
 <dl><dt><a name="DeliciousAPI-bundles_all"><strong>bundles_all</strong></a>(self, **kwds)</dt><dd><tt>Retrieve&nbsp;user&nbsp;bundles&nbsp;from&nbsp;del.icio.us.<br>
 ::<br>
@@ -209,12 +162,14 @@ settings&nbsp;for&nbsp;bundle.&nbsp;Returns&nbsp;a&nbsp;`result`&nbsp;messages&n
 &amp;bundle&nbsp;(required)<br>
 &nbsp;&nbsp;&nbsp;&nbsp;the&nbsp;bundle&nbsp;name.<br>
 &amp;tags&nbsp;(required)<br>
-&nbsp;&nbsp;&nbsp;&nbsp;<a href="__builtin__.html#list">list</a>&nbsp;of&nbsp;tags&nbsp;(space&nbsp;seperated).</tt></dd></dl>
+&nbsp;&nbsp;&nbsp;&nbsp;list&nbsp;of&nbsp;tags&nbsp;(space&nbsp;seperated).</tt></dd></dl>
 
-<dl><dt><a name="DeliciousAPI-get_url"><strong>get_url</strong></a>(self, url)</dt><dd><tt>Return&nbsp;the&nbsp;del.icio.us&nbsp;url&nbsp;at&nbsp;which&nbsp;the&nbsp;HTML&nbsp;page&nbsp;with&nbsp;<a href="#posts">posts</a>&nbsp;for<br>
+<dl><dt><a name="DeliciousAPI-get_method"><strong>get_method</strong></a>(self, path)</dt></dl>
+
+<dl><dt><a name="DeliciousAPI-get_url"><strong>get_url</strong></a>(self, url)</dt><dd><tt>Return&nbsp;the&nbsp;del.icio.us&nbsp;url&nbsp;at&nbsp;which&nbsp;the&nbsp;HTML&nbsp;page&nbsp;with&nbsp;posts&nbsp;for<br>
 ``url``&nbsp;can&nbsp;be&nbsp;found.</tt></dd></dl>
 
-<dl><dt><a name="DeliciousAPI-posts_add"><strong>posts_add</strong></a>(self, url, description, extended<font color="#909090">=''</font>, tags<font color="#909090">=''</font>, dt<font color="#909090">=''</font>, replace<font color="#909090">='no'</font>, shared<font color="#909090">='yes'</font>, **kwds)</dt><dd><tt>Add&nbsp;a&nbsp;<a href="#post">post</a>&nbsp;to&nbsp;del.icio.us.&nbsp;Returns&nbsp;a&nbsp;`result`&nbsp;message&nbsp;or&nbsp;raises&nbsp;an<br>
+<dl><dt><a name="DeliciousAPI-posts_add"><strong>posts_add</strong></a>(self, url, description, extended<font color="#909090">=''</font>, tags<font color="#909090">=''</font>, dt<font color="#909090">=''</font>, replace<font color="#909090">=False</font>, shared<font color="#909090">=True</font>, **kwds)</dt><dd><tt>Add&nbsp;a&nbsp;post&nbsp;to&nbsp;del.icio.us.&nbsp;Returns&nbsp;a&nbsp;`result`&nbsp;message&nbsp;or&nbsp;raises&nbsp;an<br>
 ``<a href="#DeliciousError">DeliciousError</a>``.&nbsp;See&nbsp;``<a href="#DeliciousAPI-request">request</a>()``.<br>
 &nbsp;<br>
 &amp;url&nbsp;(required)<br>
@@ -228,59 +183,92 @@ settings&nbsp;for&nbsp;bundle.&nbsp;Returns&nbsp;a&nbsp;`result`&nbsp;messages&n
 &amp;dt&nbsp;(optional)<br>
 &nbsp;&nbsp;&nbsp;&nbsp;datestamp&nbsp;of&nbsp;the&nbsp;item&nbsp;(format&nbsp;"CCYY-MM-DDThh:mm:ssZ").<br>
 &nbsp;<br>
-Requires&nbsp;a&nbsp;LITERAL&nbsp;"T"&nbsp;and&nbsp;"Z"&nbsp;like&nbsp;in&nbsp;ISO8601&nbsp;at&nbsp;<a href="http://www.cl.cam.ac.uk/~mgk25/iso-time.html">http://www.cl.cam.ac.uk/~mgk25/iso-time.html</a>&nbsp;for&nbsp;example:&nbsp;"1984-09-01T14:21:31Z"<br>
-&amp;replace=no&nbsp;(optional)&nbsp;-&nbsp;don't&nbsp;replace&nbsp;<a href="#post">post</a>&nbsp;if&nbsp;given&nbsp;url&nbsp;has&nbsp;already&nbsp;been&nbsp;posted.<br>
+Requires&nbsp;a&nbsp;LITERAL&nbsp;"T"&nbsp;and&nbsp;"Z"&nbsp;like&nbsp;in&nbsp;ISO8601&nbsp;at&nbsp;<br>
+<a href="http://www.cl.cam.ac.uk/~mgk25/iso-time.html">http://www.cl.cam.ac.uk/~mgk25/iso-time.html</a>&nbsp;for&nbsp;example:&nbsp;<br>
+"1984-09-01T14:21:31Z"<br>
+&nbsp;<br>
+&amp;replace=no&nbsp;(optional)&nbsp;-&nbsp;don't&nbsp;replace&nbsp;post&nbsp;if&nbsp;given&nbsp;url&nbsp;has&nbsp;already&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;been&nbsp;posted.<br>
 &amp;shared=no&nbsp;(optional)&nbsp;-&nbsp;make&nbsp;the&nbsp;item&nbsp;private</tt></dd></dl>
 
-<dl><dt><a name="DeliciousAPI-posts_all"><strong>posts_all</strong></a>(self, tag<font color="#909090">=''</font>, **kwds)</dt><dd><tt>Returns&nbsp;all&nbsp;<a href="#posts">posts</a>.&nbsp;Please&nbsp;use&nbsp;sparingly.&nbsp;Call&nbsp;the&nbsp;`posts_update`<br>
+<dl><dt><a name="DeliciousAPI-posts_all"><strong>posts_all</strong></a>(self, tag<font color="#909090">=''</font>, start<font color="#909090">=None</font>, results<font color="#909090">=None</font>, fromdt<font color="#909090">=None</font>, todt<font color="#909090">=None</font>, meta<font color="#909090">=True</font>, hashes<font color="#909090">=False</font>, **kwds)</dt><dd><tt>Returns&nbsp;all&nbsp;posts.&nbsp;Please&nbsp;use&nbsp;sparingly.&nbsp;Call&nbsp;the&nbsp;`posts_update`<br>
 method&nbsp;to&nbsp;see&nbsp;if&nbsp;you&nbsp;need&nbsp;to&nbsp;fetch&nbsp;this&nbsp;at&nbsp;all.<br>
 ::<br>
 &nbsp;<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&lt;<a href="#posts">posts</a>&nbsp;tag="..."&nbsp;user="..."&nbsp;update="CCYY-MM-DDThh:mm:ssZ"&gt;<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;<a href="#post">post</a>&nbsp;...&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&lt;posts&nbsp;tag="..."&nbsp;user="..."&nbsp;update="CCYY-MM-DDThh:mm:ssZ"&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;post&nbsp;...&gt;<br>
 &nbsp;<br>
-&amp;tag&nbsp;(optional).<br>
-&nbsp;&nbsp;&nbsp;&nbsp;Filter&nbsp;by&nbsp;this&nbsp;tag.</tt></dd></dl>
+&amp;tag<br>
+&nbsp;&nbsp;&nbsp;&nbsp;(optional)&nbsp;Filter&nbsp;by&nbsp;this&nbsp;tag.<br>
+&amp;start={#}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;(optional)&nbsp;Start&nbsp;returning&nbsp;posts&nbsp;this&nbsp;many&nbsp;results&nbsp;into&nbsp;the&nbsp;set.<br>
+&amp;results={#}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;(optional)&nbsp;Return&nbsp;this&nbsp;many&nbsp;results.<br>
+&amp;fromdt={CCYY-MM-DDThh:mm:ssZ}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;(optional)&nbsp;Filter&nbsp;for&nbsp;posts&nbsp;on&nbsp;this&nbsp;date&nbsp;or&nbsp;later<br>
+&amp;todt={CCYY-MM-DDThh:mm:ssZ}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;(optional)&nbsp;Filter&nbsp;for&nbsp;posts&nbsp;on&nbsp;this&nbsp;date&nbsp;or&nbsp;earlier<br>
+&amp;meta=yes<br>
+&nbsp;&nbsp;&nbsp;&nbsp;(optional)&nbsp;Include&nbsp;change&nbsp;detection&nbsp;signatures&nbsp;on&nbsp;each&nbsp;item&nbsp;in&nbsp;a&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;'meta'&nbsp;attribute.&nbsp;Clients&nbsp;wishing&nbsp;to&nbsp;maintain&nbsp;a&nbsp;synchronized&nbsp;local&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;store&nbsp;of&nbsp;bookmarks&nbsp;should&nbsp;retain&nbsp;the&nbsp;value&nbsp;of&nbsp;this&nbsp;attribute&nbsp;-&nbsp;its&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;value&nbsp;will&nbsp;change&nbsp;when&nbsp;any&nbsp;significant&nbsp;field&nbsp;of&nbsp;the&nbsp;bookmark&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;changes.<br>
+&amp;hashes<br>
+&nbsp;&nbsp;&nbsp;&nbsp;(optional,&nbsp;exclusive)&nbsp;Do&nbsp;not&nbsp;fetch&nbsp;post&nbsp;details&nbsp;but&nbsp;a&nbsp;posts&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;manifest&nbsp;with&nbsp;url-&nbsp;and&nbsp;meta-hashes.&nbsp;Other&nbsp;options&nbsp;do&nbsp;not&nbsp;apply.</tt></dd></dl>
 
-<dl><dt><a name="DeliciousAPI-posts_dates"><strong>posts_dates</strong></a>(self, tag<font color="#909090">=''</font>, **kwds)</dt><dd><tt>Returns&nbsp;a&nbsp;<a href="__builtin__.html#list">list</a>&nbsp;of&nbsp;dates&nbsp;with&nbsp;the&nbsp;number&nbsp;of&nbsp;<a href="#posts">posts</a>&nbsp;at&nbsp;each&nbsp;date.<br>
+<dl><dt><a name="DeliciousAPI-posts_dates"><strong>posts_dates</strong></a>(self, tag<font color="#909090">=''</font>, **kwds)</dt><dd><tt>Returns&nbsp;a&nbsp;list&nbsp;of&nbsp;dates&nbsp;with&nbsp;the&nbsp;number&nbsp;of&nbsp;posts&nbsp;at&nbsp;each&nbsp;date.<br>
 ::<br>
 &nbsp;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&lt;dates&gt;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;date&nbsp;date="CCYY-MM-DD"&nbsp;count="888"&gt;<br>
 &nbsp;<br>
-&amp;tag&nbsp;(optional).<br>
-&nbsp;&nbsp;&nbsp;&nbsp;Filter&nbsp;by&nbsp;this&nbsp;tag.</tt></dd></dl>
+&amp;tag={TAG}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;(optional)&nbsp;Filter&nbsp;by&nbsp;this&nbsp;tag</tt></dd></dl>
 
-<dl><dt><a name="DeliciousAPI-posts_delete"><strong>posts_delete</strong></a>(self, url, **kwds)</dt><dd><tt>Delete&nbsp;a&nbsp;<a href="#post">post</a>&nbsp;from&nbsp;del.icio.us.&nbsp;Returns&nbsp;a&nbsp;`result`&nbsp;message&nbsp;or<br>
+<dl><dt><a name="DeliciousAPI-posts_delete"><strong>posts_delete</strong></a>(self, url, **kwds)</dt><dd><tt>Delete&nbsp;a&nbsp;post&nbsp;from&nbsp;del.icio.us.&nbsp;Returns&nbsp;a&nbsp;`result`&nbsp;message&nbsp;or<br>
 raises&nbsp;an&nbsp;``<a href="#DeliciousError">DeliciousError</a>``.&nbsp;See&nbsp;``<a href="#DeliciousAPI-request">request</a>()``.<br>
 &nbsp;<br>
 &amp;url&nbsp;(required)<br>
 &nbsp;&nbsp;&nbsp;&nbsp;the&nbsp;url&nbsp;of&nbsp;the&nbsp;item.</tt></dd></dl>
 
-<dl><dt><a name="DeliciousAPI-posts_get"><strong>posts_get</strong></a>(self, tag<font color="#909090">=''</font>, dt<font color="#909090">=''</font>, url<font color="#909090">=''</font>, **kwds)</dt><dd><tt>Returns&nbsp;<a href="#posts">posts</a>&nbsp;matching&nbsp;the&nbsp;arguments.&nbsp;If&nbsp;no&nbsp;date&nbsp;or&nbsp;url&nbsp;is&nbsp;given,<br>
+<dl><dt><a name="DeliciousAPI-posts_get"><strong>posts_get</strong></a>(self, tag<font color="#909090">=''</font>, dt<font color="#909090">=''</font>, url<font color="#909090">=''</font>, hashes<font color="#909090">=[]</font>, meta<font color="#909090">=True</font>, **kwds)</dt><dd><tt>Returns&nbsp;posts&nbsp;matching&nbsp;the&nbsp;arguments.&nbsp;If&nbsp;no&nbsp;date&nbsp;or&nbsp;url&nbsp;is&nbsp;given,<br>
 most&nbsp;recent&nbsp;date&nbsp;will&nbsp;be&nbsp;used.<br>
 ::<br>
 &nbsp;<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&lt;<a href="#posts">posts</a>&nbsp;dt="CCYY-MM-DD"&nbsp;tag="..."&nbsp;user="..."&gt;<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;<a href="#post">post</a>&nbsp;...&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&lt;posts&nbsp;dt="CCYY-MM-DD"&nbsp;tag="..."&nbsp;user="..."&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;post&nbsp;...&gt;<br>
 &nbsp;<br>
-&amp;tag&nbsp;(optional).<br>
-&nbsp;&nbsp;&nbsp;&nbsp;Filter&nbsp;by&nbsp;this&nbsp;tag.<br>
-&amp;dt&nbsp;(optional).<br>
-&nbsp;&nbsp;&nbsp;&nbsp;Filter&nbsp;by&nbsp;this&nbsp;date&nbsp;(CCYY-MM-DDThh:mm:ssZ).<br>
-&amp;url&nbsp;(optional).<br>
-&nbsp;&nbsp;&nbsp;&nbsp;Filter&nbsp;by&nbsp;this&nbsp;url.</tt></dd></dl>
+&amp;tag={TAG}+{TAG}+...+{TAG}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;(optional)&nbsp;Filter&nbsp;by&nbsp;this&nbsp;tag.<br>
+&amp;dt={CCYY-MM-DDThh:mm:ssZ}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;(optional)&nbsp;Filter&nbsp;by&nbsp;this&nbsp;date,&nbsp;defaults&nbsp;to&nbsp;the&nbsp;most&nbsp;recent&nbsp;date&nbsp;on<br>
+&nbsp;&nbsp;&nbsp;&nbsp;which&nbsp;bookmarks&nbsp;were&nbsp;saved.<br>
+&amp;url={URL}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;(optional)&nbsp;Fetch&nbsp;a&nbsp;bookmark&nbsp;for&nbsp;this&nbsp;URL,&nbsp;regardless&nbsp;of&nbsp;date.&nbsp;Note:&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Be&nbsp;sure&nbsp;to&nbsp;URL-encode&nbsp;the&nbsp;argument&nbsp;value.<br>
+&amp;hashes={MD5}+{MD5}+...+{MD5}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;(optional)&nbsp;Fetch&nbsp;multiple&nbsp;bookmarks&nbsp;by&nbsp;one&nbsp;or&nbsp;more&nbsp;URL&nbsp;MD5s&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;regardless&nbsp;of&nbsp;date,&nbsp;separated&nbsp;by&nbsp;URL-encoded&nbsp;spaces&nbsp;(ie.&nbsp;'+').<br>
+&amp;meta=yes<br>
+&nbsp;&nbsp;&nbsp;&nbsp;(optional)&nbsp;Include&nbsp;change&nbsp;detection&nbsp;signatures&nbsp;on&nbsp;each&nbsp;item&nbsp;in&nbsp;a&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;'meta'&nbsp;attribute.&nbsp;Clients&nbsp;wishing&nbsp;to&nbsp;maintain&nbsp;a&nbsp;synchronized&nbsp;local&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;store&nbsp;of&nbsp;bookmarks&nbsp;should&nbsp;retain&nbsp;the&nbsp;value&nbsp;of&nbsp;this&nbsp;attribute&nbsp;-&nbsp;its&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;value&nbsp;will&nbsp;change&nbsp;when&nbsp;any&nbsp;significant&nbsp;field&nbsp;of&nbsp;the&nbsp;bookmark&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;changes.</tt></dd></dl>
 
-<dl><dt><a name="DeliciousAPI-posts_recent"><strong>posts_recent</strong></a>(self, tag<font color="#909090">=''</font>, count<font color="#909090">=''</font>, **kwds)</dt><dd><tt>Returns&nbsp;a&nbsp;<a href="__builtin__.html#list">list</a>&nbsp;of&nbsp;the&nbsp;most&nbsp;recent&nbsp;<a href="#posts">posts</a>,&nbsp;filtered&nbsp;by&nbsp;argument.<br>
+<dl><dt><a name="DeliciousAPI-posts_recent"><strong>posts_recent</strong></a>(self, tag<font color="#909090">=''</font>, count<font color="#909090">=''</font>, **kwds)</dt><dd><tt>Returns&nbsp;a&nbsp;list&nbsp;of&nbsp;the&nbsp;most&nbsp;recent&nbsp;posts,&nbsp;filtered&nbsp;by&nbsp;argument.<br>
 ::<br>
 &nbsp;<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&lt;<a href="#posts">posts</a>&nbsp;tag="..."&nbsp;user="..."&gt;<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;<a href="#post">post</a>&nbsp;...&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&lt;posts&nbsp;tag="..."&nbsp;user="..."&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;post&nbsp;...&gt;<br>
 &nbsp;<br>
-&amp;tag&nbsp;(optional).<br>
-&nbsp;&nbsp;&nbsp;&nbsp;Filter&nbsp;by&nbsp;this&nbsp;tag.<br>
-&amp;count&nbsp;(optional).<br>
-&nbsp;&nbsp;&nbsp;&nbsp;Number&nbsp;of&nbsp;items&nbsp;to&nbsp;retrieve&nbsp;(Default:15,&nbsp;Maximum:100).</tt></dd></dl>
+&amp;tag={TAG}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;(optional)&nbsp;Filter&nbsp;by&nbsp;this&nbsp;tag.<br>
+&amp;count={1..100}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;(optional)&nbsp;Number&nbsp;of&nbsp;items&nbsp;to&nbsp;retrieve&nbsp;(Default:15,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Maximum:100).</tt></dd></dl>
 
 <dl><dt><a name="DeliciousAPI-posts_update"><strong>posts_update</strong></a>(self, **kwds)</dt><dd><tt>Returns&nbsp;the&nbsp;last&nbsp;update&nbsp;time&nbsp;for&nbsp;the&nbsp;user.&nbsp;Use&nbsp;this&nbsp;before&nbsp;calling<br>
 `posts_all`&nbsp;to&nbsp;see&nbsp;if&nbsp;the&nbsp;data&nbsp;has&nbsp;changed&nbsp;since&nbsp;the&nbsp;last&nbsp;fetch.<br>
@@ -288,9 +276,9 @@ most&nbsp;recent&nbsp;date&nbsp;will&nbsp;be&nbsp;used.<br>
 &nbsp;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&lt;update&nbsp;time="CCYY-MM-DDThh:mm:ssZ"&gt;</tt></dd></dl>
 
-<dl><dt><a name="DeliciousAPI-request"><strong>request</strong></a>(self, path, _raw<font color="#909090">=False</font>, **params)</dt><dd><tt>Calls&nbsp;a&nbsp;path&nbsp;in&nbsp;the&nbsp;API,&nbsp;parses&nbsp;the&nbsp;answer&nbsp;to&nbsp;a&nbsp;JSON-like&nbsp;structure&nbsp;by<br>
-default.&nbsp;Use&nbsp;with&nbsp;``_raw=True``&nbsp;or&nbsp;``call&nbsp;<a href="#DeliciousAPI-request_raw">request_raw</a>()``&nbsp;directly&nbsp;to<br>
-get&nbsp;the&nbsp;filehandler&nbsp;and&nbsp;process&nbsp;the&nbsp;response&nbsp;message&nbsp;manually.<br>
+<dl><dt><a name="DeliciousAPI-request"><strong>request</strong></a>(self, path, _raw<font color="#909090">=False</font>, **params)</dt><dd><tt>Calls&nbsp;a&nbsp;path&nbsp;in&nbsp;the&nbsp;API,&nbsp;parses&nbsp;the&nbsp;answer&nbsp;to&nbsp;a&nbsp;JSON-like&nbsp;structure<br>
+by&nbsp;default.&nbsp;Use&nbsp;with&nbsp;``_raw=True``&nbsp;or&nbsp;``call&nbsp;<a href="#DeliciousAPI-request_raw">request_raw</a>()``&nbsp;directly&nbsp;<br>
+to&nbsp;get&nbsp;the&nbsp;filehandler&nbsp;and&nbsp;process&nbsp;the&nbsp;response&nbsp;message&nbsp;manually.<br>
 &nbsp;<br>
 Calls&nbsp;to&nbsp;some&nbsp;paths&nbsp;will&nbsp;return&nbsp;a&nbsp;`result`&nbsp;message,&nbsp;i.e.::<br>
 &nbsp;<br>
@@ -300,18 +288,25 @@ or::<br>
 &nbsp;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&lt;result&gt;...&lt;/result&gt;<br>
 &nbsp;<br>
-These&nbsp;are&nbsp;all&nbsp;parsed&nbsp;to&nbsp;``{'result':(Boolean,&nbsp;MessageString)}``&nbsp;and&nbsp;this<br>
-method&nbsp;will&nbsp;raise&nbsp;``<a href="#DeliciousError">DeliciousError</a>``&nbsp;on&nbsp;negative&nbsp;`result`&nbsp;answers.&nbsp;Using<br>
-``_raw=True``&nbsp;bypasses&nbsp;all&nbsp;parsing&nbsp;and&nbsp;will&nbsp;never&nbsp;raise&nbsp;``<a href="#DeliciousError">DeliciousError</a>``.<br>
+These&nbsp;are&nbsp;all&nbsp;parsed&nbsp;to&nbsp;``{'result':(Boolean,&nbsp;MessageString)}``&nbsp;and&nbsp;<br>
+this&nbsp;method&nbsp;will&nbsp;raise&nbsp;``<a href="#DeliciousError">DeliciousError</a>``&nbsp;on&nbsp;negative&nbsp;`result`&nbsp;answers.<br>
+Using&nbsp;``_raw=True``&nbsp;bypasses&nbsp;all&nbsp;parsing&nbsp;and&nbsp;will&nbsp;never&nbsp;raise&nbsp;<br>
+``<a href="#DeliciousError">DeliciousError</a>``.<br>
 &nbsp;<br>
 See&nbsp;``<a href="#-dlcs_parse_xml">dlcs_parse_xml</a>()``&nbsp;and&nbsp;``<a href="#DeliciousAPI-request_raw">request_raw</a>()``.</tt></dd></dl>
 
-<dl><dt><a name="DeliciousAPI-request_raw"><strong>request_raw</strong></a>(self, path, **params)</dt><dd><tt>Calls&nbsp;the&nbsp;path&nbsp;in&nbsp;the&nbsp;API,&nbsp;returns&nbsp;the&nbsp;filehandle.&nbsp;Returned<br>
-file-like&nbsp;instances&nbsp;have&nbsp;an&nbsp;``HTTPMessage``&nbsp;instance&nbsp;with&nbsp;HTTP&nbsp;header<br>
+<dl><dt><a name="DeliciousAPI-request_raw"><strong>request_raw</strong></a>(self, path, **params)</dt><dd><tt>Calls&nbsp;the&nbsp;path&nbsp;in&nbsp;the&nbsp;API,&nbsp;returns&nbsp;the&nbsp;filehandle.&nbsp;Returned&nbsp;file-<br>
+like&nbsp;instances&nbsp;have&nbsp;an&nbsp;``HTTPMessage``&nbsp;instance&nbsp;with&nbsp;HTTP&nbsp;header<br>
 information&nbsp;available.&nbsp;Use&nbsp;``filehandle.info()``&nbsp;or&nbsp;refer&nbsp;to&nbsp;the<br>
 ``urllib2.openurl``&nbsp;documentation.</tt></dd></dl>
 
-<dl><dt><a name="DeliciousAPI-tags_get"><strong>tags_get</strong></a>(self, **kwds)</dt><dd><tt>Returns&nbsp;a&nbsp;<a href="__builtin__.html#list">list</a>&nbsp;of&nbsp;tags&nbsp;and&nbsp;the&nbsp;number&nbsp;of&nbsp;times&nbsp;it&nbsp;is&nbsp;used&nbsp;by&nbsp;the&nbsp;user.<br>
+<dl><dt><a name="DeliciousAPI-tags_delete"><strong>tags_delete</strong></a>(self, tag, **kwds)</dt><dd><tt>Delete&nbsp;an&nbsp;existing&nbsp;tag.<br>
+&nbsp;<br>
+&amp;tag={TAG}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;(required)&nbsp;Tag&nbsp;to&nbsp;delete</tt></dd></dl>
+
+<dl><dt><a name="DeliciousAPI-tags_get"><strong>tags_get</strong></a>(self, **kwds)</dt><dd><tt>Returns&nbsp;a&nbsp;list&nbsp;of&nbsp;tags&nbsp;and&nbsp;the&nbsp;number&nbsp;of&nbsp;times&nbsp;it&nbsp;is&nbsp;used&nbsp;by&nbsp;the&nbsp;<br>
+user.<br>
 ::<br>
 &nbsp;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&lt;tags&gt;<br>
@@ -320,14 +315,14 @@ information&nbsp;available.&nbsp;Use&nbsp;``filehandle.info()``&nbsp;or&nbsp;ref
 <dl><dt><a name="DeliciousAPI-tags_rename"><strong>tags_rename</strong></a>(self, old, new, **kwds)</dt><dd><tt>Rename&nbsp;an&nbsp;existing&nbsp;tag&nbsp;with&nbsp;a&nbsp;new&nbsp;tag&nbsp;name.&nbsp;Returns&nbsp;a&nbsp;`result`<br>
 message&nbsp;or&nbsp;raises&nbsp;an&nbsp;``<a href="#DeliciousError">DeliciousError</a>``.&nbsp;See&nbsp;``<a href="#DeliciousAPI-request">request</a>()``.<br>
 &nbsp;<br>
-&amp;old&nbsp;(required)<br>
-&nbsp;&nbsp;&nbsp;&nbsp;Tag&nbsp;to&nbsp;rename.<br>
-&amp;new&nbsp;(required)<br>
-&nbsp;&nbsp;&nbsp;&nbsp;New&nbsp;name.</tt></dd></dl>
+&amp;old={TAG}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;(required)&nbsp;Tag&nbsp;to&nbsp;rename.<br>
+&amp;new={TAG}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;(required)&nbsp;New&nbsp;tag&nbsp;name.</tt></dd></dl>
 
 <hr>
 Data and other attributes defined here:<br>
-<dl><dt><strong>paths</strong> = {'posts/add': &lt;function posts_add&gt;, 'posts/all': &lt;function posts_all&gt;, 'posts/dates': &lt;function posts_dates&gt;, 'posts/delete': &lt;function posts_delete&gt;, 'posts/get': &lt;function posts_get&gt;, 'posts/recent': &lt;function posts_recent&gt;, 'posts/update': &lt;function posts_update&gt;, 'tags/bundles/all': &lt;function bundles_all&gt;, 'tags/bundles/delete': &lt;function bundles_delete&gt;, 'tags/bundles/set': &lt;function bundles_set&gt;, ...}</dl>
+<dl><dt><strong>paths</strong> = {'posts/add': 'posts_add', 'posts/all': 'posts_all', 'posts/dates': 'posts_dates', 'posts/delete': 'posts_delete', 'posts/get': 'posts_get', 'posts/recent': 'posts_recent', 'posts/update': 'posts_update', 'tags/bundles/all': 'bundles_all', 'tags/bundles/delete': 'bundles_delete', 'tags/bundles/set': 'bundles_set', ...}</dl>
 
 </td></tr></table> <p>
 <table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
@@ -338,12 +333,42 @@ Data and other attributes defined here:<br>
 <tr bgcolor="#ffc8d8"><td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
 <td colspan=2><tt>Raised&nbsp;when&nbsp;the&nbsp;server&nbsp;responds&nbsp;with&nbsp;a&nbsp;negative&nbsp;answer<br>&nbsp;</tt></td></tr>
 <tr><td>&nbsp;</td>
-<td width="100%">Methods inherited from <a href="exceptions.html#Exception">exceptions.Exception</a>:<br>
+<td width="100%">Static methods defined here:<br>
+<dl><dt><a name="DeliciousError-raiseFor"><strong>raiseFor</strong></a>(error_string, path, **params)</dt></dl>
+
+<hr>
+Methods inherited from <a href="exceptions.html#Exception">exceptions.Exception</a>:<br>
 <dl><dt><a name="DeliciousError-__getitem__"><strong>__getitem__</strong></a>(...)</dt></dl>
 
 <dl><dt><a name="DeliciousError-__init__"><strong>__init__</strong></a>(...)</dt></dl>
 
 <dl><dt><a name="DeliciousError-__str__"><strong>__str__</strong></a>(...)</dt></dl>
+
+</td></tr></table> <p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ffc8d8">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#000000" face="helvetica, arial"><a name="DeliciousItemExistsError">class <strong>DeliciousItemExistsError</strong></a>(<a href="pydelicious.html#DeliciousError">DeliciousError</a>)</font></td></tr>
+    
+<tr bgcolor="#ffc8d8"><td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
+<td colspan=2><tt>Raised&nbsp;then&nbsp;adding&nbsp;an&nbsp;already&nbsp;existing&nbsp;post.<br>&nbsp;</tt></td></tr>
+<tr><td>&nbsp;</td>
+<td width="100%"><dl><dt>Method resolution order:</dt>
+<dd><a href="pydelicious.html#DeliciousItemExistsError">DeliciousItemExistsError</a></dd>
+<dd><a href="pydelicious.html#DeliciousError">DeliciousError</a></dd>
+<dd><a href="exceptions.html#Exception">exceptions.Exception</a></dd>
+</dl>
+<hr>
+Static methods inherited from <a href="pydelicious.html#DeliciousError">DeliciousError</a>:<br>
+<dl><dt><a name="DeliciousItemExistsError-raiseFor"><strong>raiseFor</strong></a>(error_string, path, **params)</dt></dl>
+
+<hr>
+Methods inherited from <a href="exceptions.html#Exception">exceptions.Exception</a>:<br>
+<dl><dt><a name="DeliciousItemExistsError-__getitem__"><strong>__getitem__</strong></a>(...)</dt></dl>
+
+<dl><dt><a name="DeliciousItemExistsError-__init__"><strong>__init__</strong></a>(...)</dt></dl>
+
+<dl><dt><a name="DeliciousItemExistsError-__str__"><strong>__str__</strong></a>(...)</dt></dl>
 
 </td></tr></table> <p>
 <table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
@@ -361,210 +386,6 @@ Data and other attributes defined here:<br>
 
 <dl><dt><a name="PyDeliciousException-__str__"><strong>__str__</strong></a>(...)</dt></dl>
 
-</td></tr></table> <p>
-<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
-<tr bgcolor="#ffc8d8">
-<td colspan=3 valign=bottom>&nbsp;<br>
-<font color="#000000" face="helvetica, arial"><a name="post">class <strong>post</strong></a>(<a href="__builtin__.html#dict">__builtin__.dict</a>)</font></td></tr>
-    
-<tr bgcolor="#ffc8d8"><td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
-<td colspan=2><tt>Post&nbsp;object,&nbsp;contains&nbsp;href,&nbsp;description,&nbsp;hash,&nbsp;dt,&nbsp;tags,<br>
-extended,&nbsp;user,&nbsp;count(,&nbsp;shared).<br>
-&nbsp;<br>
-xxx,&nbsp;bvb:&nbsp;Not&nbsp;used&nbsp;in&nbsp;<a href="#DeliciousAPI">DeliciousAPI</a><br>&nbsp;</tt></td></tr>
-<tr><td>&nbsp;</td>
-<td width="100%"><dl><dt>Method resolution order:</dt>
-<dd><a href="pydelicious.html#post">post</a></dd>
-<dd><a href="__builtin__.html#dict">__builtin__.dict</a></dd>
-<dd><a href="__builtin__.html#object">__builtin__.object</a></dd>
-</dl>
-<hr>
-Methods defined here:<br>
-<dl><dt><a name="post-__getattr__"><strong>__getattr__</strong></a>(self, name)</dt></dl>
-
-<dl><dt><a name="post-__init__"><strong>__init__</strong></a>(self, href<font color="#909090">=''</font>, description<font color="#909090">=''</font>, hash<font color="#909090">=''</font>, time<font color="#909090">=''</font>, tag<font color="#909090">=''</font>, extended<font color="#909090">=''</font>, user<font color="#909090">=''</font>, count<font color="#909090">=''</font>, tags<font color="#909090">=''</font>, url<font color="#909090">=''</font>, dt<font color="#909090">=''</font>)</dt></dl>
-
-<hr>
-Data and other attributes defined here:<br>
-<dl><dt><strong>__dict__</strong> = &lt;dictproxy object&gt;<dd><tt>dictionary&nbsp;for&nbsp;instance&nbsp;variables&nbsp;(if&nbsp;defined)</tt></dl>
-
-<dl><dt><strong>__weakref__</strong> = &lt;attribute '__weakref__' of 'post' objects&gt;<dd><tt><a href="__builtin__.html#list">list</a>&nbsp;of&nbsp;weak&nbsp;references&nbsp;to&nbsp;the&nbsp;object&nbsp;(if&nbsp;defined)</tt></dl>
-
-<hr>
-Methods inherited from <a href="__builtin__.html#dict">__builtin__.dict</a>:<br>
-<dl><dt><a name="post-__cmp__"><strong>__cmp__</strong></a>(...)</dt><dd><tt>x.<a href="#post-__cmp__">__cmp__</a>(y)&nbsp;&lt;==&gt;&nbsp;cmp(x,y)</tt></dd></dl>
-
-<dl><dt><a name="post-__contains__"><strong>__contains__</strong></a>(...)</dt><dd><tt>D.<a href="#post-__contains__">__contains__</a>(k)&nbsp;-&gt;&nbsp;True&nbsp;if&nbsp;D&nbsp;has&nbsp;a&nbsp;key&nbsp;k,&nbsp;else&nbsp;False</tt></dd></dl>
-
-<dl><dt><a name="post-__delitem__"><strong>__delitem__</strong></a>(...)</dt><dd><tt>x.<a href="#post-__delitem__">__delitem__</a>(y)&nbsp;&lt;==&gt;&nbsp;del&nbsp;x[y]</tt></dd></dl>
-
-<dl><dt><a name="post-__eq__"><strong>__eq__</strong></a>(...)</dt><dd><tt>x.<a href="#post-__eq__">__eq__</a>(y)&nbsp;&lt;==&gt;&nbsp;x==y</tt></dd></dl>
-
-<dl><dt><a name="post-__ge__"><strong>__ge__</strong></a>(...)</dt><dd><tt>x.<a href="#post-__ge__">__ge__</a>(y)&nbsp;&lt;==&gt;&nbsp;x&gt;=y</tt></dd></dl>
-
-<dl><dt><a name="post-__getattribute__"><strong>__getattribute__</strong></a>(...)</dt><dd><tt>x.<a href="#post-__getattribute__">__getattribute__</a>('name')&nbsp;&lt;==&gt;&nbsp;x.name</tt></dd></dl>
-
-<dl><dt><a name="post-__getitem__"><strong>__getitem__</strong></a>(...)</dt><dd><tt>x.<a href="#post-__getitem__">__getitem__</a>(y)&nbsp;&lt;==&gt;&nbsp;x[y]</tt></dd></dl>
-
-<dl><dt><a name="post-__gt__"><strong>__gt__</strong></a>(...)</dt><dd><tt>x.<a href="#post-__gt__">__gt__</a>(y)&nbsp;&lt;==&gt;&nbsp;x&gt;y</tt></dd></dl>
-
-<dl><dt><a name="post-__hash__"><strong>__hash__</strong></a>(...)</dt><dd><tt>x.<a href="#post-__hash__">__hash__</a>()&nbsp;&lt;==&gt;&nbsp;hash(x)</tt></dd></dl>
-
-<dl><dt><a name="post-__iter__"><strong>__iter__</strong></a>(...)</dt><dd><tt>x.<a href="#post-__iter__">__iter__</a>()&nbsp;&lt;==&gt;&nbsp;iter(x)</tt></dd></dl>
-
-<dl><dt><a name="post-__le__"><strong>__le__</strong></a>(...)</dt><dd><tt>x.<a href="#post-__le__">__le__</a>(y)&nbsp;&lt;==&gt;&nbsp;x&lt;=y</tt></dd></dl>
-
-<dl><dt><a name="post-__len__"><strong>__len__</strong></a>(...)</dt><dd><tt>x.<a href="#post-__len__">__len__</a>()&nbsp;&lt;==&gt;&nbsp;len(x)</tt></dd></dl>
-
-<dl><dt><a name="post-__lt__"><strong>__lt__</strong></a>(...)</dt><dd><tt>x.<a href="#post-__lt__">__lt__</a>(y)&nbsp;&lt;==&gt;&nbsp;x&lt;y</tt></dd></dl>
-
-<dl><dt><a name="post-__ne__"><strong>__ne__</strong></a>(...)</dt><dd><tt>x.<a href="#post-__ne__">__ne__</a>(y)&nbsp;&lt;==&gt;&nbsp;x!=y</tt></dd></dl>
-
-<dl><dt><a name="post-__repr__"><strong>__repr__</strong></a>(...)</dt><dd><tt>x.<a href="#post-__repr__">__repr__</a>()&nbsp;&lt;==&gt;&nbsp;repr(x)</tt></dd></dl>
-
-<dl><dt><a name="post-__setitem__"><strong>__setitem__</strong></a>(...)</dt><dd><tt>x.<a href="#post-__setitem__">__setitem__</a>(i,&nbsp;y)&nbsp;&lt;==&gt;&nbsp;x[i]=y</tt></dd></dl>
-
-<dl><dt><a name="post-clear"><strong>clear</strong></a>(...)</dt><dd><tt>D.<a href="#post-clear">clear</a>()&nbsp;-&gt;&nbsp;None.&nbsp;&nbsp;Remove&nbsp;all&nbsp;items&nbsp;from&nbsp;D.</tt></dd></dl>
-
-<dl><dt><a name="post-copy"><strong>copy</strong></a>(...)</dt><dd><tt>D.<a href="#post-copy">copy</a>()&nbsp;-&gt;&nbsp;a&nbsp;shallow&nbsp;copy&nbsp;of&nbsp;D</tt></dd></dl>
-
-<dl><dt><a name="post-get"><strong>get</strong></a>(...)</dt><dd><tt>D.<a href="#post-get">get</a>(k[,d])&nbsp;-&gt;&nbsp;D[k]&nbsp;if&nbsp;k&nbsp;in&nbsp;D,&nbsp;else&nbsp;d.&nbsp;&nbsp;d&nbsp;defaults&nbsp;to&nbsp;None.</tt></dd></dl>
-
-<dl><dt><a name="post-has_key"><strong>has_key</strong></a>(...)</dt><dd><tt>D.<a href="#post-has_key">has_key</a>(k)&nbsp;-&gt;&nbsp;True&nbsp;if&nbsp;D&nbsp;has&nbsp;a&nbsp;key&nbsp;k,&nbsp;else&nbsp;False</tt></dd></dl>
-
-<dl><dt><a name="post-items"><strong>items</strong></a>(...)</dt><dd><tt>D.<a href="#post-items">items</a>()&nbsp;-&gt;&nbsp;<a href="__builtin__.html#list">list</a>&nbsp;of&nbsp;D's&nbsp;(key,&nbsp;value)&nbsp;pairs,&nbsp;as&nbsp;2-tuples</tt></dd></dl>
-
-<dl><dt><a name="post-iteritems"><strong>iteritems</strong></a>(...)</dt><dd><tt>D.<a href="#post-iteritems">iteritems</a>()&nbsp;-&gt;&nbsp;an&nbsp;iterator&nbsp;over&nbsp;the&nbsp;(key,&nbsp;value)&nbsp;items&nbsp;of&nbsp;D</tt></dd></dl>
-
-<dl><dt><a name="post-iterkeys"><strong>iterkeys</strong></a>(...)</dt><dd><tt>D.<a href="#post-iterkeys">iterkeys</a>()&nbsp;-&gt;&nbsp;an&nbsp;iterator&nbsp;over&nbsp;the&nbsp;keys&nbsp;of&nbsp;D</tt></dd></dl>
-
-<dl><dt><a name="post-itervalues"><strong>itervalues</strong></a>(...)</dt><dd><tt>D.<a href="#post-itervalues">itervalues</a>()&nbsp;-&gt;&nbsp;an&nbsp;iterator&nbsp;over&nbsp;the&nbsp;values&nbsp;of&nbsp;D</tt></dd></dl>
-
-<dl><dt><a name="post-keys"><strong>keys</strong></a>(...)</dt><dd><tt>D.<a href="#post-keys">keys</a>()&nbsp;-&gt;&nbsp;<a href="__builtin__.html#list">list</a>&nbsp;of&nbsp;D's&nbsp;keys</tt></dd></dl>
-
-<dl><dt><a name="post-pop"><strong>pop</strong></a>(...)</dt><dd><tt>D.<a href="#post-pop">pop</a>(k[,d])&nbsp;-&gt;&nbsp;v,&nbsp;remove&nbsp;specified&nbsp;key&nbsp;and&nbsp;return&nbsp;the&nbsp;corresponding&nbsp;value<br>
-If&nbsp;key&nbsp;is&nbsp;not&nbsp;found,&nbsp;d&nbsp;is&nbsp;returned&nbsp;if&nbsp;given,&nbsp;otherwise&nbsp;KeyError&nbsp;is&nbsp;raised</tt></dd></dl>
-
-<dl><dt><a name="post-popitem"><strong>popitem</strong></a>(...)</dt><dd><tt>D.<a href="#post-popitem">popitem</a>()&nbsp;-&gt;&nbsp;(k,&nbsp;v),&nbsp;remove&nbsp;and&nbsp;return&nbsp;some&nbsp;(key,&nbsp;value)&nbsp;pair&nbsp;as&nbsp;a<br>
-2-tuple;&nbsp;but&nbsp;raise&nbsp;KeyError&nbsp;if&nbsp;D&nbsp;is&nbsp;empty</tt></dd></dl>
-
-<dl><dt><a name="post-setdefault"><strong>setdefault</strong></a>(...)</dt><dd><tt>D.<a href="#post-setdefault">setdefault</a>(k[,d])&nbsp;-&gt;&nbsp;D.<a href="#post-get">get</a>(k,d),&nbsp;also&nbsp;set&nbsp;D[k]=d&nbsp;if&nbsp;k&nbsp;not&nbsp;in&nbsp;D</tt></dd></dl>
-
-<dl><dt><a name="post-update"><strong>update</strong></a>(...)</dt><dd><tt>D.<a href="#post-update">update</a>(E,&nbsp;**F)&nbsp;-&gt;&nbsp;None.&nbsp;&nbsp;Update&nbsp;D&nbsp;from&nbsp;E&nbsp;and&nbsp;F:&nbsp;for&nbsp;k&nbsp;in&nbsp;E:&nbsp;D[k]&nbsp;=&nbsp;E[k]<br>
-(if&nbsp;E&nbsp;has&nbsp;keys&nbsp;else:&nbsp;for&nbsp;(k,&nbsp;v)&nbsp;in&nbsp;E:&nbsp;D[k]&nbsp;=&nbsp;v)&nbsp;then:&nbsp;for&nbsp;k&nbsp;in&nbsp;F:&nbsp;D[k]&nbsp;=&nbsp;F[k]</tt></dd></dl>
-
-<dl><dt><a name="post-values"><strong>values</strong></a>(...)</dt><dd><tt>D.<a href="#post-values">values</a>()&nbsp;-&gt;&nbsp;<a href="__builtin__.html#list">list</a>&nbsp;of&nbsp;D's&nbsp;values</tt></dd></dl>
-
-<hr>
-Data and other attributes inherited from <a href="__builtin__.html#dict">__builtin__.dict</a>:<br>
-<dl><dt><strong>__new__</strong> = &lt;built-in method __new__ of type object&gt;<dd><tt>T.<a href="#post-__new__">__new__</a>(S,&nbsp;...)&nbsp;-&gt;&nbsp;a&nbsp;new&nbsp;object&nbsp;with&nbsp;type&nbsp;S,&nbsp;a&nbsp;subtype&nbsp;of&nbsp;T</tt></dl>
-
-<dl><dt><strong>fromkeys</strong> = &lt;built-in method fromkeys of type object&gt;<dd><tt><a href="__builtin__.html#dict">dict</a>.<a href="#post-fromkeys">fromkeys</a>(S[,v])&nbsp;-&gt;&nbsp;New&nbsp;<a href="__builtin__.html#dict">dict</a>&nbsp;with&nbsp;keys&nbsp;from&nbsp;S&nbsp;and&nbsp;values&nbsp;equal&nbsp;to&nbsp;v.<br>
-v&nbsp;defaults&nbsp;to&nbsp;None.</tt></dl>
-
-</td></tr></table> <p>
-<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
-<tr bgcolor="#ffc8d8">
-<td colspan=3 valign=bottom>&nbsp;<br>
-<font color="#000000" face="helvetica, arial"><a name="posts">class <strong>posts</strong></a>(<a href="__builtin__.html#list">__builtin__.list</a>)</font></td></tr>
-    
-<tr><td bgcolor="#ffc8d8"><tt>&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
-<td width="100%"><dl><dt>Method resolution order:</dt>
-<dd><a href="pydelicious.html#posts">posts</a></dd>
-<dd><a href="__builtin__.html#list">__builtin__.list</a></dd>
-<dd><a href="__builtin__.html#object">__builtin__.object</a></dd>
-</dl>
-<hr>
-Methods defined here:<br>
-<dl><dt><a name="posts-__getattr__"><strong>__getattr__</strong></a>(self, attr)</dt></dl>
-
-<dl><dt><a name="posts-__init__"><strong>__init__</strong></a>(self, *args)</dt></dl>
-
-<hr>
-Data and other attributes defined here:<br>
-<dl><dt><strong>__dict__</strong> = &lt;dictproxy object&gt;<dd><tt>dictionary&nbsp;for&nbsp;instance&nbsp;variables&nbsp;(if&nbsp;defined)</tt></dl>
-
-<dl><dt><strong>__weakref__</strong> = &lt;attribute '__weakref__' of 'posts' objects&gt;<dd><tt><a href="__builtin__.html#list">list</a>&nbsp;of&nbsp;weak&nbsp;references&nbsp;to&nbsp;the&nbsp;object&nbsp;(if&nbsp;defined)</tt></dl>
-
-<hr>
-Methods inherited from <a href="__builtin__.html#list">__builtin__.list</a>:<br>
-<dl><dt><a name="posts-__add__"><strong>__add__</strong></a>(...)</dt><dd><tt>x.<a href="#posts-__add__">__add__</a>(y)&nbsp;&lt;==&gt;&nbsp;x+y</tt></dd></dl>
-
-<dl><dt><a name="posts-__contains__"><strong>__contains__</strong></a>(...)</dt><dd><tt>x.<a href="#posts-__contains__">__contains__</a>(y)&nbsp;&lt;==&gt;&nbsp;y&nbsp;in&nbsp;x</tt></dd></dl>
-
-<dl><dt><a name="posts-__delitem__"><strong>__delitem__</strong></a>(...)</dt><dd><tt>x.<a href="#posts-__delitem__">__delitem__</a>(y)&nbsp;&lt;==&gt;&nbsp;del&nbsp;x[y]</tt></dd></dl>
-
-<dl><dt><a name="posts-__delslice__"><strong>__delslice__</strong></a>(...)</dt><dd><tt>x.<a href="#posts-__delslice__">__delslice__</a>(i,&nbsp;j)&nbsp;&lt;==&gt;&nbsp;del&nbsp;x[i:j]<br>
-&nbsp;<br>
-Use&nbsp;of&nbsp;negative&nbsp;indices&nbsp;is&nbsp;not&nbsp;supported.</tt></dd></dl>
-
-<dl><dt><a name="posts-__eq__"><strong>__eq__</strong></a>(...)</dt><dd><tt>x.<a href="#posts-__eq__">__eq__</a>(y)&nbsp;&lt;==&gt;&nbsp;x==y</tt></dd></dl>
-
-<dl><dt><a name="posts-__ge__"><strong>__ge__</strong></a>(...)</dt><dd><tt>x.<a href="#posts-__ge__">__ge__</a>(y)&nbsp;&lt;==&gt;&nbsp;x&gt;=y</tt></dd></dl>
-
-<dl><dt><a name="posts-__getattribute__"><strong>__getattribute__</strong></a>(...)</dt><dd><tt>x.<a href="#posts-__getattribute__">__getattribute__</a>('name')&nbsp;&lt;==&gt;&nbsp;x.name</tt></dd></dl>
-
-<dl><dt><a name="posts-__getitem__"><strong>__getitem__</strong></a>(...)</dt><dd><tt>x.<a href="#posts-__getitem__">__getitem__</a>(y)&nbsp;&lt;==&gt;&nbsp;x[y]</tt></dd></dl>
-
-<dl><dt><a name="posts-__getslice__"><strong>__getslice__</strong></a>(...)</dt><dd><tt>x.<a href="#posts-__getslice__">__getslice__</a>(i,&nbsp;j)&nbsp;&lt;==&gt;&nbsp;x[i:j]<br>
-&nbsp;<br>
-Use&nbsp;of&nbsp;negative&nbsp;indices&nbsp;is&nbsp;not&nbsp;supported.</tt></dd></dl>
-
-<dl><dt><a name="posts-__gt__"><strong>__gt__</strong></a>(...)</dt><dd><tt>x.<a href="#posts-__gt__">__gt__</a>(y)&nbsp;&lt;==&gt;&nbsp;x&gt;y</tt></dd></dl>
-
-<dl><dt><a name="posts-__hash__"><strong>__hash__</strong></a>(...)</dt><dd><tt>x.<a href="#posts-__hash__">__hash__</a>()&nbsp;&lt;==&gt;&nbsp;hash(x)</tt></dd></dl>
-
-<dl><dt><a name="posts-__iadd__"><strong>__iadd__</strong></a>(...)</dt><dd><tt>x.<a href="#posts-__iadd__">__iadd__</a>(y)&nbsp;&lt;==&gt;&nbsp;x+=y</tt></dd></dl>
-
-<dl><dt><a name="posts-__imul__"><strong>__imul__</strong></a>(...)</dt><dd><tt>x.<a href="#posts-__imul__">__imul__</a>(y)&nbsp;&lt;==&gt;&nbsp;x*=y</tt></dd></dl>
-
-<dl><dt><a name="posts-__iter__"><strong>__iter__</strong></a>(...)</dt><dd><tt>x.<a href="#posts-__iter__">__iter__</a>()&nbsp;&lt;==&gt;&nbsp;iter(x)</tt></dd></dl>
-
-<dl><dt><a name="posts-__le__"><strong>__le__</strong></a>(...)</dt><dd><tt>x.<a href="#posts-__le__">__le__</a>(y)&nbsp;&lt;==&gt;&nbsp;x&lt;=y</tt></dd></dl>
-
-<dl><dt><a name="posts-__len__"><strong>__len__</strong></a>(...)</dt><dd><tt>x.<a href="#posts-__len__">__len__</a>()&nbsp;&lt;==&gt;&nbsp;len(x)</tt></dd></dl>
-
-<dl><dt><a name="posts-__lt__"><strong>__lt__</strong></a>(...)</dt><dd><tt>x.<a href="#posts-__lt__">__lt__</a>(y)&nbsp;&lt;==&gt;&nbsp;x&lt;y</tt></dd></dl>
-
-<dl><dt><a name="posts-__mul__"><strong>__mul__</strong></a>(...)</dt><dd><tt>x.<a href="#posts-__mul__">__mul__</a>(n)&nbsp;&lt;==&gt;&nbsp;x*n</tt></dd></dl>
-
-<dl><dt><a name="posts-__ne__"><strong>__ne__</strong></a>(...)</dt><dd><tt>x.<a href="#posts-__ne__">__ne__</a>(y)&nbsp;&lt;==&gt;&nbsp;x!=y</tt></dd></dl>
-
-<dl><dt><a name="posts-__repr__"><strong>__repr__</strong></a>(...)</dt><dd><tt>x.<a href="#posts-__repr__">__repr__</a>()&nbsp;&lt;==&gt;&nbsp;repr(x)</tt></dd></dl>
-
-<dl><dt><a name="posts-__reversed__"><strong>__reversed__</strong></a>(...)</dt><dd><tt>L.<a href="#posts-__reversed__">__reversed__</a>()&nbsp;--&nbsp;return&nbsp;a&nbsp;reverse&nbsp;iterator&nbsp;over&nbsp;the&nbsp;<a href="__builtin__.html#list">list</a></tt></dd></dl>
-
-<dl><dt><a name="posts-__rmul__"><strong>__rmul__</strong></a>(...)</dt><dd><tt>x.<a href="#posts-__rmul__">__rmul__</a>(n)&nbsp;&lt;==&gt;&nbsp;n*x</tt></dd></dl>
-
-<dl><dt><a name="posts-__setitem__"><strong>__setitem__</strong></a>(...)</dt><dd><tt>x.<a href="#posts-__setitem__">__setitem__</a>(i,&nbsp;y)&nbsp;&lt;==&gt;&nbsp;x[i]=y</tt></dd></dl>
-
-<dl><dt><a name="posts-__setslice__"><strong>__setslice__</strong></a>(...)</dt><dd><tt>x.<a href="#posts-__setslice__">__setslice__</a>(i,&nbsp;j,&nbsp;y)&nbsp;&lt;==&gt;&nbsp;x[i:j]=y<br>
-&nbsp;<br>
-Use&nbsp;&nbsp;of&nbsp;negative&nbsp;indices&nbsp;is&nbsp;not&nbsp;supported.</tt></dd></dl>
-
-<dl><dt><a name="posts-append"><strong>append</strong></a>(...)</dt><dd><tt>L.<a href="#posts-append">append</a>(object)&nbsp;--&nbsp;append&nbsp;object&nbsp;to&nbsp;end</tt></dd></dl>
-
-<dl><dt><a name="posts-count"><strong>count</strong></a>(...)</dt><dd><tt>L.<a href="#posts-count">count</a>(value)&nbsp;-&gt;&nbsp;integer&nbsp;--&nbsp;return&nbsp;number&nbsp;of&nbsp;occurrences&nbsp;of&nbsp;value</tt></dd></dl>
-
-<dl><dt><a name="posts-extend"><strong>extend</strong></a>(...)</dt><dd><tt>L.<a href="#posts-extend">extend</a>(iterable)&nbsp;--&nbsp;extend&nbsp;<a href="__builtin__.html#list">list</a>&nbsp;by&nbsp;appending&nbsp;elements&nbsp;from&nbsp;the&nbsp;iterable</tt></dd></dl>
-
-<dl><dt><a name="posts-index"><strong>index</strong></a>(...)</dt><dd><tt>L.<a href="#posts-index">index</a>(value,&nbsp;[start,&nbsp;[stop]])&nbsp;-&gt;&nbsp;integer&nbsp;--&nbsp;return&nbsp;first&nbsp;index&nbsp;of&nbsp;value</tt></dd></dl>
-
-<dl><dt><a name="posts-insert"><strong>insert</strong></a>(...)</dt><dd><tt>L.<a href="#posts-insert">insert</a>(index,&nbsp;object)&nbsp;--&nbsp;insert&nbsp;object&nbsp;before&nbsp;index</tt></dd></dl>
-
-<dl><dt><a name="posts-pop"><strong>pop</strong></a>(...)</dt><dd><tt>L.<a href="#posts-pop">pop</a>([index])&nbsp;-&gt;&nbsp;item&nbsp;--&nbsp;remove&nbsp;and&nbsp;return&nbsp;item&nbsp;at&nbsp;index&nbsp;(default&nbsp;last)</tt></dd></dl>
-
-<dl><dt><a name="posts-remove"><strong>remove</strong></a>(...)</dt><dd><tt>L.<a href="#posts-remove">remove</a>(value)&nbsp;--&nbsp;remove&nbsp;first&nbsp;occurrence&nbsp;of&nbsp;value</tt></dd></dl>
-
-<dl><dt><a name="posts-reverse"><strong>reverse</strong></a>(...)</dt><dd><tt>L.<a href="#posts-reverse">reverse</a>()&nbsp;--&nbsp;reverse&nbsp;*IN&nbsp;PLACE*</tt></dd></dl>
-
-<dl><dt><a name="posts-sort"><strong>sort</strong></a>(...)</dt><dd><tt>L.<a href="#posts-sort">sort</a>(cmp=None,&nbsp;key=None,&nbsp;reverse=False)&nbsp;--&nbsp;stable&nbsp;sort&nbsp;*IN&nbsp;PLACE*;<br>
-cmp(x,&nbsp;y)&nbsp;-&gt;&nbsp;-1,&nbsp;0,&nbsp;1</tt></dd></dl>
-
-<hr>
-Data and other attributes inherited from <a href="__builtin__.html#list">__builtin__.list</a>:<br>
-<dl><dt><strong>__new__</strong> = &lt;built-in method __new__ of type object&gt;<dd><tt>T.<a href="#posts-__new__">__new__</a>(S,&nbsp;...)&nbsp;-&gt;&nbsp;a&nbsp;new&nbsp;object&nbsp;with&nbsp;type&nbsp;S,&nbsp;a&nbsp;subtype&nbsp;of&nbsp;T</tt></dl>
-
 </td></tr></table></td></tr></table><p>
 <table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
 <tr bgcolor="#eeaa77">
@@ -572,7 +393,7 @@ Data and other attributes inherited from <a href="__builtin__.html#list">__built
 <font color="#ffffff" face="helvetica, arial"><big><strong>Functions</strong></big></font></td></tr>
     
 <tr><td bgcolor="#eeaa77"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
-<td width="100%"><dl><dt><a name="-add"><strong>add</strong></a>(user, passwd, url, description, tags<font color="#909090">=''</font>, extended<font color="#909090">=''</font>, dt<font color="#909090">=''</font>, replace<font color="#909090">='no'</font>)</dt></dl>
+<td width="100%"><dl><dt><a name="-add"><strong>add</strong></a>(user, passwd, url, description, tags<font color="#909090">=''</font>, extended<font color="#909090">=''</font>, dt<font color="#909090">=None</font>, replace<font color="#909090">=False</font>)</dt></dl>
  <dl><dt><a name="-apiNew"><strong>apiNew</strong></a>(user, passwd)</dt><dd><tt>creates&nbsp;a&nbsp;new&nbsp;<a href="#DeliciousAPI">DeliciousAPI</a>&nbsp;object.<br>
 requires&nbsp;user(name)&nbsp;and&nbsp;passwd</tt></dd></dl>
  <dl><dt><a name="-delete"><strong>delete</strong></a>(user, passwd, url)</dt></dl>
@@ -596,34 +417,26 @@ translates&nbsp;to&nbsp;a&nbsp;JSON-like&nbsp;data&nbsp;structure&nbsp;(dicts&nb
 &nbsp;<br>
 Returned&nbsp;instance&nbsp;is&nbsp;always&nbsp;a&nbsp;dictionary.&nbsp;Examples::<br>
 &nbsp;<br>
-&nbsp;{'<a href="#posts">posts</a>':&nbsp;[{'url':'...','hash':'...',},],}<br>
+&nbsp;{'posts':&nbsp;[{'url':'...','hash':'...',},],}<br>
 &nbsp;{'tags':['tag1',&nbsp;'tag2',]}<br>
 &nbsp;{'dates':&nbsp;[{'count':'...','date':'...'},],&nbsp;'tag':'',&nbsp;'user':'...'}<br>
 &nbsp;{'result':(True,&nbsp;"done")}<br>
 &nbsp;#&nbsp;etcetera.</tt></dd></dl>
- <dl><dt><a name="-dlcs_rss_request"><strong>dlcs_rss_request</strong></a>(tag<font color="#909090">=''</font>, popular<font color="#909090">=0</font>, user<font color="#909090">=''</font>, url<font color="#909090">=''</font>)</dt><dd><tt>Handle&nbsp;a&nbsp;request&nbsp;for&nbsp;RSS<br>
-&nbsp;<br>
-todo:&nbsp;translate&nbsp;from&nbsp;German<br>
-&nbsp;<br>
-rss&nbsp;sollte&nbsp;nun&nbsp;wieder&nbsp;funktionieren,&nbsp;aber&nbsp;diese&nbsp;try,&nbsp;except&nbsp;scheisse&nbsp;ist&nbsp;so&nbsp;nicht&nbsp;schoen<br>
-&nbsp;<br>
-rss&nbsp;wird&nbsp;unterschiedlich&nbsp;zusammengesetzt.&nbsp;ich&nbsp;kann&nbsp;noch&nbsp;keinen&nbsp;einheitlichen&nbsp;zusammenhang<br>
-zwischen&nbsp;daten&nbsp;(url,&nbsp;desc,&nbsp;ext,&nbsp;usw)&nbsp;und&nbsp;dem&nbsp;feed&nbsp;erkennen.&nbsp;warum&nbsp;k[o]nnen&nbsp;die&nbsp;das&nbsp;nicht&nbsp;einheitlich&nbsp;machen?</tt></dd></dl>
- <dl><dt><a name="-get"><strong>get</strong></a>(user, passwd, tag<font color="#909090">=''</font>, dt<font color="#909090">=''</font>, count<font color="#909090">=0</font>)</dt></dl>
- <dl><dt><a name="-get_all"><strong>get_all</strong></a>(user, passwd, tag<font color="#909090">=''</font>)</dt></dl>
- <dl><dt><a name="-get_popular"><strong>get_popular</strong></a>(tag<font color="#909090">=''</font>)</dt></dl>
- <dl><dt><a name="-get_tagposts"><strong>get_tagposts</strong></a>(tag)</dt></dl>
+ <dl><dt><a name="-dlcs_rss_request"><strong>dlcs_rss_request</strong></a>(tag<font color="#909090">=''</font>, popular<font color="#909090">=0</font>, user<font color="#909090">=''</font>, url<font color="#909090">=''</font>)</dt><dd><tt>Parse&nbsp;a&nbsp;RSS&nbsp;request.</tt></dd></dl>
+ <dl><dt><a name="-get"><strong>get</strong></a>(user, passwd, tag<font color="#909090">=''</font>, dt<font color="#909090">=None</font>, count<font color="#909090">=0</font>, hashes<font color="#909090">=[]</font>)</dt></dl>
+ <dl><dt><a name="-get_all"><strong>get_all</strong></a>(user, passwd, tag<font color="#909090">=''</font>, start<font color="#909090">=0</font>, results<font color="#909090">=100</font>, fromdt<font color="#909090">=None</font>, todt<font color="#909090">=None</font>)</dt><dd><tt>Returns&nbsp;all&nbsp;posts.&nbsp;Please&nbsp;use&nbsp;sparingly.&nbsp;See&nbsp;`get_updated`</tt></dd></dl>
+ <dl><dt><a name="-get_popular"><strong>get_popular</strong></a>(tag<font color="#909090">=''</font>)</dt><dd><tt>parse&nbsp;RSS&nbsp;for&nbsp;popular&nbsp;URLS&nbsp;for&nbsp;tag</tt></dd></dl>
+ <dl><dt><a name="-get_tagposts"><strong>get_tagposts</strong></a>(tag)</dt><dd><tt>parse&nbsp;RSS&nbsp;for&nbsp;tag</tt></dd></dl>
  <dl><dt><a name="-get_tags"><strong>get_tags</strong></a>(user, passwd)</dt></dl>
- <dl><dt><a name="-get_urlposts"><strong>get_urlposts</strong></a>(url)</dt></dl>
- <dl><dt><a name="-get_userposts"><strong>get_userposts</strong></a>(user)</dt></dl>
- <dl><dt><a name="-getrss"><strong>getrss</strong></a>(tag<font color="#909090">=''</font>, popular<font color="#909090">=0</font>, url<font color="#909090">=''</font>, user<font color="#909090">=''</font>)</dt><dd><tt>get&nbsp;<a href="#posts">posts</a>&nbsp;from&nbsp;del.icio.us&nbsp;via&nbsp;parsing&nbsp;RSS&nbsp;(bvb:or&nbsp;HTML)<br>
-&nbsp;<br>
-todo:&nbsp;not&nbsp;tested<br>
+ <dl><dt><a name="-get_update"><strong>get_update</strong></a>(user, passwd)</dt><dd><tt>Returns&nbsp;the&nbsp;last&nbsp;update&nbsp;time&nbsp;for&nbsp;the&nbsp;user.</tt></dd></dl>
+ <dl><dt><a name="-get_urlposts"><strong>get_urlposts</strong></a>(url)</dt><dd><tt>parse&nbsp;RSS&nbsp;for&nbsp;URL</tt></dd></dl>
+ <dl><dt><a name="-get_userposts"><strong>get_userposts</strong></a>(user)</dt><dd><tt>parse&nbsp;RSS&nbsp;for&nbsp;user</tt></dd></dl>
+ <dl><dt><a name="-getrss"><strong>getrss</strong></a>(tag<font color="#909090">=''</font>, popular<font color="#909090">=0</font>, url<font color="#909090">=''</font>, user<font color="#909090">=''</font>)</dt><dd><tt>get&nbsp;posts&nbsp;from&nbsp;del.icio.us&nbsp;via&nbsp;parsing&nbsp;RSS&nbsp;(bvb:or&nbsp;HTML)<br>
 &nbsp;<br>
 tag&nbsp;(opt)&nbsp;sort&nbsp;by&nbsp;tag<br>
 popular&nbsp;(opt)&nbsp;look&nbsp;for&nbsp;the&nbsp;popular&nbsp;stuff<br>
-user&nbsp;(opt)&nbsp;get&nbsp;the&nbsp;<a href="#posts">posts</a>&nbsp;by&nbsp;a&nbsp;user,&nbsp;this&nbsp;striks&nbsp;popular<br>
-url&nbsp;(opt)&nbsp;get&nbsp;the&nbsp;<a href="#posts">posts</a>&nbsp;by&nbsp;url</tt></dd></dl>
+user&nbsp;(opt)&nbsp;get&nbsp;the&nbsp;posts&nbsp;by&nbsp;a&nbsp;user,&nbsp;this&nbsp;striks&nbsp;popular<br>
+url&nbsp;(opt)&nbsp;get&nbsp;the&nbsp;posts&nbsp;by&nbsp;url</tt></dd></dl>
  <dl><dt><a name="-http_auth_request"><strong>http_auth_request</strong></a>(url, host, user, passwd, user_agent<font color="#909090">='pydelicious.py/0.5.0 http://code.google.com/p/pydelicious/'</font>)</dt><dd><tt>Call&nbsp;an&nbsp;HTTP&nbsp;server&nbsp;with&nbsp;authorization&nbsp;credentials&nbsp;using&nbsp;urllib2.</tt></dd></dl>
  <dl><dt><a name="-http_request"><strong>http_request</strong></a>(url, user_agent<font color="#909090">='pydelicious.py/0.5.0 http://code.google.com/p/pydelicious/'</font>, retry<font color="#909090">=4</font>)</dt><dd><tt>Retrieve&nbsp;the&nbsp;contents&nbsp;referenced&nbsp;by&nbsp;the&nbsp;URL&nbsp;using&nbsp;urllib2.<br>
 &nbsp;<br>
@@ -633,21 +446,18 @@ callback=NAME&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;wrap&nbsp;the&nbsp;object
 ?raw&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;a&nbsp;pure&nbsp;JSON&nbsp;object&nbsp;is&nbsp;returned,&nbsp;instead&nbsp;of&nbsp;an&nbsp;object&nbsp;named&nbsp;Delicious.</tt></dd></dl>
  <dl><dt><a name="-json_network"><strong>json_network</strong></a>(user)</dt><dd><tt><a href="http://del.icio.us/feeds/json/network/mpe">http://del.icio.us/feeds/json/network/mpe</a><br>
 callback=NAME&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;wrap&nbsp;the&nbsp;object&nbsp;definition&nbsp;in&nbsp;a&nbsp;function&nbsp;call&nbsp;NAME(...)<br>
-?raw&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;a&nbsp;raw&nbsp;JSON&nbsp;object&nbsp;is&nbsp;returned,&nbsp;instead&nbsp;of&nbsp;an&nbsp;object&nbsp;named&nbsp;Delicious.<a href="#posts">posts</a></tt></dd></dl>
+?raw&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;a&nbsp;raw&nbsp;JSON&nbsp;object&nbsp;is&nbsp;returned,&nbsp;instead&nbsp;of&nbsp;an&nbsp;object&nbsp;named&nbsp;Delicious.posts</tt></dd></dl>
  <dl><dt><a name="-json_posts"><strong>json_posts</strong></a>(user, count<font color="#909090">=15</font>)</dt><dd><tt><a href="http://del.icio.us/feeds/json/mpe">http://del.icio.us/feeds/json/mpe</a><br>
 <a href="http://del.icio.us/feeds/json/mpe/art+history">http://del.icio.us/feeds/json/mpe/art+history</a><br>
-count=###&nbsp;&nbsp;&nbsp;the&nbsp;number&nbsp;of&nbsp;<a href="#posts">posts</a>&nbsp;you&nbsp;want&nbsp;to&nbsp;get&nbsp;(default&nbsp;is&nbsp;15,&nbsp;maximum&nbsp;is&nbsp;100)<br>
-raw&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;a&nbsp;raw&nbsp;JSON&nbsp;object&nbsp;is&nbsp;returned,&nbsp;instead&nbsp;of&nbsp;an&nbsp;object&nbsp;named&nbsp;Delicious.<a href="#posts">posts</a></tt></dd></dl>
+count=###&nbsp;&nbsp;&nbsp;the&nbsp;number&nbsp;of&nbsp;posts&nbsp;you&nbsp;want&nbsp;to&nbsp;get&nbsp;(default&nbsp;is&nbsp;15,&nbsp;maximum&nbsp;is&nbsp;100)<br>
+raw&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;a&nbsp;raw&nbsp;JSON&nbsp;object&nbsp;is&nbsp;returned,&nbsp;instead&nbsp;of&nbsp;an&nbsp;object&nbsp;named&nbsp;Delicious.posts</tt></dd></dl>
  <dl><dt><a name="-json_tags"><strong>json_tags</strong></a>(user, atleast, count, sort<font color="#909090">='alpha'</font>)</dt><dd><tt><a href="http://del.icio.us/feeds/json/tags/mpe">http://del.icio.us/feeds/json/tags/mpe</a><br>
-atleast=###&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;include&nbsp;only&nbsp;tags&nbsp;for&nbsp;which&nbsp;there&nbsp;are&nbsp;at&nbsp;least&nbsp;###&nbsp;number&nbsp;of&nbsp;<a href="#posts">posts</a><br>
+atleast=###&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;include&nbsp;only&nbsp;tags&nbsp;for&nbsp;which&nbsp;there&nbsp;are&nbsp;at&nbsp;least&nbsp;###&nbsp;number&nbsp;of&nbsp;posts<br>
 count=###&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;include&nbsp;###&nbsp;tags,&nbsp;counting&nbsp;down&nbsp;from&nbsp;the&nbsp;top<br>
-sort={alpha|count}&nbsp;&nbsp;construct&nbsp;the&nbsp;object&nbsp;with&nbsp;tags&nbsp;in&nbsp;alphabetic&nbsp;order&nbsp;(alpha),&nbsp;or&nbsp;by&nbsp;count&nbsp;of&nbsp;<a href="#posts">posts</a>&nbsp;(count)<br>
+sort={alpha|count}&nbsp;&nbsp;construct&nbsp;the&nbsp;object&nbsp;with&nbsp;tags&nbsp;in&nbsp;alphabetic&nbsp;order&nbsp;(alpha),&nbsp;or&nbsp;by&nbsp;count&nbsp;of&nbsp;posts&nbsp;(count)<br>
 callback=NAME&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;wrap&nbsp;the&nbsp;object&nbsp;definition&nbsp;in&nbsp;a&nbsp;function&nbsp;call&nbsp;NAME(...),&nbsp;thus&nbsp;invoking&nbsp;that&nbsp;function&nbsp;when&nbsp;the&nbsp;feed&nbsp;is&nbsp;executed<br>
 raw&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;a&nbsp;pure&nbsp;JSON&nbsp;object&nbsp;is&nbsp;returned,&nbsp;instead&nbsp;of&nbsp;code&nbsp;that&nbsp;will&nbsp;construct&nbsp;an&nbsp;object&nbsp;named&nbsp;Delicious.tags</tt></dd></dl>
  <dl><dt><a name="-rename_tag"><strong>rename_tag</strong></a>(user, passwd, oldtag, newtag)</dt></dl>
- <dl><dt><a name="-str2quote"><strong>str2quote</strong></a>(s)</dt></dl>
- <dl><dt><a name="-str2uni"><strong>str2uni</strong></a>(s)</dt></dl>
- <dl><dt><a name="-str2utf8"><strong>str2utf8</strong></a>(s)</dt></dl>
 </td></tr></table><p>
 <table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
 <tr bgcolor="#55aa55">
@@ -657,19 +467,21 @@ raw&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp
 <tr><td bgcolor="#55aa55"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
 <td width="100%"><strong>DEBUG</strong> = 0<br>
 <strong>DLCS_API</strong> = 'https://api.del.icio.us/v1'<br>
-<strong>DLCS_API_HOST</strong> = 'https://api.del.icio.us'<br>
+<strong>DLCS_API_HOST</strong> = 'api.del.icio.us'<br>
 <strong>DLCS_API_PATH</strong> = 'v1'<br>
 <strong>DLCS_OK_MESSAGES</strong> = ('done', 'ok')<br>
 <strong>DLCS_REQUEST_TIMEOUT</strong> = 444<br>
 <strong>DLCS_RSS</strong> = 'http://del.icio.us/rss/'<br>
 <strong>DLCS_WAIT_TIME</strong> = 4<br>
 <strong>ISO_8601_DATETIME</strong> = '%Y-%m-%dT%H:%M:%SZ'<br>
+<strong>PREFERRED_ENCODING</strong> = 'UTF-8'<br>
 <strong>USER_AGENT</strong> = 'pydelicious.py/0.5.0 http://code.google.com/p/pydelicious/'<br>
 <strong>Waiter</strong> = &lt;pydelicious._Waiter instance&gt;<br>
 <strong>__author__</strong> = 'Frank Timmermann &lt;regenkind_at_gmx_dot_de&gt;'<br>
 <strong>__author_email__</strong> = ''<br>
 <strong>__contributors__</strong> = ['Greg Pinero', 'Berend van Berkum &lt;berend+pydelicious@dotmpe.com&gt;']<br>
 <strong>__description__</strong> = "pydelicious.py allows you to access the web service of del.icio.us via it's API through python."<br>
+<strong>__docformat__</strong> = 'restructuredtext en'<br>
 <strong>__long_description__</strong> = 'the goal is to design an easy to use and fully functional python interface to del.icio.us. '<br>
 <strong>__url__</strong> = 'http://code.google.com/p/pydelicious/'<br>
 <strong>__version__</strong> = '0.5.0'</td></tr></table><p>
