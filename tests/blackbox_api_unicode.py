@@ -1,6 +1,7 @@
 import unittest
 import time
 import blackbox_api
+import pydelicious
 
 
 class ApiUnicodeTest(blackbox_api.ApiSystemTest):
@@ -24,8 +25,12 @@ class ApiUnicodeTest(blackbox_api.ApiSystemTest):
         url, descr, extd, tags = self.post
 
         p = a.posts_get(url=url)
-        self.assert_(len(p['posts']) == 1,
+        self.assertEqual( len(p['posts']), 1,
                 "URL does not appear in collection after posts_add")
+
+        self.failUnlessRaises(
+            pydelicious.DeliciousItemExistsError,
+            lambda: a.posts_add(url, descr, tags=tags, extended=extd, shared="yes") )
 
         post = p['posts'][0]
         self.assertContains(post, 'href')
@@ -39,18 +44,19 @@ class ApiUnicodeTest(blackbox_api.ApiSystemTest):
         self.assertContains(post, 'extended')
         self.assertEqual(post['extended'], extd)
 
+
     def test_3_delete_post(self):
         a = self.api
         url, descr, extd, tags = self.post
 
-        a.posts_delete(url)
+        self.assertEqual( None, a.posts_delete(url) )
 
     def test_4_check_deleted(self):
         a = self.api
         url, descr, extd, tags = self.post
 
         p = a.posts_get(url=url)
-        self.assert_(p['posts'] == [],
+        self.assertEqual(p['posts'], [],
                 "Posted URL did not dissappear after posts_delete")
 
 

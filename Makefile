@@ -27,7 +27,7 @@ help:
 
 
 # Local targets
-.PHONY: doc test install clean all pre-dict clean-pyc test-server
+.PHONY: doc install clean all pre-dict clean-pyc test test-all test-server refresh-test-data
 
 $(HTM): $(RST)
 
@@ -40,14 +40,20 @@ doc: $(HTM) $(DOC)
 test:
 	python tests/main.py test_api
 
+test-all:
+	python tests/main.py
+
 test-server:
 	DLCS_DEBUG=1 python tests/main.py test_server
+
+refresh-test-data:
+	python tests/pydelicioustest.py refresh_test_data
 
 install: 
 	python setup.py install
 
 clean: clean-pyc
-	rm -rf $(TRGTS)
+	rm -rf $(TRGTS) build/ pydelicious-*.zip
 
 all: test pre-dist
 
@@ -56,8 +62,8 @@ pre-dist: doc clean-pyc
 clean-pyc:
 	-find -name '*.pyc' | xargs rm
 
-zip: pydelicious.py $(TRGTS)
-	zip -9 pydelicious-0.5.1.zip $^
+zip: pydelicious.py Makefile $(RST) $(TRGTS)
+	zip -9 pydelicious-0.5.2-rc1.zip $^
 
 
 # Generic targets
@@ -67,12 +73,4 @@ zip: pydelicious.py $(TRGTS)
 	@-tidy -q -m -wrap 0 -asxhtml -utf8 -i $@
 	@echo "* $^ -> $@"
 
-
-# Non-essential
-
-var/file-encodings.tab: clean-pyc ./
-	echo "# Have look/guess at file encodings" > $@
-	echo "# BVB: i found this handy to examine the original source files, which used" >> $@
-	echo "# non-ASCII encodings. To be removed... sometime." >> $@
-	find . -wholename "./.*" -prune -o \( -wholename "*.svn*" -prune -o -type f -print \) | xargs file -s >> $@
 

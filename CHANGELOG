@@ -6,3 +6,11 @@
     tools/dlcs is not tested and not included in zipped package.
     Feedparser is now optional.
 
+0.5.2-rc1
+    Now raises Exceptions for API errors. Methods do no longer return {'result:..}
+    data. May break existing code.
+    Added preliminary support for v1 feeds but not sure yet on dependencies
+    (keep using feedparser from pydelicious.py? add (simple)json?)
+    HTTP request now works on urllib2 opener that needs only be created once, instead of
+    every request. This opener now also handles 503 (throttled) and 401 (unauthorized).
+    Numerous cosmetic, formatting changes, slight fixes, etc.

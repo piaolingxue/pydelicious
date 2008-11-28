@@ -6,7 +6,7 @@
 <table width="100%" cellspacing=0 cellpadding=2 border=0 summary="heading">
 <tr bgcolor="#7799ee">
 <td valign=bottom>&nbsp;<br>
-<font color="#ffffff" face="helvetica, arial">&nbsp;<br><big><big><strong>pydelicious</strong></big></big> (version 0.5.1)</font></td
+<font color="#ffffff" face="helvetica, arial">&nbsp;<br><big><big><strong>pydelicious</strong></big></big> (version 0.5.2-rc1)</font></td
 ><td align=right valign=bottom
 ><font color="#ffffff" face="helvetica, arial"><a href=".">index</a><br><a href="file:/home/berend/project/pydelicious/trunk/pydelicious.py">/home/berend/project/pydelicious/trunk/pydelicious.py</a></font></td></tr></table>
     <p><tt>Library&nbsp;to&nbsp;access&nbsp;del.icio.us&nbsp;data&nbsp;via&nbsp;Python.<br>
@@ -28,7 +28,7 @@ SOFTWARE,&nbsp;EVEN&nbsp;IF&nbsp;ADVISED&nbsp;OF&nbsp;THE&nbsp;POSSIBILITY&nbsp;
 &nbsp;<br>
 TODO:<br>
 &nbsp;-&nbsp;distribute&nbsp;license,&nbsp;readme&nbsp;docs&nbsp;via&nbsp;setup.py?<br>
-&nbsp;-&nbsp;automatic&nbsp;releas&nbsp;build</tt></p>
+&nbsp;-&nbsp;automatic&nbsp;releas&nbsp;build?</tt></p>
 <p>
 <table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
 <tr bgcolor="#aa55cc">
@@ -37,15 +37,16 @@ TODO:<br>
     
 <tr><td bgcolor="#aa55cc"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
 <td width="100%"><table width="100%" summary="list"><tr><td width="25%" valign=top><a href="datetime.html">datetime</a><br>
+<a href="feedparser.html">feedparser</a><br>
 <a href="httplib.html">httplib</a><br>
-<a href="locale.html">locale</a><br>
-</td><td width="25%" valign=top><a href="md5.html">md5</a><br>
+</td><td width="25%" valign=top><a href="locale.html">locale</a><br>
+<a href="md5.html">md5</a><br>
 <a href="os.html">os</a><br>
-<a href="socket.html">socket</a><br>
-</td><td width="25%" valign=top><a href="sys.html">sys</a><br>
+</td><td width="25%" valign=top><a href="socket.html">socket</a><br>
+<a href="sys.html">sys</a><br>
 <a href="time.html">time</a><br>
-<a href="urllib2.html">urllib2</a><br>
-</td><td width="25%" valign=top></td></tr></table></td></tr></table><p>
+</td><td width="25%" valign=top><a href="urllib2.html">urllib2</a><br>
+</td></tr></table></td></tr></table><p>
 <table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
 <tr bgcolor="#ee77aa">
 <td colspan=3 valign=bottom>&nbsp;<br>
@@ -63,13 +64,15 @@ TODO:<br>
 </font></dt></dl>
 </dd>
 <dt><font face="helvetica, arial"><a href="pydelicious.html#PyDeliciousException">PyDeliciousException</a>
+</font></dt><dt><font face="helvetica, arial"><a href="pydelicious.html#PyDeliciousThrottled">PyDeliciousThrottled</a>
+</font></dt><dt><font face="helvetica, arial"><a href="pydelicious.html#PyDeliciousUnauthorized">PyDeliciousUnauthorized</a>
 </font></dt></dl>
 </dd>
 <dt><font face="helvetica, arial"><a href="pydelicious.html#DeliciousAPI">DeliciousAPI</a>
 </font></dt><dt><font face="helvetica, arial"><a href="urllib2.html#HTTPDefaultErrorHandler">urllib2.HTTPDefaultErrorHandler</a>(<a href="urllib2.html#BaseHandler">urllib2.BaseHandler</a>)
 </font></dt><dd>
 <dl>
-<dt><font face="helvetica, arial"><a href="pydelicious.html#DefaultErrorHandler">DefaultErrorHandler</a>
+<dt><font face="helvetica, arial"><a href="pydelicious.html#HTTPErrorHandler">HTTPErrorHandler</a>
 </font></dt></dl>
 </dd>
 </dl>
@@ -77,47 +80,12 @@ TODO:<br>
 <table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
 <tr bgcolor="#ffc8d8">
 <td colspan=3 valign=bottom>&nbsp;<br>
-<font color="#000000" face="helvetica, arial"><a name="DefaultErrorHandler">class <strong>DefaultErrorHandler</strong></a>(<a href="urllib2.html#HTTPDefaultErrorHandler">urllib2.HTTPDefaultErrorHandler</a>)</font></td></tr>
-    
-<tr bgcolor="#ffc8d8"><td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
-<td colspan=2><tt>xxx,&nbsp;bvb:&nbsp;Where&nbsp;is&nbsp;this&nbsp;used?&nbsp;should&nbsp;it&nbsp;be&nbsp;registered&nbsp;somewhere&nbsp;with&nbsp;<br>
-urllib2?<br>
-&nbsp;<br>
-Handles&nbsp;HTTP&nbsp;Error,&nbsp;currently&nbsp;only&nbsp;503.<br>&nbsp;</tt></td></tr>
-<tr><td>&nbsp;</td>
-<td width="100%"><dl><dt>Method resolution order:</dt>
-<dd><a href="pydelicious.html#DefaultErrorHandler">DefaultErrorHandler</a></dd>
-<dd><a href="urllib2.html#HTTPDefaultErrorHandler">urllib2.HTTPDefaultErrorHandler</a></dd>
-<dd><a href="urllib2.html#BaseHandler">urllib2.BaseHandler</a></dd>
-</dl>
-<hr>
-Methods defined here:<br>
-<dl><dt><a name="DefaultErrorHandler-http_error_503"><strong>http_error_503</strong></a>(self, req, fp, code, msg, headers)</dt></dl>
-
-<hr>
-Methods inherited from <a href="urllib2.html#HTTPDefaultErrorHandler">urllib2.HTTPDefaultErrorHandler</a>:<br>
-<dl><dt><a name="DefaultErrorHandler-http_error_default"><strong>http_error_default</strong></a>(self, req, fp, code, msg, hdrs)</dt></dl>
-
-<hr>
-Methods inherited from <a href="urllib2.html#BaseHandler">urllib2.BaseHandler</a>:<br>
-<dl><dt><a name="DefaultErrorHandler-__lt__"><strong>__lt__</strong></a>(self, other)</dt></dl>
-
-<dl><dt><a name="DefaultErrorHandler-add_parent"><strong>add_parent</strong></a>(self, parent)</dt></dl>
-
-<dl><dt><a name="DefaultErrorHandler-close"><strong>close</strong></a>(self)</dt></dl>
-
-<hr>
-Data and other attributes inherited from <a href="urllib2.html#BaseHandler">urllib2.BaseHandler</a>:<br>
-<dl><dt><strong>handler_order</strong> = 500</dl>
-
-</td></tr></table> <p>
-<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
-<tr bgcolor="#ffc8d8">
-<td colspan=3 valign=bottom>&nbsp;<br>
 <font color="#000000" face="helvetica, arial"><a name="DeliciousAPI">class <strong>DeliciousAPI</strong></a></font></td></tr>
     
 <tr bgcolor="#ffc8d8"><td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
-<td colspan=2><tt>Class&nbsp;providing&nbsp;main&nbsp;interace&nbsp;to&nbsp;del.icio.us&nbsp;API.<br>
+<td colspan=2><tt>An&nbsp;interace&nbsp;to&nbsp;del.icio.us&nbsp;HTTP&nbsp;API.<br>
+&nbsp;<br>
+See&nbsp;<a href="http://delicious.com/help/api">http://delicious.com/help/api</a>.<br>
 &nbsp;<br>
 Methods&nbsp;``request``&nbsp;and&nbsp;``request_raw``&nbsp;represent&nbsp;the&nbsp;core.&nbsp;For&nbsp;all&nbsp;API<br>
 paths&nbsp;there&nbsp;are&nbsp;furthermore&nbsp;methods&nbsp;(e.g.&nbsp;posts_add&nbsp;for&nbsp;'posts/all')&nbsp;with<br>
@@ -126,19 +94,19 @@ an&nbsp;explicit&nbsp;declaration&nbsp;of&nbsp;the&nbsp;parameters&nbsp;and&nbsp
 parsint&nbsp;the&nbsp;result&nbsp;XML).<br>&nbsp;</tt></td></tr>
 <tr><td>&nbsp;</td>
 <td width="100%">Methods defined here:<br>
-<dl><dt><a name="DeliciousAPI-__init__"><strong>__init__</strong></a>(self, user, passwd, codec<font color="#909090">='UTF-8'</font>, api_request<font color="#909090">=&lt;function dlcs_api_request&gt;</font>, xml_parser<font color="#909090">=&lt;function dlcs_parse_xml&gt;</font>)</dt><dd><tt>Initialize&nbsp;access&nbsp;to&nbsp;the&nbsp;API&nbsp;for&nbsp;``user``&nbsp;with&nbsp;``passwd``.<br>
+<dl><dt><a name="DeliciousAPI-__init__"><strong>__init__</strong></a>(self, user, passwd, codec<font color="#909090">='UTF-8'</font>, api_request<font color="#909090">=&lt;function dlcs_api_request&gt;</font>, xml_parser<font color="#909090">=&lt;function dlcs_parse_xml&gt;</font>, build_opener<font color="#909090">=&lt;function dlcs_api_opener&gt;</font>, encode_params<font color="#909090">=&lt;function dlcs_encode_params&gt;</font>)</dt><dd><tt>Initialize&nbsp;access&nbsp;to&nbsp;the&nbsp;API&nbsp;for&nbsp;``user``&nbsp;with&nbsp;``passwd``.<br>
 &nbsp;<br>
-``codec``&nbsp;sets&nbsp;the&nbsp;encoding&nbsp;of&nbsp;the&nbsp;arguments.<br>
+``codec``&nbsp;sets&nbsp;the&nbsp;encoding&nbsp;of&nbsp;the&nbsp;arguments,&nbsp;which&nbsp;defaults&nbsp;to&nbsp;the<br>
+users&nbsp;preferred&nbsp;locale.<br>
 &nbsp;<br>
 The&nbsp;``api_request``&nbsp;and&nbsp;``xml_parser``&nbsp;parameters&nbsp;by&nbsp;default&nbsp;point&nbsp;to<br>
 functions&nbsp;within&nbsp;this&nbsp;package&nbsp;with&nbsp;standard&nbsp;implementations&nbsp;to<br>
 request&nbsp;and&nbsp;parse&nbsp;a&nbsp;resource.&nbsp;See&nbsp;``<a href="#-dlcs_api_request">dlcs_api_request</a>()``&nbsp;and<br>
-``<a href="#-dlcs_parse_xml">dlcs_parse_xml</a>()``.&nbsp;<br>
+``<a href="#-dlcs_parse_xml">dlcs_parse_xml</a>()``.<br>
 &nbsp;<br>
-Note&nbsp;that&nbsp;``api_request``&nbsp;should&nbsp;return&nbsp;a&nbsp;file-like&nbsp;instance&nbsp;with&nbsp;an&nbsp;<br>
-HTTPMessage&nbsp;instance&nbsp;under&nbsp;``info()``&nbsp;(see&nbsp;``urllib2.openurl``&nbsp;for&nbsp;info).<br>
-The&nbsp;``xml_parser``&nbsp;should&nbsp;return&nbsp;the&nbsp;parsed&nbsp;del.icio.us&nbsp;data&nbsp;that&nbsp;is&nbsp;to<br>
-be&nbsp;returned&nbsp;by&nbsp;API&nbsp;method&nbsp;implementations&nbsp;on&nbsp;this&nbsp;class.</tt></dd></dl>
+build_opener&nbsp;should&nbsp;provided&nbsp;with&nbsp;credentials&nbsp;build&nbsp;an&nbsp;opener&nbsp;for&nbsp;<br>
+the&nbsp;delicious&nbsp;API&nbsp;server.&nbsp;encode_params&nbsp;preprocesses&nbsp;parameters&nbsp;before<br>
+they&nbsp;are&nbsp;passed&nbsp;to&nbsp;api_request.</tt></dd></dl>
 
 <dl><dt><a name="DeliciousAPI-__repr__"><strong>__repr__</strong></a>(self)</dt></dl>
 
@@ -275,8 +243,8 @@ most&nbsp;recent&nbsp;date&nbsp;will&nbsp;be&nbsp;used.<br>
 &nbsp;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&lt;update&nbsp;time="CCYY-MM-DDThh:mm:ssZ"&gt;</tt></dd></dl>
 
-<dl><dt><a name="DeliciousAPI-request"><strong>request</strong></a>(self, path, _raw<font color="#909090">=False</font>, **params)</dt><dd><tt>Calls&nbsp;a&nbsp;path&nbsp;in&nbsp;the&nbsp;API,&nbsp;parses&nbsp;the&nbsp;answer&nbsp;to&nbsp;a&nbsp;JSON-like&nbsp;structure<br>
-by&nbsp;default.&nbsp;Use&nbsp;with&nbsp;``_raw=True``&nbsp;or&nbsp;``call&nbsp;<a href="#DeliciousAPI-request_raw">request_raw</a>()``&nbsp;directly&nbsp;<br>
+<dl><dt><a name="DeliciousAPI-request"><strong>request</strong></a>(self, path, _raw<font color="#909090">=False</font>, **params)</dt><dd><tt>Sends&nbsp;a&nbsp;request&nbsp;message&nbsp;to&nbsp;`path`&nbsp;in&nbsp;the&nbsp;API,&nbsp;and&nbsp;parses&nbsp;the&nbsp;results<br>
+from&nbsp;XML.&nbsp;Use&nbsp;with&nbsp;``_raw=True``&nbsp;or&nbsp;``call&nbsp;<a href="#DeliciousAPI-request_raw">request_raw</a>()``&nbsp;directly&nbsp;<br>
 to&nbsp;get&nbsp;the&nbsp;filehandler&nbsp;and&nbsp;process&nbsp;the&nbsp;response&nbsp;message&nbsp;manually.<br>
 &nbsp;<br>
 Calls&nbsp;to&nbsp;some&nbsp;paths&nbsp;will&nbsp;return&nbsp;a&nbsp;`result`&nbsp;message,&nbsp;i.e.::<br>
@@ -287,9 +255,11 @@ or::<br>
 &nbsp;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&lt;result&gt;...&lt;/result&gt;<br>
 &nbsp;<br>
-These&nbsp;are&nbsp;all&nbsp;parsed&nbsp;to&nbsp;``{'result':(Boolean,&nbsp;MessageString)}``&nbsp;and&nbsp;<br>
-this&nbsp;method&nbsp;will&nbsp;raise&nbsp;``<a href="#DeliciousError">DeliciousError</a>``&nbsp;on&nbsp;negative&nbsp;`result`&nbsp;answers.<br>
-Using&nbsp;``_raw=True``&nbsp;bypasses&nbsp;all&nbsp;parsing&nbsp;and&nbsp;will&nbsp;never&nbsp;raise&nbsp;<br>
+These&nbsp;should&nbsp;all&nbsp;be&nbsp;parsed&nbsp;to&nbsp;``{'result':(Boolean,&nbsp;MessageString)}``,<br>
+this&nbsp;method&nbsp;raises&nbsp;a&nbsp;``<a href="#DeliciousError">DeliciousError</a>``&nbsp;on&nbsp;negative&nbsp;`result`&nbsp;answers.<br>
+Positive&nbsp;answers&nbsp;are&nbsp;silently&nbsp;accepted&nbsp;and&nbsp;nothing&nbsp;is&nbsp;returned.<br>
+&nbsp;<br>
+Using&nbsp;``_raw=True``&nbsp;bypasses&nbsp;all&nbsp;parsing&nbsp;and&nbsp;never&nbsp;raises&nbsp;<br>
 ``<a href="#DeliciousError">DeliciousError</a>``.<br>
 &nbsp;<br>
 See&nbsp;``<a href="#-dlcs_parse_xml">dlcs_parse_xml</a>()``&nbsp;and&nbsp;``<a href="#DeliciousAPI-request_raw">request_raw</a>()``.</tt></dd></dl>
@@ -373,10 +343,44 @@ Methods inherited from <a href="exceptions.html#Exception">exceptions.Exception<
 <table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
 <tr bgcolor="#ffc8d8">
 <td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#000000" face="helvetica, arial"><a name="HTTPErrorHandler">class <strong>HTTPErrorHandler</strong></a>(<a href="urllib2.html#HTTPDefaultErrorHandler">urllib2.HTTPDefaultErrorHandler</a>)</font></td></tr>
+    
+<tr><td bgcolor="#ffc8d8"><tt>&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%"><dl><dt>Method resolution order:</dt>
+<dd><a href="pydelicious.html#HTTPErrorHandler">HTTPErrorHandler</a></dd>
+<dd><a href="urllib2.html#HTTPDefaultErrorHandler">urllib2.HTTPDefaultErrorHandler</a></dd>
+<dd><a href="urllib2.html#BaseHandler">urllib2.BaseHandler</a></dd>
+</dl>
+<hr>
+Methods defined here:<br>
+<dl><dt><a name="HTTPErrorHandler-http_error_401"><strong>http_error_401</strong></a>(self, req, fp, code, msg, headers)</dt></dl>
+
+<dl><dt><a name="HTTPErrorHandler-http_error_503"><strong>http_error_503</strong></a>(self, req, fp, code, msg, headers)</dt></dl>
+
+<hr>
+Methods inherited from <a href="urllib2.html#HTTPDefaultErrorHandler">urllib2.HTTPDefaultErrorHandler</a>:<br>
+<dl><dt><a name="HTTPErrorHandler-http_error_default"><strong>http_error_default</strong></a>(self, req, fp, code, msg, hdrs)</dt></dl>
+
+<hr>
+Methods inherited from <a href="urllib2.html#BaseHandler">urllib2.BaseHandler</a>:<br>
+<dl><dt><a name="HTTPErrorHandler-__lt__"><strong>__lt__</strong></a>(self, other)</dt></dl>
+
+<dl><dt><a name="HTTPErrorHandler-add_parent"><strong>add_parent</strong></a>(self, parent)</dt></dl>
+
+<dl><dt><a name="HTTPErrorHandler-close"><strong>close</strong></a>(self)</dt></dl>
+
+<hr>
+Data and other attributes inherited from <a href="urllib2.html#BaseHandler">urllib2.BaseHandler</a>:<br>
+<dl><dt><strong>handler_order</strong> = 500</dl>
+
+</td></tr></table> <p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ffc8d8">
+<td colspan=3 valign=bottom>&nbsp;<br>
 <font color="#000000" face="helvetica, arial"><a name="PyDeliciousException">class <strong>PyDeliciousException</strong></a>(<a href="exceptions.html#Exception">exceptions.Exception</a>)</font></td></tr>
     
 <tr bgcolor="#ffc8d8"><td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
-<td colspan=2><tt>Std.&nbsp;pydelicious&nbsp;error<br>&nbsp;</tt></td></tr>
+<td colspan=2><tt>Standard&nbsp;pydelicious&nbsp;error<br>&nbsp;</tt></td></tr>
 <tr><td>&nbsp;</td>
 <td width="100%">Methods inherited from <a href="exceptions.html#Exception">exceptions.Exception</a>:<br>
 <dl><dt><a name="PyDeliciousException-__getitem__"><strong>__getitem__</strong></a>(...)</dt></dl>
@@ -384,6 +388,34 @@ Methods inherited from <a href="exceptions.html#Exception">exceptions.Exception<
 <dl><dt><a name="PyDeliciousException-__init__"><strong>__init__</strong></a>(...)</dt></dl>
 
 <dl><dt><a name="PyDeliciousException-__str__"><strong>__str__</strong></a>(...)</dt></dl>
+
+</td></tr></table> <p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ffc8d8">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#000000" face="helvetica, arial"><a name="PyDeliciousThrottled">class <strong>PyDeliciousThrottled</strong></a>(<a href="exceptions.html#Exception">exceptions.Exception</a>)</font></td></tr>
+    
+<tr><td bgcolor="#ffc8d8"><tt>&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%">Methods inherited from <a href="exceptions.html#Exception">exceptions.Exception</a>:<br>
+<dl><dt><a name="PyDeliciousThrottled-__getitem__"><strong>__getitem__</strong></a>(...)</dt></dl>
+
+<dl><dt><a name="PyDeliciousThrottled-__init__"><strong>__init__</strong></a>(...)</dt></dl>
+
+<dl><dt><a name="PyDeliciousThrottled-__str__"><strong>__str__</strong></a>(...)</dt></dl>
+
+</td></tr></table> <p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ffc8d8">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#000000" face="helvetica, arial"><a name="PyDeliciousUnauthorized">class <strong>PyDeliciousUnauthorized</strong></a>(<a href="exceptions.html#Exception">exceptions.Exception</a>)</font></td></tr>
+    
+<tr><td bgcolor="#ffc8d8"><tt>&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%">Methods inherited from <a href="exceptions.html#Exception">exceptions.Exception</a>:<br>
+<dl><dt><a name="PyDeliciousUnauthorized-__getitem__"><strong>__getitem__</strong></a>(...)</dt></dl>
+
+<dl><dt><a name="PyDeliciousUnauthorized-__init__"><strong>__init__</strong></a>(...)</dt></dl>
+
+<dl><dt><a name="PyDeliciousUnauthorized-__str__"><strong>__str__</strong></a>(...)</dt></dl>
 
 </td></tr></table></td></tr></table><p>
 <table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
@@ -395,20 +427,19 @@ Methods inherited from <a href="exceptions.html#Exception">exceptions.Exception<
 <td width="100%"><dl><dt><a name="-add"><strong>add</strong></a>(user, passwd, url, description, tags<font color="#909090">=''</font>, extended<font color="#909090">=''</font>, dt<font color="#909090">=None</font>, replace<font color="#909090">=False</font>)</dt></dl>
  <dl><dt><a name="-apiNew"><strong>apiNew</strong></a>(user, passwd)</dt><dd><tt>creates&nbsp;a&nbsp;new&nbsp;<a href="#DeliciousAPI">DeliciousAPI</a>&nbsp;object.<br>
 requires&nbsp;user(name)&nbsp;and&nbsp;passwd</tt></dd></dl>
+ <dl><dt><a name="-build_api_opener"><strong>build_api_opener</strong></a>(host, user, passwd)</dt><dd><tt>Build&nbsp;a&nbsp;urllib2&nbsp;style&nbsp;opener&nbsp;with&nbsp;HTTP&nbsp;Basic&nbsp;authorization&nbsp;for&nbsp;one&nbsp;host<br>
+and&nbsp;additional&nbsp;error&nbsp;handling.</tt></dd></dl>
  <dl><dt><a name="-delete"><strong>delete</strong></a>(user, passwd, url)</dt></dl>
  <dl><dt><a name="-delicious_datetime"><strong>delicious_datetime</strong></a>(str)</dt><dd><tt>Parse&nbsp;a&nbsp;ISO&nbsp;8601&nbsp;formatted&nbsp;string&nbsp;to&nbsp;a&nbsp;Python&nbsp;datetime&nbsp;...</tt></dd></dl>
- <dl><dt><a name="-dict0"><strong>dict0</strong></a>(d)</dt></dl>
- <dl><dt><a name="-dlcs_api_request"><strong>dlcs_api_request</strong></a>(path, params<font color="#909090">=''</font>, user<font color="#909090">=''</font>, passwd<font color="#909090">=''</font>, throttle<font color="#909090">=True</font>)</dt><dd><tt>Retrieve/query&nbsp;a&nbsp;path&nbsp;within&nbsp;the&nbsp;del.icio.us&nbsp;API.<br>
+ <dl><dt><a name="-dict0"><strong>dict0</strong></a>(d)</dt><dd><tt>Removes&nbsp;empty&nbsp;string&nbsp;values&nbsp;from&nbsp;dictionary</tt></dd></dl>
+ <dl><dt><a name="-dlcs_api_opener"><strong>dlcs_api_opener</strong></a>(user, passwd)</dt></dl>
+ <dl><dt><a name="-dlcs_api_request"><strong>dlcs_api_request</strong></a>(path, params<font color="#909090">=''</font>, user<font color="#909090">=''</font>, passwd<font color="#909090">=''</font>, throttle<font color="#909090">=True</font>, opener<font color="#909090">=None</font>)</dt><dd><tt>Retrieve/query&nbsp;a&nbsp;path&nbsp;within&nbsp;the&nbsp;del.icio.us&nbsp;API.<br>
 &nbsp;<br>
 This&nbsp;implements&nbsp;a&nbsp;minimum&nbsp;interval&nbsp;between&nbsp;calls&nbsp;to&nbsp;avoid<br>
 throttling.&nbsp;[#]_&nbsp;Use&nbsp;param&nbsp;'throttle'&nbsp;to&nbsp;turn&nbsp;this&nbsp;behaviour&nbsp;off.<br>
 &nbsp;<br>
-todo:&nbsp;back&nbsp;off&nbsp;on&nbsp;503's&nbsp;(HTTPError,&nbsp;URLError?&nbsp;testing<br>
-&nbsp;<br>
-Returned&nbsp;XML&nbsp;does&nbsp;not&nbsp;always&nbsp;correspond&nbsp;with&nbsp;given&nbsp;del.icio.us&nbsp;examples<br>
-[#]_.<br>
-&nbsp;<br>
 ..&nbsp;[#]&nbsp;<a href="http://del.icio.us/help/api/">http://del.icio.us/help/api/</a></tt></dd></dl>
+ <dl><dt><a name="-dlcs_encode_params"><strong>dlcs_encode_params</strong></a>(params, usercodec)</dt><dd><tt>Turn&nbsp;all&nbsp;param&nbsp;values&nbsp;(int,&nbsp;list,&nbsp;bool)&nbsp;into&nbsp;utf8&nbsp;encoded&nbsp;strings.</tt></dd></dl>
  <dl><dt><a name="-dlcs_parse_xml"><strong>dlcs_parse_xml</strong></a>(data, split_tags<font color="#909090">=False</font>)</dt><dd><tt>Parse&nbsp;any&nbsp;del.icio.us&nbsp;XML&nbsp;document&nbsp;and&nbsp;return&nbsp;Python&nbsp;data&nbsp;structure.<br>
 &nbsp;<br>
 Recognizes&nbsp;all&nbsp;XML&nbsp;document&nbsp;formats&nbsp;as&nbsp;returned&nbsp;by&nbsp;the&nbsp;version&nbsp;1&nbsp;API&nbsp;and<br>
@@ -421,7 +452,9 @@ Returned&nbsp;instance&nbsp;is&nbsp;always&nbsp;a&nbsp;dictionary.&nbsp;Examples
 &nbsp;{'dates':&nbsp;[{'count':'...','date':'...'},],&nbsp;'tag':'',&nbsp;'user':'...'}<br>
 &nbsp;{'result':(True,&nbsp;"done")}<br>
 &nbsp;#&nbsp;etcetera.</tt></dd></dl>
- <dl><dt><a name="-dlcs_rss_request"><strong>dlcs_rss_request</strong></a>(tag<font color="#909090">=''</font>, popular<font color="#909090">=0</font>, user<font color="#909090">=''</font>, url<font color="#909090">=''</font>)</dt><dd><tt>Parse&nbsp;a&nbsp;RSS&nbsp;request.</tt></dd></dl>
+ <dl><dt><a name="-dlcs_rss_request"><strong>dlcs_rss_request</strong></a>(tag<font color="#909090">=''</font>, popular<font color="#909090">=0</font>, user<font color="#909090">=''</font>, url<font color="#909090">=''</font>)</dt><dd><tt>Parse&nbsp;a&nbsp;RSS&nbsp;request.<br>
+&nbsp;<br>
+This&nbsp;requests&nbsp;old&nbsp;(now&nbsp;undocumented?)&nbsp;URL&nbsp;paths&nbsp;that&nbsp;still&nbsp;seem&nbsp;to&nbsp;work.</tt></dd></dl>
  <dl><dt><a name="-get"><strong>get</strong></a>(user, passwd, tag<font color="#909090">=''</font>, dt<font color="#909090">=None</font>, count<font color="#909090">=0</font>, hashes<font color="#909090">=[]</font>)</dt></dl>
  <dl><dt><a name="-get_all"><strong>get_all</strong></a>(user, passwd, tag<font color="#909090">=''</font>, start<font color="#909090">=0</font>, results<font color="#909090">=100</font>, fromdt<font color="#909090">=None</font>, todt<font color="#909090">=None</font>)</dt><dd><tt>Returns&nbsp;all&nbsp;posts.&nbsp;Please&nbsp;use&nbsp;sparingly.&nbsp;See&nbsp;`get_updated`</tt></dd></dl>
  <dl><dt><a name="-get_popular"><strong>get_popular</strong></a>(tag<font color="#909090">=''</font>)</dt><dd><tt>parse&nbsp;RSS&nbsp;for&nbsp;popular&nbsp;URLS&nbsp;for&nbsp;tag</tt></dd></dl>
@@ -430,14 +463,15 @@ Returned&nbsp;instance&nbsp;is&nbsp;always&nbsp;a&nbsp;dictionary.&nbsp;Examples
  <dl><dt><a name="-get_update"><strong>get_update</strong></a>(user, passwd)</dt><dd><tt>Returns&nbsp;the&nbsp;last&nbsp;update&nbsp;time&nbsp;for&nbsp;the&nbsp;user.</tt></dd></dl>
  <dl><dt><a name="-get_urlposts"><strong>get_urlposts</strong></a>(url)</dt><dd><tt>parse&nbsp;RSS&nbsp;for&nbsp;URL</tt></dd></dl>
  <dl><dt><a name="-get_userposts"><strong>get_userposts</strong></a>(user)</dt><dd><tt>parse&nbsp;RSS&nbsp;for&nbsp;user</tt></dd></dl>
+ <dl><dt><a name="-getfeed"><strong>getfeed</strong></a>(name, url_map<font color="#909090">={'': '%(format)s', 'alerts': '%(format)s/alerts', 'popular': '%(format)s/popular', 'popular_tagged': '%(format)s/popular/%(tag)s', 'recent': '%(format)s/recent', 'tagged': '%(format)s/tag/%(tags)s', 'url': '%(format)s/url/%(urlmd5)s', 'urlinfo': 'json/urlinfo/%(urlmd5)s', 'user': '%(format)s/%(username)s', 'user_inbox': '%(format)s/inbox/%(username)s?private=%(key)s', ...}</font>, **params)</dt><dd><tt>Request&nbsp;and&nbsp;parse&nbsp;a&nbsp;feed.&nbsp;See&nbsp;delicious_v2_feeds&nbsp;for&nbsp;available&nbsp;names&nbsp;and<br>
+required&nbsp;parameters.&nbsp;Format&nbsp;defaults&nbsp;to&nbsp;json.</tt></dd></dl>
  <dl><dt><a name="-getrss"><strong>getrss</strong></a>(tag<font color="#909090">=''</font>, popular<font color="#909090">=0</font>, url<font color="#909090">=''</font>, user<font color="#909090">=''</font>)</dt><dd><tt>get&nbsp;posts&nbsp;from&nbsp;del.icio.us&nbsp;via&nbsp;parsing&nbsp;RSS&nbsp;(bvb:or&nbsp;HTML)<br>
 &nbsp;<br>
 tag&nbsp;(opt)&nbsp;sort&nbsp;by&nbsp;tag<br>
 popular&nbsp;(opt)&nbsp;look&nbsp;for&nbsp;the&nbsp;popular&nbsp;stuff<br>
 user&nbsp;(opt)&nbsp;get&nbsp;the&nbsp;posts&nbsp;by&nbsp;a&nbsp;user,&nbsp;this&nbsp;striks&nbsp;popular<br>
 url&nbsp;(opt)&nbsp;get&nbsp;the&nbsp;posts&nbsp;by&nbsp;url</tt></dd></dl>
- <dl><dt><a name="-http_auth_request"><strong>http_auth_request</strong></a>(url, host, user, passwd, user_agent<font color="#909090">='pydelicious.py/0.5.1 http://code.google.com/p/pydelicious/'</font>)</dt><dd><tt>Call&nbsp;an&nbsp;HTTP&nbsp;server&nbsp;with&nbsp;authorization&nbsp;credentials&nbsp;using&nbsp;urllib2.</tt></dd></dl>
- <dl><dt><a name="-http_request"><strong>http_request</strong></a>(url, user_agent<font color="#909090">='pydelicious.py/0.5.1 http://code.google.com/p/pydelicious/'</font>, retry<font color="#909090">=4</font>)</dt><dd><tt>Retrieve&nbsp;the&nbsp;contents&nbsp;referenced&nbsp;by&nbsp;the&nbsp;URL&nbsp;using&nbsp;urllib2.<br>
+ <dl><dt><a name="-http_request"><strong>http_request</strong></a>(url, user_agent<font color="#909090">='pydelicious/0.5.2-rc1 http://code.google.com/p/pydelicious/'</font>, retry<font color="#909090">=4</font>, opener<font color="#909090">=None</font>)</dt><dd><tt>Retrieve&nbsp;the&nbsp;contents&nbsp;referenced&nbsp;by&nbsp;the&nbsp;URL&nbsp;using&nbsp;urllib2.<br>
 &nbsp;<br>
 Retries&nbsp;up&nbsp;to&nbsp;four&nbsp;times&nbsp;(default)&nbsp;on&nbsp;exceptions.</tt></dd></dl>
  <dl><dt><a name="-json_fans"><strong>json_fans</strong></a>(user)</dt><dd><tt><a href="http://del.icio.us/feeds/json/fans/mpe">http://del.icio.us/feeds/json/fans/mpe</a><br>
@@ -468,23 +502,24 @@ raw&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp
 <strong>DLCS_API</strong> = 'https://api.del.icio.us/v1'<br>
 <strong>DLCS_API_HOST</strong> = 'api.del.icio.us'<br>
 <strong>DLCS_API_PATH</strong> = 'v1'<br>
+<strong>DLCS_FEEDS</strong> = 'http://feeds.delicious.com/v2/'<br>
 <strong>DLCS_OK_MESSAGES</strong> = ('done', 'ok')<br>
 <strong>DLCS_REQUEST_TIMEOUT</strong> = 444<br>
 <strong>DLCS_RSS</strong> = 'http://del.icio.us/rss/'<br>
 <strong>DLCS_WAIT_TIME</strong> = 4<br>
 <strong>ISO_8601_DATETIME</strong> = '%Y-%m-%dT%H:%M:%SZ'<br>
 <strong>PREFERRED_ENCODING</strong> = 'UTF-8'<br>
-<strong>USER_AGENT</strong> = 'pydelicious.py/0.5.1 http://code.google.com/p/pydelicious/'<br>
+<strong>USER_AGENT</strong> = 'pydelicious/0.5.2-rc1 http://code.google.com/p/pydelicious/'<br>
 <strong>Waiter</strong> = &lt;pydelicious._Waiter instance&gt;<br>
 <strong>__author__</strong> = 'Frank Timmermann &lt;regenkind_at_gmx_dot_de&gt;'<br>
 <strong>__author_email__</strong> = ''<br>
 <strong>__contributors__</strong> = ['Greg Pinero', 'Berend van Berkum &lt;berend+pydelicious@dotmpe.com&gt;']<br>
 <strong>__description__</strong> = "pydelicious.py allows you to access the web service of del.icio.us via it's API through python."<br>
 <strong>__docformat__</strong> = 'restructuredtext en'<br>
-<strong>__long_description__</strong> = 'the goal is to design an easy to use and fully functional python interface to del.icio.us. '<br>
+<strong>__long_description__</strong> = 'The goal is to design an easy to use and fully functional python interface to del.icio.us.'<br>
 <strong>__url__</strong> = 'http://code.google.com/p/pydelicious/'<br>
-<strong>__version__</strong> = '0.5.1'<br>
-<strong>feedparser</strong> = None</td></tr></table><p>
+<strong>__version__</strong> = '0.5.2-rc1'<br>
+<strong>delicious_v2_feeds</strong> = {'': '%(format)s', 'alerts': '%(format)s/alerts', 'popular': '%(format)s/popular', 'popular_tagged': '%(format)s/popular/%(tag)s', 'recent': '%(format)s/recent', 'tagged': '%(format)s/tag/%(tags)s', 'url': '%(format)s/url/%(urlmd5)s', 'urlinfo': 'json/urlinfo/%(urlmd5)s', 'user': '%(format)s/%(username)s', 'user_inbox': '%(format)s/inbox/%(username)s?private=%(key)s', ...}</td></tr></table><p>
 <table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
 <tr bgcolor="#7799ee">
 <td colspan=3 valign=bottom>&nbsp;<br>

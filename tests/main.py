@@ -23,7 +23,7 @@ def init_blackboxtest_suite():
     import blackbox_api
     if not (blackbox_api.usr and blackbox_api.pwd):
         print "Skipping Blackbox API tests"
-        return
+        return []
 
     from blackbox_api_unicode import ApiUnicodeTest
     from blackbox_api_latin1 import ApiLatin1Test

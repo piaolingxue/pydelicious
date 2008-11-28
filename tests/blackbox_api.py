@@ -21,11 +21,11 @@ class ApiSystemTest(unittest.TestCase):
         else:
             self.creds = usr, pwd
             self.api = DeliciousAPI(usr, pwd, codec)
-            # stat or fail
-            try:
-                self.api.posts_update()
-            except PyDeliciousException, e:
-                sys.exit("Cannot stat server, check credentials (error: %s)" % e)
+
+            # should raise or return:
+            update = self.api.posts_update()
+            if not update:
+                sys.exit("Cannot stat server, unknown error")
 
     def setUp(self):
         "Default setUp before each ApiSystemTest testcase"
@@ -33,6 +33,7 @@ class ApiSystemTest(unittest.TestCase):
 
     def assertContains(self, container, object):
         self.failUnless(object in container, "%s not in %s" %(object, container))
+
 
 class TestApiCalls(ApiSystemTest):
 
@@ -69,10 +70,10 @@ class TestApiCalls(ApiSystemTest):
                 type( self.api.posts_all() ))
 
     def test_08_posts_add_remove(self):
-        self.assertEqual( type({}),
-                type( self.api.posts_add("http://sub.dom.tl/", "desc") ))
-        self.assertEqual( type({}),
-                type( self.api.posts_delete("http://sub.dom.tl/") ))
+        self.assertEqual( None,
+                self.api.posts_add("http://sub.dom.tl/", "desc") )
+        self.assertEqual( None,
+                self.api.posts_delete("http://sub.dom.tl/") )
 
 
 # used to store credentials
@@ -104,6 +105,7 @@ def get_credentials():
 
     if not (user or passwd) and os.path.exists(DLCS_TESTER):
         user, passwd = open(DLCS_TESTER).read().strip().split(',')
+        print "Loaded user %s from %s" % (user, DLCS_TESTER)
 
     if not user:                        
         print "Enter del.icio.us test account login (hit return to skip API tests)"
@@ -116,7 +118,7 @@ def get_credentials():
     if not os.path.exists(DLCS_TESTER):
         try:
             open(DLCS_TESTER, 'w+').write("%s,%s" % (user, passwd))
-            os.chmod(0600, DLCS_TESTER)
+            os.chmod(DLCS_TESTER, 0600)
         except Exception, e:            
             print >>sys.stderr,"Unable to save credentials to %s, error: %s" % (DLCS_TESTER, e)
 

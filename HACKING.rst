@@ -18,4 +18,5 @@ Here are a few comments:
 - Use the issue list to get comments on your proposed changes.
 
 
+.. _project hompage: http://code.google.com/p/pydelicious/
 .. _issues: http://code.google.com/p/pydelicious/issues/

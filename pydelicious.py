@@ -17,7 +17,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 TODO:
  - distribute license, readme docs via setup.py?
- - automatic releas build
+ - automatic releas build?
 """
 import sys
 import os
@@ -31,21 +31,30 @@ from urllib import urlencode, quote_plus
 from StringIO import StringIO
 from pprint import pformat
 
+DEBUG = 0
+if 'DLCS_DEBUG' in os.environ:
+    DEBUG = int(os.environ['DLCS_DEBUG'])
+    print >>sys.stderr, \
+        "Set DEBUG to %i from DLCS_DEBUG env." % DEBUG
+
 try:
     from elementtree.ElementTree import parse as parse_xml
 except ImportError:
-    from  xml.etree.ElementTree import parse as parse_xml
+    from xml.etree.ElementTree import parse as parse_xml
 
 try:    
     import feedparser
 except ImportError:
+    if DEBUG: print >>sys.stderr, \
+        "Feedparser not available, no RSS parsing."
     feedparser = None
 
 
 ### Static config
 
-__version__ = '0.5.1'
-__author__ = 'Frank Timmermann <regenkind_at_gmx_dot_de>' # GP: does not respond to emails
+__version__ = '0.5.2-rc1'
+__author__ = 'Frank Timmermann <regenkind_at_gmx_dot_de>' 
+    # GP: does not respond to emails
 __contributors__ = [
     'Greg Pinero',
     'Berend van Berkum <berend+pydelicious@dotmpe.com>']
@@ -53,11 +62,13 @@ __url__ = 'http://code.google.com/p/pydelicious/'
 # Old URL: 'http://deliciouspython.python-hosting.com/'
 __author_email__ = ""
 __docformat__ = "restructuredtext en"
-__description__ = '''pydelicious.py allows you to access the web service of del.icio.us via it's API through python.'''
-__long_description__ = '''the goal is to design an easy to use and fully functional python interface to del.icio.us. '''
+__description__ = "pydelicious.py allows you to access the web service of " \
+    "del.icio.us via it's API through python."
+__long_description__ = "The goal is to design an easy to use and fully " \
+    "functional python interface to del.icio.us."
 
 DLCS_OK_MESSAGES = ('done', 'ok')
-"Known text values of positive del.icio.us <result> answers"
+"Known text values of positive del.icio.us <result/> answers"
 DLCS_WAIT_TIME = 4
 "Time to wait between API requests"
 DLCS_REQUEST_TIMEOUT = 444 
@@ -67,19 +78,17 @@ DLCS_API_HOST = 'api.del.icio.us'
 DLCS_API_PATH = 'v1'
 DLCS_API = "https://%s/%s" % (DLCS_API_HOST, DLCS_API_PATH)
 DLCS_RSS = 'http://del.icio.us/rss/'
+DLCS_FEEDS = 'http://feeds.delicious.com/v2/'
 
 PREFERRED_ENCODING = locale.getpreferredencoding()
 
 ISO_8601_DATETIME = '%Y-%m-%dT%H:%M:%SZ'
 
-USER_AGENT = 'pydelicious.py/%s %s' % (__version__, __url__)
-
-DEBUG = 0
-if 'DLCS_DEBUG' in os.environ:
-    DEBUG = int(os.environ['DLCS_DEBUG'])
+USER_AGENT = 'pydelicious/%s %s' % (__version__, __url__)
 
 
-# Taken from FeedParser.py
+### Timeoutsocket hack taken from FeedParser.py
+
 # timeoutsocket allows feedparser to time out rather than hang forever on ultra-
 # slow servers. Python 2.3 now has this functionality available in the standard 
 # socket library, so under 2.3 you don't need to install anything.  But you 
@@ -133,7 +142,9 @@ Waiter = _Waiter(DLCS_WAIT_TIME)
 
 
 class PyDeliciousException(Exception):
-    '''Std. pydelicious error'''
+    """Standard pydelicious error"""
+class PyDeliciousThrottled(Exception): pass
+class PyDeliciousUnauthorized(Exception): pass
 
 class DeliciousError(Exception):
     """Raised when the server responds with a negative answer"""
@@ -143,28 +154,32 @@ class DeliciousError(Exception):
         if error_string == 'item already exists':
             raise DeliciousItemExistsError, params['url']
         else:
-            raise DeliciousError, path
+            raise DeliciousError, "%s for calling <%s>" % (error_string,
+                    path+urllib.urlencode(params))
 
 class DeliciousItemExistsError(DeliciousError):
     """Raised then adding an already existing post."""
 
 
-class DefaultErrorHandler(urllib2.HTTPDefaultErrorHandler):
-    """xxx, bvb: Where is this used? should it be registered somewhere with 
-    urllib2?
+class HTTPErrorHandler(urllib2.HTTPDefaultErrorHandler):
 
-    Handles HTTP Error, currently only 503.
-    """
+    def http_error_401(self, req, fp, code, msg, headers):
+        raise PyDeliciousUnauthorized, "Check credentials."
 
     def http_error_503(self, req, fp, code, msg, headers):
-        raise urllib2.HTTPError(req, code, throttled_message, headers, fp)
+        # Retry-After?
+        errmsg = "Try again later."
+        if 'Retry-After' in headers:
+            errmsg = "You may try again after %s" % headers['Retry-After']
+        raise PyDeliciousThrottled, errmsg
 
 
 ### Utility functions
 
 def dict0(d):
-    # Trims empty dict entries
-    return dict([(k,v) for k,v in d.items() if v])
+    "Removes empty string values from dictionary"
+    return dict([(k,v) for k,v in d.items() 
+            if v=='' and isinstance(v, basestring)])
 
 
 def delicious_datetime(str):
@@ -173,12 +188,15 @@ def delicious_datetime(str):
     return datetime.datetime(*time.strptime(str, ISO_8601_DATETIME)[0:6])
 
 
-def http_request(url, user_agent=USER_AGENT, retry=4):
+def http_request(url, user_agent=USER_AGENT, retry=4, opener=None):
     """Retrieve the contents referenced by the URL using urllib2.
 
     Retries up to four times (default) on exceptions.
     """
     request = urllib2.Request(url, headers={'User-Agent':user_agent})
+
+    if not opener:
+        opener = urllib2.build_opener()
 
     # Remember last error
     e = None
@@ -187,9 +205,10 @@ def http_request(url, user_agent=USER_AGENT, retry=4):
     tries = retry;
     while tries:
         try:
-            return urllib2.urlopen(request)
+            return opener.open(request)
 
-        except urllib2.HTTPError, e: # protocol errors,
+        except urllib2.HTTPError, e: 
+            # reraise unexpected protocol errors as PyDeliciousException
             raise PyDeliciousException, "%s" % e
 
         except urllib2.URLError, e:
@@ -206,31 +225,31 @@ def http_request(url, user_agent=USER_AGENT, retry=4):
             "Unable to retrieve data at '%s', %s" % (url, e)
 
 
-def http_auth_request(url, host, user, passwd, user_agent=USER_AGENT):
-    """Call an HTTP server with authorization credentials using urllib2.
+def build_api_opener(host, user, passwd):
+    """Build a urllib2 style opener with HTTP Basic authorization for one host
+    and additional error handling.
     """
     if DEBUG: httplib.HTTPConnection.debuglevel = 1
 
-    # Hook up handler/opener to urllib2
     password_manager = urllib2.HTTPPasswordMgrWithDefaultRealm()
     password_manager.add_password(None, host, user, passwd)
     auth_handler = urllib2.HTTPBasicAuthHandler(password_manager)
-    opener = urllib2.build_opener(auth_handler)
-    urllib2.install_opener(opener)
 
-    return http_request(url, user_agent)
+    http_error_handler = HTTPErrorHandler()
+
+    return urllib2.build_opener(auth_handler, http_error_handler)
 
 
-def dlcs_api_request(path, params='', user='', passwd='', throttle=True):
+def dlcs_api_opener(user, passwd):
+    return build_api_opener(DLCS_API_HOST, user, passwd)
+
+
+def dlcs_api_request(path, params='', user='', passwd='', throttle=True,
+        opener=None):
     """Retrieve/query a path within the del.icio.us API.
 
     This implements a minimum interval between calls to avoid
     throttling. [#]_ Use param 'throttle' to turn this behaviour off.
-
-    todo: back off on 503's (HTTPError, URLError? testing
-
-    Returned XML does not always correspond with given del.icio.us examples
-    [#]_.
 
     .. [#] http://del.icio.us/help/api/
     """
@@ -242,17 +261,52 @@ def dlcs_api_request(path, params='', user='', passwd='', throttle=True):
     else:
         url = "%s/%s" % (DLCS_API, path)
 
-    if DEBUG: print >>sys.stderr, "dlcs_api_request: %s" % url
+    if DEBUG: print >>sys.stderr, \
+            "dlcs_api_request: %s" % url
 
-    try:
-        fl = http_auth_request(url, DLCS_API_HOST, user, passwd, USER_AGENT)
-        if DEBUG>2:
-            print >>sys.stderr, pformat(fl.info().headers)
-        return fl
+    if not opener:
+        opener = dlcs_api_opener(user, passwd)
 
-    # bvb: Is this ever raised? When?
-    except DefaultErrorHandler, e:
-        print >>sys.stderr, "%s" % e
+    fl = http_request(url, opener=opener)
+
+    if DEBUG>2: print >>sys.stderr, \
+            pformat(fl.info().headers)
+
+    return fl
+
+
+def dlcs_encode_params(params, usercodec):
+    """Turn all param values (int, list, bool) into utf8 encoded strings.
+    """
+
+    if params:
+        for key in params.keys():
+            if isinstance(params[key], bool):
+                if params[key]:
+                    params[key] = 'yes'
+                else:
+                    params[key] = 'no'
+
+            elif isinstance(params[key], int):
+                params[key] = str(params[key])
+
+            elif not params[key]:
+                # strip/ignore empties other than False or 0
+                del params[key]
+                continue
+
+            elif isinstance(params[key], list):
+                params[key] = " ".join(params[key])
+
+            elif not isinstance(params[key], unicode):
+                params[key] = params[key].decode(usercodec)
+
+            assert isinstance(params[key], basestring)
+
+        params = dict([ (k, v.encode('utf8')) 
+                for k, v in params.items() if v])
+
+    return params
 
 
 def dlcs_parse_xml(data, split_tags=False):
@@ -269,6 +323,7 @@ def dlcs_parse_xml(data, split_tags=False):
      {'result':(True, "done")}
      # etcetera.
     """
+    # XXX: split_tags is not implemented
 
     if DEBUG>3: print >>sys.stderr, "dlcs_parse_xml: parsing from ", data
 
@@ -304,8 +359,8 @@ def dlcs_parse_xml(data, split_tags=False):
         else:
             msg = root.text
 
-        # Return {'result':(True, msg)} for /known/ O.K. messages,
-        # use (False, msg) otherwise
+        # XXX: Return {'result':(True, msg)} for /known/ O.K. messages,
+        # use (False, msg) otherwise. Move this to DeliciousAPI?
         v = msg in DLCS_OK_MESSAGES
         return {fmt: (v, msg)}
 
@@ -321,8 +376,9 @@ def dlcs_parse_xml(data, split_tags=False):
 
 def dlcs_rss_request(tag="", popular=0, user="", url=''):
     """Parse a RSS request.
+
+    This requests old (now undocumented?) URL paths that still seem to work.
     """
-    assert feedparser
 
     tag = quote_plus(tag)
     user = quote_plus(user)
@@ -354,7 +410,13 @@ def dlcs_rss_request(tag="", popular=0, user="", url=''):
 
     if DEBUG:
         print 'dlcs_rss_request', url
+
     rss = http_request(url).read()
+
+    # assert feedparser, "dlcs_rss_request requires feedparser to be installed."
+    if not feedparser:
+        return rss
+
     rss = feedparser.parse(rss)
 
     posts = []
@@ -400,10 +462,72 @@ def dlcs_rss_request(tag="", popular=0, user="", url=''):
     return posts
 
 
+delicious_v2_feeds = {
+    #"Bookmarks from the hotlist"
+    '': "%(format)s",
+    #"Recent bookmarks"
+    'recent': "%(format)s/recent",
+    #"Recent bookmarks by tag"
+    'tagged': "%(format)s/tag/%(tags)s",
+    #"Popular bookmarks"
+    'popular': "%(format)s/popular",
+    #"Popular bookmarks by tag"
+    'popular_tagged': "%(format)s/popular/%(tag)s",
+    #"Recent site alerts (as seen in the top-of-page alert bar on the site)"
+    'alerts': "%(format)s/alerts",
+    #"Bookmarks for a specific user"
+    'user': "%(format)s/%(username)s",
+    #"Bookmarks for a specific user by tag(s)"
+    'user_tagged': "%(format)s/%(username)s/%(tags)s",
+    #"Public summary information about a user (as seen in the network badge)"
+    'user_info': "%(format)s/userinfo/%(username)s",
+    #"A list of all public tags for a user"
+    'user_tags': "%(format)s/tags/%(username)s",
+    #"Bookmarks from a user's subscriptions"
+    'user_subscription': "%(format)s/subscriptions/%(username)s",
+    #"Private feed for a user's inbox bookmarks from others"
+    'user_inbox': "%(format)s/inbox/%(username)s?private=%(key)s",
+    #"Bookmarks from members of a user's network"
+    'user_network': "%(format)s/network/%(username)s",
+    #"Bookmarks from members of a user's network by tag"
+    'user_network_tagged': "%(format)s/network/%(username)s/%(tags)s",
+    #"A list of a user's network members"
+    'user_network_member': "%(format)s/networkmembers/%(username)s",
+    #"A list of a user's network fans"
+    'user_network_fan': "%(format)s/networkfans/%(username)s",
+    #"Recent bookmarks for a URL"
+    'url': "%(format)s/url/%(urlmd5)s",
+    #"Summary information about a URL (as seen in the tagometer)"
+    'urlinfo': "json/urlinfo/%(urlmd5)s",
+}
+
+def getfeed(name, url_map=delicious_v2_feeds, **params):
+    """Request and parse a feed. See delicious_v2_feeds for available names and
+    required parameters. Format defaults to json.
+    """
+
+    format = params.setdefault('format', 'json')
+    url = DLCS_FEEDS + url_map[name] % params
+    feed = http_request(url).read()
+
+    if format == 'rss':
+        if feedparser:
+            rss = feedparser.parse(feed)
+            return rss
+
+        else:
+            return feed
+    
+    elif format == 'json':
+        return feed
+
+
 ### Main module class
 
 class DeliciousAPI:
-    """Class providing main interace to del.icio.us API.
+    """An interace to del.icio.us HTTP API.
+
+    See http://delicious.com/help/api.
 
     Methods ``request`` and ``request_raw`` represent the core. For all API
     paths there are furthermore methods (e.g. posts_add for 'posts/all') with
@@ -413,20 +537,21 @@ class DeliciousAPI:
     """
 
     def __init__(self, user, passwd, codec=PREFERRED_ENCODING,
-            api_request=dlcs_api_request, xml_parser=dlcs_parse_xml):
+            api_request=dlcs_api_request, xml_parser=dlcs_parse_xml, 
+            build_opener=dlcs_api_opener, encode_params=dlcs_encode_params):
         """Initialize access to the API for ``user`` with ``passwd``.
 
-        ``codec`` sets the encoding of the arguments.
+        ``codec`` sets the encoding of the arguments, which defaults to the
+        users preferred locale.
 
         The ``api_request`` and ``xml_parser`` parameters by default point to
         functions within this package with standard implementations to
         request and parse a resource. See ``dlcs_api_request()`` and
-        ``dlcs_parse_xml()``. 
-        
-        Note that ``api_request`` should return a file-like instance with an 
-        HTTPMessage instance under ``info()`` (see ``urllib2.openurl`` for info).
-        The ``xml_parser`` should return the parsed del.icio.us data that is to
-        be returned by API method implementations on this class.
+        ``dlcs_parse_xml()``.
+
+        build_opener should provided with credentials build an opener for 
+        the delicious API server. encode_params preprocesses parameters before
+        they are passed to api_request.
         """
         assert user != ""
         self.user = user
@@ -434,6 +559,10 @@ class DeliciousAPI:
         self.codec = codec
 
         # Implement communication to server and parsing of respons messages:
+        assert callable(encode_params)
+        self._encode_params = encode_params
+        assert callable(build_opener)
+        self._opener = build_opener(user, passwd)
         assert callable(api_request)
         self._api_request = api_request
         assert callable(xml_parser)
@@ -442,8 +571,8 @@ class DeliciousAPI:
     ### Core functionality
 
     def request(self, path, _raw=False, **params):
-        """Calls a path in the API, parses the answer to a JSON-like structure
-        by default. Use with ``_raw=True`` or ``call request_raw()`` directly 
+        """Sends a request message to `path` in the API, and parses the results
+        from XML. Use with ``_raw=True`` or ``call request_raw()`` directly 
         to get the filehandler and process the response message manually.
 
         Calls to some paths will return a `result` message, i.e.::
@@ -454,9 +583,11 @@ class DeliciousAPI:
 
             <result>...</result>
 
-        These are all parsed to ``{'result':(Boolean, MessageString)}`` and 
-        this method will raise ``DeliciousError`` on negative `result` answers.
-        Using ``_raw=True`` bypasses all parsing and will never raise 
+        These should all be parsed to ``{'result':(Boolean, MessageString)}``,
+        this method raises a ``DeliciousError`` on negative `result` answers.
+        Positive answers are silently accepted and nothing is returned.
+
+        Using ``_raw=True`` bypasses all parsing and never raises 
         ``DeliciousError``.
 
         See ``dlcs_parse_xml()`` and ``self.request_raw()``."""
@@ -466,24 +597,22 @@ class DeliciousAPI:
             return self.request_raw(path, **params)
 
         else:
-            params = self._encode_params(params)
+            params = self._encode_params(params, self.codec)
 
             # get answer and parse
-            # see __init__ for _api_request()
-            fl = self._api_request(path, params=params, user=self.user, 
-                    passwd=self.passwd)
+            fl = self._api_request(path, params=params, opener=self._opener)
             rs = self._parse_response(fl)
 
-            # Raise an error for negative 'result' answers
             if type(rs) == dict and 'result' in rs:
                 if not rs['result'][0]:
+                    # Raise an error for negative 'result' answers
                     errmsg = ""
                     if len(rs['result'])>0:
                         errmsg = rs['result'][1]
                     DeliciousError.raiseFor(errmsg, path, **params)
 
                 else:
-                    # not out-of-the-oridinary result
+                    # not out-of-the-oridinary result, OK
                     return
 
             return rs
@@ -494,40 +623,9 @@ class DeliciousAPI:
         information available. Use ``filehandle.info()`` or refer to the
         ``urllib2.openurl`` documentation.
         """
-        params = self._encode_params(params)
-
         # see `request()` on how the response can be handled
-        return self._api_request(path, params=params, user=self.user, 
-                passwd=self.passwd)
-
-    def _encode_params(self, params):
-        if params:
-            for key in params.keys():
-                if isinstance(params[key], bool):
-                    if params[key]:
-                        params[key] = 'yes'
-                    else:
-                        params[key] = 'no'
-
-                elif isinstance(params[key], int):
-                    params[key] = str(params[key])
-
-                elif not params[key]:
-                    del params[key]
-                    continue
-
-                elif isinstance(params[key], list):
-                    params[key] = " ".join(params[key])
-    
-                elif not isinstance(params[key], unicode):
-                    params[key] = params[key].decode(self.codec)
-
-                assert isinstance(params[key], basestring)
-
-            params = dict([ (k, v.encode('utf8')) 
-                    for k, v in params.items() if v])
-
-        return params
+        params = self._encode_params(params, self.codec)
+        return self._api_request(path, params=params, opener=self._opener)
 
     ### Explicit declarations of API paths, their parameters and docs
 

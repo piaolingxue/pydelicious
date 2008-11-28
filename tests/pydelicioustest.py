@@ -1,10 +1,54 @@
+"""Unittests for pydelicious module.
+"""
+import sys, os
 import unittest
 import urllib
+import urllib2
 import pydelicious
 import time
+from StringIO import StringIO
+
+test_data = {
+    # old rss feeds
+    'http://del.icio.us/rss/': 'var/rss.xml',
+    'http://del.icio.us/rss/popular/': 'var/rss_popular.xml',
+    'http://del.icio.us/rss/tag/python': 'var/rss_tag_python.xml',
+    'http://del.icio.us/rss/pydelicious': 'var/rss_pydelicious.xml',
+    'http://del.icio.us/rss/url/efbfb246d886393d48065551434dab54': 'var/rss_url.xml',
+
+    # v2 feeds
+    'http://feeds.delicious.com/v2/json': 'var/feed_v2.json',
+    'http://feeds.delicious.com/v2/rss': 'var/feed_v2.rss',
+    'http://feeds.delicious.com/v2/json/recent': 'var/feed_v2_recent.json',
+    'http://feeds.delicious.com/v2/rss/recent': 'var/feed_v2_recent.rss.xml',
+
+}
+def fetch_file(url, fn):
+    data = urllib2.urlopen(url).read()
+    if os.path.exists(fn):
+        acted = 'Overwritten'
+    else:
+        acted = 'New'
+    open(fn, 'w+').write(data)
+    print "%s file %s for <%s>" % (acted, fn, url)
+
+def http_request_dummy(url, user_agent=None, retry=0, opener=None):
+    if url in test_data:
+        fn = test_data[url]
+        if not os.path.isfile(fn): 
+            fetch_file(url, fn)
+        return open(fn)
+
+    else:
+        return StringIO(url)
+
+# Turn of all HTTP fetching in pydelicious,
+# don't do http requests but return pre-def data
+# See blackbox tests if you want to test for real
+pydelicious.http_request = http_request_dummy
 
 
-def api_request_dummy(path, params='', user='', passwd=''):
+def api_request_dummy(path, params='', user='', passwd='', opener=None):
 
     """Instead of mimicking the server responses this will return a tuple
     including the url.
@@ -20,7 +64,14 @@ def parser_dummy(data, split_tags=False):
     return {'not-parsed':data}
 
 
-class TestWaiter(unittest.TestCase):
+
+class PyDeliciousTester(unittest.TestCase):
+
+    def assertContains(self, container, object):
+        self.failUnless(object in container, "%s not in %s" %(object, container))
+
+
+class TestWaiter(PyDeliciousTester):
 
     def testwait1(self):
         wt = pydelicious.DLCS_WAIT_TIME
@@ -51,41 +102,73 @@ class TestWaiter(unittest.TestCase):
                     "needed wait of %s, not %s" % (i*wt, waited,))
 
 
-class TestGetrss(unittest.TestCase):
+class TestGetrss(PyDeliciousTester):
 
-    "run getrss against server"
+    "test old RSS feed parsing"
 
-    def testsimpleruns(self):
+#    def test_dlcs_rss_request(self):
+#        f = pydelicious.dlcs_rss_request
+#        pass
+
+    def test_getrss(self):
+        self.assert_(pydelicious.feedparser, "feedparser required for this test")
         p = pydelicious.getrss
-        self.assert_(p()!={})
-        self.assert_(p(popular=1)!={})
-        self.assert_(p(tag="python")!={})
-        self.assert_(p(tag="oko")!={})
-        self.assert_(p(user="pydelicious")!={})
-        self.assert_(p(url="http://deliciouspython.python-hosting.com/")!={})
+        self.assertEqual(
+                type(p()), type([]) )
+        self.assertEqual(
+                type(p(popular=1)), type([]) )
+        self.assert_(
+                type(p(tag="python")), type([]) )
+        self.assert_(
+                type(p(user="pydelicious")), type([]) )
+        self.assertEqual(
+                type(p(url="http://deliciouspython.python-hosting.com/")),
+                type([]) )
 
 
-class TestBug(unittest.TestCase):
+class TestFeeds(PyDeliciousTester):
+
+    """
+    TODO: implement json/rss parsing
+    """
+
+    def test_getfeed(self):
+        f = pydelicious.getfeed
+        data = f('')
+        self.assertEqual( data[:2]+data[-2:], '[{}]' )
+
+        if pydelicious.feedparser:
+            pass # TODO
+        else:
+            self.assert_( f('', format='rss').startswith('<?xml version="1.0" encoding="UTF-8"?>') )
+
+#        print f('', format='json')
+#        print f('recent')
+#        print f('recent', format='rss')
+
+
+class TestBug(PyDeliciousTester):
 
     def testBug2(self):
         '''testbug2: via deepak.jois@gmail.com
         missing "" in {"user":user}'''
+        self.assert_(pydelicious.feedparser, "feedparser required for this test")
         self.assertEqual(
             type(pydelicious.getrss(tag="read",user="deepakjois")),
             type([]))
 
 
-class DeliciousApiUnitTest(unittest.TestCase):
+class DeliciousApiUnitTest(PyDeliciousTester):
 
     """Simply tests wether DeliciousAPI.request(`path`, `args`) results in the same URL as
     DeliciousAPI.`path`(`args`)
     """
 
     def setUp(self):
-        self.api_utf8 = pydelicious.DeliciousAPI('testUser', 'testPwd', 
+        self.api_utf8 = pydelicious.DeliciousAPI('testUser', 'testPwd',
             'utf-8', api_request=api_request_dummy, xml_parser=parser_dummy)
 
-        self.api_latin1 = pydelicious.DeliciousAPI('testUser', 'testPwd', 
+        self.api_latin1 = pydelicious.DeliciousAPI('testUser', 'testPwd',
             'latin-1', api_request=api_request_dummy, xml_parser=parser_dummy)
 
     def test_param_encoding(self):
@@ -94,7 +177,7 @@ class DeliciousApiUnitTest(unittest.TestCase):
             'foo': '\xe2\x98\x85',
             'bar': '\xc3\xa4'
         }
-        params = a._encode_params(params)
+        params = a._encode_params(params, a.codec)
         self.assert_('foo=%E2%98%85' in urllib.urlencode(params))
         self.assert_('bar=%C3%A4' in urllib.urlencode(params))
 
@@ -103,7 +186,7 @@ class DeliciousApiUnitTest(unittest.TestCase):
             'bar': '\xe4',
             'baz': '\xa4'
         }
-        params = a._encode_params(params)
+        params = a._encode_params(params, a.codec)
         self.assert_('bar=%C3%A4' in urllib.urlencode(params))
         self.assert_('baz=%C2%A4' in urllib.urlencode(params))
 
@@ -146,6 +229,13 @@ class DeliciousApiUnitTest(unittest.TestCase):
         self.assertEqual(a.request_raw('tags/bundles/delete', bundle='bundle1'), a.bundles_delete('bundle1', _raw=True))
 
 
-__testcases__ = (TestGetrss, TestBug, DeliciousApiUnitTest, TestWaiter, )
+__testcases__ = (TestGetrss, TestBug, TestFeeds, DeliciousApiUnitTest, )#TestWaiter, )
 
-if __name__ == '__main__': unittest.main()
+if __name__ == '__main__':
+    if len(sys.argv)>1 and sys.argv[1] == 'refresh_test_data':
+        for url, fn in test_data.items():
+            if os.path.exists(fn):
+                fetch_file(url, fn)
+
+    else:
+        unittest.main()
