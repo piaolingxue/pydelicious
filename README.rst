@@ -66,6 +66,9 @@ Documentation
 For code documentation see `doc/pydelicious`__ or `doc/dlcs.py`__.
 For help and TODO's, progress reports see `HACKING`__.
 
+Note that for non-pydelicious related questions there is also a
+`del.icio.us user discussion list at yahoo`__.
+
 ----
 
 .. [#] Google Code, ``pydelicious`` (http://code.google.com/p/pydelicious/).
@@ -76,4 +79,4 @@ For help and TODO's, progress reports see `HACKING`__.
 .. __: ./doc/pydelicious.html
 .. __: ./doc/dlcs.html
 .. __: ./HACKING.rst
-
+.. __: http://tech.groups.yahoo.com/group/ydn-delicious/
