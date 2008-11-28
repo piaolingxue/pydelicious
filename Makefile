@@ -1,7 +1,7 @@
 # pydelicious Makefile
 
 # Local vars
-SRC = pydelicious.py tools/dlcs.py
+SRC = pydelicious.py #tools/dlcs.py
 RST = README.rst HACKING.rst
 DOC = $(SRC:%.py=doc/%.html)
 HTM = $(RST:%.rst=%.html) 
