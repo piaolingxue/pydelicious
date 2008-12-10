@@ -1,9 +1,8 @@
 #!/usr/bin/env python
 """dlcs - Operate on a del.icio.us bookmark collection from the command-line.
 
-! while most commands should be working properly, there are some issues to be
-resolved mostly with encoding. Be careful when editing, or do proper testing
-first.
+XXX: dlcs has no installer and is not integrated into pydelicious' installer.
+     replace 'dlcs' below with the path to dlcs.py.
 
 Overview
 --------
@@ -61,6 +60,7 @@ Something like the following::
 
 TODO
 ----
+- adapt to new meta attr's
 - catch DeliciousErrors
 - Output formatting (--outf)
 - Pretty JSON printer
