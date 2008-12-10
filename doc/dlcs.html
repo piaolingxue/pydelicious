@@ -55,7 +55,12 @@ Limitation<br>
 &nbsp;<br>
 Integration<br>
 -----------<br>
-To&nbsp;bookmark&nbsp;http&nbsp;URLs&nbsp;with&nbsp;lynx,&nbsp;put&nbsp;the&nbsp;following&nbsp;line&nbsp;in&nbsp;your&nbsp;lynx.cfg::<br>
+When&nbsp;using&nbsp;curses&nbsp;based&nbsp;browsers&nbsp;you&nbsp;may&nbsp;have&nbsp;to&nbsp;miss&nbsp;the&nbsp;javascript<br>
+bookmarklets&nbsp;since&nbsp;most&nbsp;TUI&nbsp;browsers&nbsp;don't&nbsp;support&nbsp;these.&nbsp;That&nbsp;is&nbsp;why&nbsp;dlcs&nbsp;<br>
+has&nbsp;a&nbsp;command&nbsp;`postit`&nbsp;that&nbsp;takes&nbsp;the&nbsp;URL&nbsp;and&nbsp;fires&nbsp;up&nbsp;your&nbsp;favorite&nbsp;editor&nbsp;<br>
+to&nbsp;offer&nbsp;the&nbsp;same&nbsp;functionality.<br>
+&nbsp;<br>
+To&nbsp;bookmark&nbsp;HTTP&nbsp;URLs&nbsp;with&nbsp;lynx,&nbsp;put&nbsp;the&nbsp;following&nbsp;line&nbsp;in&nbsp;your&nbsp;lynx.cfg::<br>
 &nbsp;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;EXTERNAL:http:dlcs&nbsp;postit&nbsp;%s<br>
 &nbsp;<br>

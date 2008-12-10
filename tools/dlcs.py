@@ -45,7 +45,12 @@ Limitation
 
 Integration
 -----------
-To bookmark http URLs with lynx, put the following line in your lynx.cfg::
+When using curses based browsers you may have to miss the javascript
+bookmarklets since most TUI browsers don't support these. That is why dlcs 
+has a command `postit` that takes the URL and fires up your favorite editor 
+to offer the same functionality.
+
+To bookmark HTTP URLs with lynx, put the following line in your lynx.cfg::
 
     EXTERNAL:http:dlcs postit %s
 
@@ -144,7 +149,7 @@ __usage__ = """Usage: %prog [options] [command] [args...]
     -o, --outf=[text | json | prettyjson]
         Output formatting
 
-    -s, --shared=[True | False]
+    -s, --shared=[yes | no]
         When posting a URL, set the 'shared' parameter.
 
     -r, --replace=[no | yes]
@@ -452,7 +457,7 @@ def postit(conf, dlcs, url, shared='yes', replace='no', **opts):
         'tag': " ".join(tags),
         'shared': shared, 'replace': replace, }
 
-    # Look for existing post
+    # get post data (if available)
     posts = dlcs.posts_get(url=url)
     if posts['posts']:
         p.update(posts['posts'][0])
@@ -461,7 +466,16 @@ def postit(conf, dlcs, url, shared='yes', replace='no', **opts):
     # Fill ini file
     conf.add_section(url)
     for key in p:
-        conf.set(url, key, p[key])
+        if key in ('href',):#hash', 'meta', 'href', 'time'):
+            continue
+        if isinstance(p[key], bool):
+            if p[key]:
+                p[key] = 'Yes'
+            else:                
+                p[key] = 'No'
+        conf.set(url, key, p[key].encode(opts['encoding']))
+    tmpfl.write('# This is a temporary representation for bookmark <%s>\n' % url)
+    tmpfl.write('# Only description, extended, shared, replace and tags are mutable.\n\n')
     conf.write(tmpfl)
     tmpfl.close()
 
@@ -476,8 +490,8 @@ def postit(conf, dlcs, url, shared='yes', replace='no', **opts):
     # Parse data back into locals
     conf.read(tmpf)
 
-    opts['shared'] = conf.get(url, 'shared')
-    opts['replace'] = conf.get(url, 'replace')
+    opts['shared'] = conf.get(url, 'shared').lower()
+    opts['replace'] = conf.get(url, 'replace').lower()
 
     description = conf.get(url, 'description')
     extended = conf.get(url, 'extended')
