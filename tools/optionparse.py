@@ -1,4 +1,7 @@
+"""this parses a usage string like in dlcs.__usage__ for use with optparse.
+"""
 import optparse, re, sys
+
 
 # After the Usage string, multiple rSt formatted option blocks are expected
 # indented by tabs or spaces

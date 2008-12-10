@@ -56,6 +56,7 @@ Something like the following::
 
 TODO
 ----
+- catch DeliciousErrors
 - Output formatting (--outf)
 - Pretty JSON printer
 - Append recent posts (and tags) to cache
@@ -213,6 +214,7 @@ def output(cmd, opts, data):
     return data
     #TODO:
     return globals()['output_'+opts['outf']](data)
+
 
 ### Main
 
@@ -419,15 +421,15 @@ def post(conf, dlcs, url, description, extended, *tags, **opts):
     if 'shared' in opts:
         shared = opts['shared']
 
-    v = dlcs.posts_add(replace=replace,
+    dlcs.posts_add(replace=replace,
         shared=shared,
         description=description,
         extended=extended,
         url=url,
         tags=tags)
 
-    print '* Post: "%s <%s>": %s' % \
-        (description, url, v['result'][1])
+    print '* Post: "%s <%s>"' % \
+        (description, url)
 
 def postit(conf, dlcs, url, shared='yes', replace='no', **opts):
 
@@ -554,8 +556,8 @@ def deleteposts(conf, dlcs, *urls, **opts):
     """
 
     for url in urls:
-        v = dlcs.posts_delete(url)
-        print '* Deleted "%s": %s' % (url, v['result'][1])
+        dlcs.posts_delete(url)
+        print '* Deleted "%s"' % (url)
 
 def recent(conf, dlcs, **opts):
 
@@ -574,11 +576,8 @@ def rename(conf, dlcs, oldtag, *newtags, **opts):
     """
 
     new = " ".join(newtags)
-    v = dlcs.tags_rename(oldtag, new)
-    if not v['result'][0]:
-        print >>sys.stderr, 'Error renaming "%s" to "%s": %s' % (oldtag, new, v['result'][1])
-    else:
-        print '* "%s" -> "%s": %s' % (oldtag, new, v['result'][1])
+    dlcs.tags_rename(oldtag, new)
+    print '* "%s" -> "%s"' % (oldtag, new)
 
 def bundle(conf, dlcs, name, *tags, **opts):
 
@@ -588,8 +587,8 @@ def bundle(conf, dlcs, name, *tags, **opts):
     """
 
     tags = " ".join(tags)
-    v = dlcs.bundles_set(name, tags)
-    print '* "%s" -> "%s" %s' % (name, tags, v['result'][1])
+    dlcs.bundles_set(name, tags)
+    print '* "%s" -> "%s"' % (name, tags)
 
 def bundles(conf, dlcs, **opts):
 
@@ -618,8 +617,8 @@ def deletebundle(conf, dlcs, name, **opts):
     """Delete an entire bundle.
     """
 
-    v = dlcs.bundles_delete(name)
-    print '* delete bundle "%s": %s' % (name, str(v))
+    dlcs.bundles_delete(name)
+    print '* delete bundle "%s"' % (name)
 
 def bundleadd(conf, dlcs, name, *tags, **opts):
 
@@ -635,8 +634,8 @@ def bundleadd(conf, dlcs, name, *tags, **opts):
     for bundle in bundles:
         if bundle['name'] == name:
             tags += ' '+bundle['tags']
-            v = dlcs.bundles_set(name, tags)
-            print '* "%s" -> "%s": %s' % (name, tags, v['result'][1])
+            dlcs.bundles_set(name, tags)
+            print '* "%s" -> "%s"' % (name, tags)
             return
 
 def bundleremove(conf, dlcs, name, *tags, **opts):
@@ -654,9 +653,9 @@ def bundleremove(conf, dlcs, name, *tags, **opts):
             for tag in tags:
                 if tag in curcontents: curcontents.remove(tag)
                 else: print >>sys.stderr, "%s not in bundle %s" % (tag, name)
-            v = dlcs.bundles_set(name, curcontents)
-            print '* "%s" -> "%s" %s' % (name,
-                ", ".join(curcontents), v['result'][1])
+            dlcs.bundles_set(name, curcontents)
+            print '* "%s" -> "%s"' % (name,
+                ", ".join(curcontents))
             return
 
 def tag(conf, dlcs, tags, *urls, **opts):
@@ -687,7 +686,7 @@ def tag(conf, dlcs, tags, *urls, **opts):
             # XXX: del.icio.us takes care of duplicates...
             post['tag'] += ' '+tags
 
-            v = dlcs.posts_add(replace="yes",
+            dlcs.posts_add(replace="yes",
                 shared=post['shared'],
                 description=post['description'],
                 extended=post['extended'],
@@ -695,8 +694,8 @@ def tag(conf, dlcs, tags, *urls, **opts):
                 tags=post['tag'],
                 time=post['time'])
 
-            print '* tagged "%s" with "%s": %s' % (url,
-                post['tag'], v['result'][1])
+            print '* tagged "%s" with "%s"' % (url,
+                post['tag'])
 
 def untag(conf, dlcs, tags, *urls, **opts):
 
@@ -726,7 +725,7 @@ def untag(conf, dlcs, tags, *urls, **opts):
                     untagged.append(tag)
             post['tag'] = " ".join(tagged)
 
-            v = dlcs.posts_add(replace="yes",
+            dlcs.posts_add(replace="yes",
                 shared=post['shared'],
                 description=post['description'],
                 extended=post['extended'],
@@ -734,8 +733,8 @@ def untag(conf, dlcs, tags, *urls, **opts):
                 tags=post['tag'],
                 time=post['time'])
 
-            print '* untagged "%s" from "%s": %s' % (" ".join(untagged),
-                url, v['result'][1])
+            print '* untagged "%s" from "%s"' % (" ".join(untagged),
+                url)
 
 def tagged(conf, dlcs, tag, **opts):
 

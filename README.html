@@ -313,7 +313,7 @@ ul.auto-toc {
 &gt;&gt;&gt; api = DeliciousAPI('username', 'password', 'encoding')
 </pre>
 
-    <p>or use the functions on the module, listed below. <a class="reference" href="http://code.google.com/p/pydelicious/issues/">Report</a> any bugs and other frustrating misbehaviours (please!)</p>
+    <p>or use the functions on the module, listed below. Please <a class="reference" href="http://code.google.com/p/pydelicious/issues/">report</a> any bugs and other frustrating misbehaviours.</p>
 
     <div class="section">
       <h1><a id="overview" name="overview">Overview</a></h1>
@@ -326,6 +326,7 @@ ul.auto-toc {
 &gt;&gt;&gt; pwd = getpass('Pwd:')
 Pwd:
 &gt;&gt;&gt; a = DeliciousAPI('user', pwd)
+&gt;&gt;&gt; # Either succeeds or raises DeliciousError or subclass:
 &gt;&gt;&gt; a.posts_add("http://my.com/", "title", extended="description", tags="my tags")
 &gt;&gt;&gt; len(a.posts_all()['posts'])
 1
@@ -333,6 +334,7 @@ Pwd:
 {'tags': [{'count': '1', 'tag': 'my'}, {'count': '1', 'tag': 'tags'}]}
 &gt;&gt;&gt; a.posts_update()
 {'update': {'time': (2008, 11, 28, 2, 35, 51, 4, 333, -1)}}
+&gt;&gt;&gt; # Either succeeds or raises DeliciousError or subclass:
 &gt;&gt;&gt; a.posts_delete("http://my.com/")
 &gt;&gt;&gt; len(a.posts_all()['posts'])
 0
@@ -394,7 +396,7 @@ Pwd:
     <div class="section">
       <h1><a id="documentation" name="documentation">Documentation</a></h1>
 
-      <p>For code documentation see <a class="reference" href="./doc/pydelicious.html">doc/pydelicious</a> or <a class="reference" href="./doc/dlcs.html">doc/dlcs.py</a>. For help and TODO's, progress reports see <a class="reference" href="./HACKING.rst">HACKING</a>.</p>
+      <p>For code documentation see <a class="reference" href="./doc/pydelicious.html">doc/pydelicious</a> or <a class="reference" href="./doc/dlcs.html">doc/dlcs.py</a>. For TODO's, progress reports, etc. see <a class="reference" href="./HACKING.rst">HACKING</a>.</p>
 
       <p>Note that for non-pydelicious related questions there is also a <a class="reference" href="http://tech.groups.yahoo.com/group/ydn-delicious/">del.icio.us user discussion list at yahoo</a>.</p>
       <hr class="docutils" />
@@ -418,7 +420,7 @@ Pwd:
 
   <div class="footer">
     <hr class="footer" />
-    Generated on: 2008-11-28.
+    Generated on: 2008-12-10.
   </div>
 </body>
 </html>

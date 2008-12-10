@@ -13,8 +13,8 @@ And either import the (documented) class::
   >>> api = DeliciousAPI('username', 'password', 'encoding')
 
 or use the functions on the module, listed below.
-`Report <http://code.google.com/p/pydelicious/issues/>`_ any bugs and other
-frustrating misbehaviours (please!)
+Please `report <http://code.google.com/p/pydelicious/issues/>`_ any bugs and other
+frustrating misbehaviours.
 
 Overview
 --------
@@ -28,6 +28,7 @@ The **API class** can be used directly::
   >>> pwd = getpass('Pwd:')
   Pwd:
   >>> a = DeliciousAPI('user', pwd)
+  >>> # Either succeeds or raises DeliciousError or subclass:
   >>> a.posts_add("http://my.com/", "title", extended="description", tags="my tags")
   >>> len(a.posts_all()['posts'])
   1
@@ -35,6 +36,7 @@ The **API class** can be used directly::
   {'tags': [{'count': '1', 'tag': 'my'}, {'count': '1', 'tag': 'tags'}]}
   >>> a.posts_update()
   {'update': {'time': (2008, 11, 28, 2, 35, 51, 4, 333, -1)}}
+  >>> # Either succeeds or raises DeliciousError or subclass:
   >>> a.posts_delete("http://my.com/")
   >>> len(a.posts_all()['posts'])
   0
@@ -64,7 +66,7 @@ __ : ./doc/pydelicious.html#-getrss
 Documentation
 -------------
 For code documentation see `doc/pydelicious`__ or `doc/dlcs.py`__.
-For help and TODO's, progress reports see `HACKING`__.
+For TODO's, progress reports, etc. see `HACKING`__.
 
 Note that for non-pydelicious related questions there is also a
 `del.icio.us user discussion list at yahoo`__.

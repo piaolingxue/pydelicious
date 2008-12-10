@@ -27,13 +27,15 @@ help:
 
 
 # Local targets
-.PHONY: doc install clean all pre-dict clean-pyc test test-all test-server refresh-test-data
+.PHONY: doc install clean clean-make clean-setup all pre-dict clean-pyc test test-all test-server refresh-test-data
 
 $(HTM): $(RST)
 
 $(DOC): $(SRC)
 	pydoc -w tools/dlcs.py pydelicious
 	mv {dlcs,pydelicious}.html doc/
+
+all: test doc
 
 doc: $(HTM) $(DOC)
 
@@ -46,21 +48,23 @@ test-all:
 test-server:
 	DLCS_DEBUG=1 python tests/main.py test_server
 
-refresh-test-data:
-	python tests/pydelicioustest.py refresh_test_data
-
 install: 
 	python setup.py install
 
-clean: clean-pyc
+clean: clean-setup clean-pyc clean-make
+
+clean-setup:
+	python setup.py clean
+
+clean-make:
 	rm -rf $(TRGTS) build/ pydelicious-*.zip
-
-all: test pre-dist
-
-pre-dist: doc clean-pyc
 
 clean-pyc:
 	-find -name '*.pyc' | xargs rm
+
+refresh-test-data:
+	# refetch cached test data to var/
+	python tests/pydelicioustest.py refresh_test_data
 
 zip: pydelicious.py Makefile $(RST) $(TRGTS) var/* tests/* setup.py
 	zip -9 pydelicious-0.5.2-rc1.zip $^ 
