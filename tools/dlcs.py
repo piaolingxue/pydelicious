@@ -78,10 +78,14 @@ import getpass
 import time
 import locale
 import codecs
+import math
+import md5
 from os.path import expanduser, getmtime, exists, abspath
 from ConfigParser import ConfigParser
 import pydelicious
-from pydelicious import DeliciousAPI, dlcs_parse_xml, PyDeliciousException
+from pydelicious import DeliciousAPI, dlcs_parse_xml, PyDeliciousException, \
+    dlcs_feed
+from pprint import pformat    
 
 try:
     # bvb: simplejson thinks it should be different and deprecated read()
@@ -109,6 +113,7 @@ __cmds__ = [
     'gettags',
     'help',
     'info',
+    'mates',
     'post',
     'postit',
     'posts',
@@ -142,6 +147,9 @@ __usage__ = """Usage: %prog [options] [command] [args...]
 
     -I, --ignore-case=False
         Ignore case for string searches
+
+    -m, --mates=50,20,2
+        Maximum number of users, bookmarks and common bookmarks for 'mates'.
 
     -d, --dump
         Dump entire response (`req` only)
@@ -834,6 +842,68 @@ def clearcache(conf, dlcs, *clear, **opts):
             print "* Deleted '%s'" % posts
         except: pass
 
+def mates(conf, dlcs, *args, **opts):
+
+    """The following was adapted from delicious_mates.
+    http://www.aiplayground.org/artikel/delicious-mates/
+
+        % dlcs mates [max_mates[, min_bookmarks[, min_common]]]
+
+    """
+   
+    max_mates, min_bookmarks, min_common = map(int, opts['mates'].split(','))
+
+    delicious_users = {}
+    posts = cached_posts(conf, dlcs, opts['keep_cache'])
+    print "Getting mates for collection of %i bookmarks" % len(posts['posts'])
+
+    print "\nUsers for each bookmark:"
+    for i, post in enumerate(posts['posts']):
+
+        hash = md5.md5(post['href']).hexdigest()
+        #urlfeed = pydelicious.dlcs_feed('urlinfo', urlmd5=hash)
+        posts = dlcs_feed('url', count='all', format='rss', urlmd5=hash)
+        usernames = [e['author'] for e in posts['entries']]
+
+        print "    %i. %s (%i)" % (i+1, post['href'], len(usernames))
+       
+        for username in usernames:
+            if username != dlcs.user:
+                delicious_users.setdefault(username, (0.0, 0))
+                (weight, num_common) = delicious_users[username]
+                new_weight = weight + 1.0/math.log(len(usernames)+1.0)
+                delicious_users[username] = (new_weight, num_common + 1)
+    
+    print "\n%i candidates from list of %i users" % (max_mates, len(delicious_users))
+    friends = {}
+    for (username, (weight, num_common)) in value_sorted(delicious_users):
+        if num_common >= min_common:
+
+            num_bookmarks = float([e['summary'] for e in 
+                dlcs_feed('user_info', format='rss', username='mpe')['entries'] 
+                if e['id'] == 'items'][0])
+
+            print "    %s (%i/%i)" % (username, num_common, num_bookmarks),
+            if num_bookmarks >= min_bookmarks:
+                friends[username] = (weight*(num_common/num_bookmarks), num_common, num_bookmarks)
+                if len(friends) >= max_mates:
+                    break
+            else:
+                print
+            time.sleep(1)
+    
+    print "\nTop %i del.icio.us mates:" % max_mates
+    print "username".ljust(20), "weight".ljust(20), "# common bookmarks".ljust(20), "# total bookmarks".ljust(20), "% common"
+    print "--------------------------------------------------------------------------------------------"
+    for (username, (weight, num_common, num_total)) in value_sorted(friends)[:max_mates]:
+        print username.ljust(20),
+        print ("%.5f" % (weight*100)).ljust(20),
+        print str(num_common).ljust(20),
+        print str(int(num_total)).ljust(20),
+        print "%.5f" % ((num_common/num_total)*100.0)
+
+
+
 ### Utils
 def http_dump(fl):
 
@@ -887,6 +957,15 @@ def cached_posts(conf, dlcs, noupdate=False):
         elif DEBUG: print >>sys.stderr, "cached_posts: Forced read from cached file..."
     posts = dlcs_parse_xml(open(posts_file))
     return posts
+
+def value_sorted(dic):
+    """
+    Return dic.items(), sorted by the values stored in the dictionary.
+    """
+    l = [(num, key) for (key, num) in dic.items()]
+    l.sort(reverse=True)
+    l = [(key, num) for (num, key) in l]
+    return l
 
 
 if __name__ == '__main__':

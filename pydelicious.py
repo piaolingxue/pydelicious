@@ -504,15 +504,24 @@ delicious_v2_feeds = {
     'urlinfo': "json/urlinfo/%(urlmd5)s",
 }
 
-def dlcs_feed(name_or_url, url_map=delicious_v2_feeds, **params):
+def dlcs_feed(name_or_url, url_map=delicious_v2_feeds, count=15, **params):
     """Request and parse a feed. See delicious_v2_feeds for available names and
     required parameters. Format defaults to json.
     """
 
+# http://delicious.com/help/feeds
+# TODO: plain or fancy
+
     format = params.setdefault('format', 'json')
+    if count == 'all':
+# TODO: fetch all
+        print >>sys.stderr, "! Maxcount 100 "
+        count = 100
+
     if name_or_url in url_map:
-        name = name_or_url
-        url = DLCS_FEEDS + url_map[name] % params
+        params['count'] = count
+        url = DLCS_FEEDS + url_map[name_or_url] % params
+
     else:
         url = name_or_url
 
