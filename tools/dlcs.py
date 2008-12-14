@@ -231,7 +231,7 @@ def output(cmd, opts, data):
 
 ### Main
 
-def main(argv):
+def main(*argv):
 
     """This will prepare al input data and call a command function to perform
     the operations. Default command is `info()`.
@@ -239,14 +239,12 @@ def main(argv):
     Configuration file is loaded and used to store username/password.
     """
 
-    argv.pop(0) # scriptname
-
     ### Parse argument vector
     import optionparse
     defaults = {
         'DLCS_CONFIG': DLCS_CONFIG,
         'ENCODING': locale.getpreferredencoding()}
-    optparser, opts, args = optionparse.parse(__usage__, argv, defaults=defaults)
+    optparser, opts, args = optionparse.parse(__usage__, list(argv), defaults=defaults)
 
     if opts['verboseness']:
         v = int(opts['verboseness'])
@@ -923,7 +921,8 @@ def cache_append_posts(fl, ):
     pass
 
 def cached_tags(conf, dlcs, noupdate=False):
-    """Make sure the tag list is cached locally. Updates when the file is
+    """
+    Make sure the tag list is cached locally. Updates when the file is
     older than the last time the posts where updated (according to
     del.icio.us posts/update, which only notes new posts, not any updates).
     """
@@ -942,7 +941,8 @@ def cached_tags(conf, dlcs, noupdate=False):
     return tags
 
 def cached_posts(conf, dlcs, noupdate=False):
-    """Same as cached_tags but for the post list.
+    """
+    Same as cached_tags but for the post list.
     """
     posts_file = conf.get('local-files', 'posts')
     if not exists(posts_file):
@@ -970,7 +970,8 @@ def value_sorted(dic):
 
 if __name__ == '__main__':
     try:
-        sys.exit(main(sys.argv))
+        sys.exit(main(*sys.argv[1:]))
     except KeyboardInterrupt:
         print >>sys.stderr, "User interrupt"
+
 # vim:set expandtab:

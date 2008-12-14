@@ -40,6 +40,7 @@ if 'DLCS_DEBUG' in os.environ:
 try:
     from elementtree.ElementTree import parse as parse_xml
 except ImportError:
+    # Python 2.5 and higher
     from xml.etree.ElementTree import parse as parse_xml
 
 try:
@@ -225,7 +226,7 @@ def http_request(url, user_agent=USER_AGENT, retry=4, opener=None):
             "Unable to retrieve data at '%s', %s" % (url, e)
 
 
-def build_api_opener(host, user, passwd):
+def build_api_opener(host, user, passwd, extra_handlers=()):
     """
     Build a urllib2 style opener with HTTP Basic authorization for one host
     and additional error handling.
@@ -238,7 +239,7 @@ def build_api_opener(host, user, passwd):
 
     http_error_handler = HTTPErrorHandler()
 
-    return urllib2.build_opener(auth_handler, http_error_handler)
+    return urllib2.build_opener(auth_handler, http_error_handler, *extra_handlers)
 
 
 def dlcs_api_opener(user, passwd):
@@ -505,7 +506,9 @@ delicious_v2_feeds = {
 }
 
 def dlcs_feed(name_or_url, url_map=delicious_v2_feeds, count=15, **params):
-    """Request and parse a feed. See delicious_v2_feeds for available names and
+
+    """
+    Request and parse a feed. See delicious_v2_feeds for available names and
     required parameters. Format defaults to json.
     """
 
@@ -546,15 +549,13 @@ def dlcs_feed(name_or_url, url_map=delicious_v2_feeds, count=15, **params):
 
 class DeliciousAPI:
 
-    """An interace to the del.icio.us HTTP API.
+    """A single-user Python facade to the del.icio.us HTTP API.
 
     See http://delicious.com/help/api.
 
     Methods ``request`` and ``request_raw`` represent the core. For all API
     paths there are furthermore methods (e.g. posts_add for 'posts/all') with
-    an explicit declaration of the parameters and documentation. These all call
-    ``request`` and pass on extra keywords like ``_raw`` (which bypasses
-    parsing the result XML).
+    an explicit declaration of parameters and documentation. 
     """
 
     def __init__(self, user, passwd, codec=PREFERRED_ENCODING,
@@ -567,13 +568,17 @@ class DeliciousAPI:
         users preferred locale.
 
         The ``api_request`` and ``xml_parser`` parameters by default point to
-        functions within this package with standard implementations to
+        functions within this package with standard implementations which
         request and parse a resource. See ``dlcs_api_request()`` and
         ``dlcs_parse_xml()``.
 
-        build_opener should provided with credentials build an opener for
-        the delicious API server. encode_params preprocesses parameters before
-        they are passed to api_request.
+        Parameter ``build_opener`` is a callable that, provided with the 
+        credentials, should build a urllib2 opener for the delicious API server
+        with HTTP authentication. See ``dlcs_api_opener()`` for the default
+        implementation.
+
+        ``encode_params`` finally preprocesses API parameters before
+        they are passed to ``api_request``.
         """
 
         assert user != ""
