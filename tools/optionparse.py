@@ -1,10 +1,6 @@
-"""this parses a usage string like in dlcs.__usage__ for use with optparse.
-"""
 import optparse, re, sys
 
 
-# After the Usage string, multiple rSt formatted option blocks are expected
-# indented by tabs or spaces
 USAGE = re.compile(r'(?s)\s*[Uu]sage: (.*?)(\n\n[^\t ]|$)')
 OPTGROUP = re.compile(r'\n[\t ]*-')
 
@@ -13,17 +9,21 @@ def nonzero(self): # will become the nonzero method of optparse.Values
     for v in self.__dict__.itervalues():
         if v is not None: return True
     return False
-
 optparse.Values.__nonzero__ = nonzero # dynamically fix optparse.Values
 
 class ParsingError(Exception): pass
 
 optionstring=""
 
-def exit(msg=""):
-    raise SystemExit(msg or optionstring.replace("%prog", sys.argv[0]))
+#def exit(msg=""):
+#    raise SystemExit(msg or optionstring.replace("%prog", sys.argv[0]))
 
 def parse(docstring, argv=None, defaults={}):
+
+    """Parse argument vector based on usage string like dlcs.__usage__ using
+    regexes and optparse.
+    """
+
     global optionstring
     optionstring = docstring
 

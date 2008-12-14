@@ -62,6 +62,10 @@ clean-make:
 clean-pyc:
 	-find -name '*.pyc' | xargs rm
 
+clean-setuptools:
+	# cleanup after setuptools' ass...
+	rm -rf dist build *.egg-info 	
+
 refresh-test-data:
 	# refetch cached test data to var/
 	python tests/pydelicioustest.py refresh_test_data
