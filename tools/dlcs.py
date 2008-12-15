@@ -239,6 +239,9 @@ def main(*argv):
     Configuration file is loaded and used to store username/password.
     """
 
+    if not argv:
+        argv = sys.argv[1:]
+
     ### Parse argument vector
     import optionparse
     defaults = {
@@ -330,6 +333,8 @@ def help(conf, dlcs, cmd='', **opts):
 
     elif not cmd:
         print thismod.__doc__
+        # XXX: mage help work again in new dist
+        # print pydelicious.tools.dlcs.__doc__
 
     elif not hasattr(thismod, cmd):
         print "No such command or API path: %s" % (cmd,)
