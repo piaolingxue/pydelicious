@@ -324,8 +324,11 @@ def help(conf, dlcs, cmd='', **opts):
 
     thismod = sys.modules['__main__']
 
-    if cmd == 'api':
-        print "Available API paths: %s " % (DeliciousAPI.paths.keys(),)
+    if cmd == 'command':
+        print "Available commands: %s " % ", ".join(__cmds__)
+
+    elif cmd == 'api':
+        print "Available API paths: %s " % ", ".join(DeliciousAPI.paths.keys())
 
     elif cmd in DeliciousAPI.paths.keys():
         # cmd is an API path
