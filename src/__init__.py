@@ -53,7 +53,7 @@ except ImportError:
 
 ### Static config
 
-__version__ = '0.5.2-rc1'
+__version__ = '0.5.2-rc2'
 __author__ = 'Frank Timmermann <regenkind_at_gmx_dot_de>'
     # GP: does not respond to emails
 __contributors__ = [
@@ -85,7 +85,7 @@ PREFERRED_ENCODING = locale.getpreferredencoding()
 # XXX: might need to check sys.platform/encoding combinations here, ie
 #if sys.platform == 'darwin' || PREFERRED_ENCODING == 'macroman:
 #   PREFERRED_ENCODING = 'utf-8'
-if !PREFERRED_ENCODING:
+if not PREFERRED_ENCODING:
     PREFERRED_ENCODING = 'iso-8859-1'
 
 ISO_8601_DATETIME = '%Y-%m-%dT%H:%M:%SZ'
