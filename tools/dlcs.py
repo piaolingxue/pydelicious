@@ -409,10 +409,10 @@ def req(conf, dlcs, path, **opts):
     prints the entire HTTP XML response. Note that since the v1 API is not RESTful
     you can change data using this function too. E.g.::
 
-        % dlcs req "tags/bundles/set?bundle=foo&tags=bar%20baz"
         % dlcs req tags/bundles/delete?bundle=foo
+        % dlcs req "tags/bundles/set?bundle=foo&tags=bar%20baz"
 
-    Ofcourse URL encoding and shell-escaping is up to you.
+    Remember to URL encode and use shell-escaping on the paths.
     """
 
     if 'dump' in opts and opts['dump']:
@@ -728,10 +728,32 @@ def tag(conf, dlcs, tags, *urls, **opts):
 def untag(conf, dlcs, tags, *urls, **opts):
 
     """Reverse of tag, remove given tags from the given URLs.
-    Tags and URLs not found are ignored.
+    Tags and URLs not found are reported on stderr and ignored.
+    Provide only tag names without URL to completely remove them from
+    the collection.
+    Setting --ignore-case will lowercase all tags for the given URLs.
     """
 
+    if opts['ignore_case']:
+        tags = [t.lower() for t in tags.split(' ')]
+    else:
+        tags = tags.split(' ')
+
+    urls = list(urls)
+
+    if not urls:
+        posts = cached_posts(conf, dlcs, opts['keep_cache'])
+
+        for post in posts['posts']:
+            for tag in tags:
+                if opts['ignore_case']:
+                    post['tag'] = post['tag'].lower()
+                if tag in post['tag'].split(' '):
+                    urls.append(post['href'])
+
     for url in urls:
+        # TODO: fetching posts is inefficient and ignoring the localcache:
+        # Must have indexed access to fields in localcache
         posts = dlcs.request('posts/get', url=url)
         if not posts['posts']:
             print >>sys.stderr, '* URL "%s" not in collection' % (url)
@@ -745,12 +767,21 @@ def untag(conf, dlcs, tags, *urls, **opts):
             if not 'shared' in post:
                 post['shared'] = "True"
 
-            tagged = post['tag'].split(' ')
+            if opts['ignore_case']:
+                tagged = post['tag'].lower().split(' ')
+            else:                    
+                tagged = post['tag'].split(' ')
             untagged = []
+
             for tag in tags:
                 if tag in tagged:
                     tagged.remove(tag)
                     untagged.append(tag)
+
+            if not untagged:
+                print >>sys.stderr, '* Tags "%s" not found on URL "%s"' % (tags, url)
+                continue
+
             post['tag'] = " ".join(tagged)
 
             dlcs.posts_add(replace="yes",
@@ -784,16 +815,40 @@ def tagged(conf, dlcs, tag, **opts):
         elif tag in tags:
             print post['href']
 
-def tags(conf, dlcs, **opts):
+def tags(conf, dlcs, *count, **opts):
 
-    """Print all tags.
+    """Print all tags, optionally filtered by their count.
+
+        % dlcs tags [[ '>' | '<' | '=' ] count]
     """
 
     tags = cached_tags(conf, dlcs, opts['keep_cache'])
 
+    if count:
+        if not count[0].isdigit():
+            assert len(count) == 1
+            count = count[0][0], count[0][1:]
+        count = list(count)
+        number = int(count.pop())
+        if count:
+            count = count[0]
+        else:
+            count = '='
+
     for tag in tags['tags']:
-        # XXX: encoding...
-        print tag['tag'].encode('utf-8'),
+        if count:
+            tc = int(tag['count'])
+            if count == '=':
+                if tc == number:
+                    print tag['tag'],
+            elif count == '>':
+                if tc > number:
+                    print tag['tag'],
+            elif count == '<':
+                if tc < number:
+                    print tag['tag'],
+        else:            
+            print tag['tag'],
 
 def gettags(conf, dlcs, *tags, **opts):
 

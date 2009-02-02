@@ -228,8 +228,20 @@ class DeliciousApiUnitTest(PyDeliciousTester):
         self.assertEqual(a.request_raw('tags/bundles/set', bundle='bundle1', tags='tag1 tag2'), a.bundles_set('bundle1', 'tag1 tag2', _raw=True))
         self.assertEqual(a.request_raw('tags/bundles/delete', bundle='bundle1'), a.bundles_delete('bundle1', _raw=True))
 
+class DeliciousErrorTest(PyDeliciousTester):
 
-__testcases__ = (TestGetrss, TestBug, TestFeeds, DeliciousApiUnitTest, )#TestWaiter, )
+    def test_raiseFor(self):
+        self.assertRaises(
+            pydelicious.DeliciousItemExistsError,
+            pydelicious.DeliciousError.raiseFor, 'item already exists',
+                'path/add', **{'url':'urn:system'});
+        self.assertRaises(
+            pydelicious.DeliciousError,
+            pydelicious.DeliciousError.raiseFor, 'other error', 'path/get'
+            );
+
+
+__testcases__ = (TestGetrss, TestBug, TestFeeds, DeliciousApiUnitTest, DeliciousErrorTest)#TestWaiter, )
 
 if __name__ == '__main__':
     if len(sys.argv)>1 and sys.argv[1] == 'refresh_test_data':

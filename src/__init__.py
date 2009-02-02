@@ -17,7 +17,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 TODO:
  - distribute license, readme docs via setup.py?
- - automatic releas build?
+ - automatic release build?
 """
 import sys
 import os
@@ -82,6 +82,11 @@ DLCS_RSS = 'http://del.icio.us/rss/'
 DLCS_FEEDS = 'http://feeds.delicious.com/v2/'
 
 PREFERRED_ENCODING = locale.getpreferredencoding()
+# XXX: might need to check sys.platform/encoding combinations here, ie
+#if sys.platform == 'darwin' || PREFERRED_ENCODING == 'macroman:
+#   PREFERRED_ENCODING = 'utf-8'
+if !PREFERRED_ENCODING:
+    PREFERRED_ENCODING = 'iso-8859-1'
 
 ISO_8601_DATETIME = '%Y-%m-%dT%H:%M:%SZ'
 
@@ -156,7 +161,7 @@ class DeliciousError(Exception):
             raise DeliciousItemExistsError, params['url']
         else:
             raise DeliciousError, "%s for calling <%s>" % (error_string,
-                    path+urllib.urlencode(params))
+                    path+urlencode(params))
 
 class DeliciousItemExistsError(DeliciousError):
     """Raised then adding an already existing post."""
