@@ -9,7 +9,7 @@ REF = $(RST:%.rst=doc/htmlref/%.html) \
 #MAN = doc/man/dlcs.man1.gz
 
 TRGTS := $(REF)
-CLN := $(REF) build/ pydelicious-*.zip dist *.egg-info
+CLN := $(REF) build/ pydelicious*.zip dist *.egg-info
 
 # Docutils flags
 DU_GEN = --traceback --no-generator --no-footnote-backlinks --date -i utf-8 -o utf-8
@@ -31,7 +31,7 @@ help:
 
 
 ## Local targets
-.PHONY: all test doc install clean clean-setup clean-pyc test-all test-server refresh-test-data zip
+.PHONY: all test doc install clean clean-setup clean-pyc test-all test-server refresh-test-data zip-all zip-pydelicious
 
 all: test doc
 
@@ -69,8 +69,11 @@ refresh-test-data:
 	# refetch cached test data to var/
 	python tests/pydelicioustest.py refresh_test_data
 
-zip: src/*.py Makefile $(RST) doc/htmlref var/* tests/* setup.py
+zip-pydelicous: src/*.py Makefile $(RST) doc/htmlref var/* tests/* setup.py
 	zip -9 pydelicious-`python -c "import src;print src.__version__"`.zip $^
+
+zip-all: src/*.py Makefile $(RST) doc/htmlref var/* tests/* tools/* setup.py setup_tools.py
+	zip -9 pydelicious+tools-`python -c "import src;print src.__version__"`.zip $^
 
 %.html: %.rst
 	@rst2html $(DU_GEN) $(DU_READ) $(DU_HTML) $< $@

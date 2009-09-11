@@ -126,50 +126,6 @@ __cmds__ = [
     'untag',
 ]
 
-__usage__ = """Usage: %prog [options] [command] [args...]
-
-    -c, --config=DLCS_CONFIG
-        Use custom config file [%default]
-
-    -C, --keep-cache=False
-        Don't update locally cached file(s) if they're out of date.
-
-    -e, --encoding=ENCODING
-        Use custom character encoding [locale: %default]
-
-    -u, --username
-        del.icio.us username (defaults to config or loginname)
-
-    -p, --password
-        Password for the del.icio.us user (usage not recommended, but this will override the config)
-
-    -I, --ignore-case=False
-        Ignore case for string searches
-
-    -m, --mates=50,20,2
-        Maximum number of users, bookmarks and common bookmarks for 'mates'.
-
-    -d, --dump
-        Dump entire response (`req` only)
-
-    -o, --outf=[text | json | prettyjson]
-        Output formatting
-
-    -s, --shared=[yes | no]
-        When posting a URL, set the 'shared' parameter.
-
-    -r, --replace=[no | yes]
-        When posting a URL, set the 'replace' parameter.
-
-    -v, --verboseness=0
-        TODO: Increase or set DEBUG (defaults to 0 or the DLCS_DEBUG env. var.)
-
-""" + """command can be one of:
-%s
-
-Use `help` to get more information about a command."""\
-    % (", ".join(__cmds__))
-
 
 DEBUG = 0
 if 'DLCS_DEBUG' in os.environ:
@@ -377,11 +333,6 @@ def main(*argv):
         argv = sys.argv[1:]
 
     ### Parse argument vector
-    #import optionparse
-    #defaults = {
-    #    'DLCS_CONFIG': DLCS_CONFIG,
-    #    'ENCODING': locale.getpreferredencoding()}
-    #optparser, opts, args = optionparse.parse(__usage__, list(argv), defaults=defaults)
     optparser, opts, args = parse_argv_split(__options__, argv, __usage__)
 
     if opts['verboseness']:

@@ -52,7 +52,7 @@ except ImportError:
 
 ### Static config
 
-__version__ = '0.5.2-rc2'
+__version__ = '0.5.3'
 __author__ = 'Frank Timmermann <regenkind_at_gmx_dot_de>'
     # GP: does not respond to emails
 __contributors__ = [
