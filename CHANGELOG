@@ -21,3 +21,6 @@
     added first HTTP proxy support (suggestion by aman.coe)
     fixed issue 28, thanks ZebraShaSha
     worked around stdlib deprecation warning (Py2.6), fixed issue 27 (thanks, stumble.then.rise)
+
+0.5.3
+    make install now installs tools also
