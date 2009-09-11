@@ -18,5 +18,5 @@ Here are the basic guidelines:
 - Use the issue list to get comments on your proposed changes.
 
 
-.. _project hompage: http://code.google.com/p/pydelicious/
+.. _project homepage: http://code.google.com/p/pydelicious/
 .. _issues: http://code.google.com/p/pydelicious/issues/

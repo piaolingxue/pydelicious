@@ -78,6 +78,7 @@ import getpass
 import time
 import locale
 import codecs
+from sets import Set
 import math
 import md5
 from os.path import expanduser, getmtime, exists, abspath
@@ -88,9 +89,6 @@ from pydelicious import DeliciousAPI, dlcs_parse_xml, PyDeliciousException, \
 from pprint import pformat    
 
 try:
-    # bvb: simplejson thinks it should be different and deprecated read()
-    # and write() not sure why...
-    # XXX: simplejson has UTF-8 default, json uses ASCII I think?
     from simplejson import dumps as jsonwrite, loads as jsonread
 except:
     try:
@@ -185,6 +183,70 @@ elif exists(abspath('./.dlcs-rc')):
 else:
     DLCS_CONFIG = expanduser('~/.dlcs-rc')
 
+ENCODING = locale.getpreferredencoding()
+
+__usage__ = """%prog [options] [command] [args...] """ + """
+command can be one of:
+ %s
+
+Use `help [command]` to get more information about a command."""\
+    % (", ".join(__cmds__))
+
+__options__ = [
+    (('-c', '--config'), {"default":DLCS_CONFIG,
+      "help":"Use custom config file [%default]"}),
+    (('-C', '--keep-cache'), {'dest':'keep_cache','action':'store_true','default':False,
+        'help':"Don't update locally cached file(s) if they're out of date."}),
+    (('-e', '--encoding'),{'default':ENCODING,
+        'help':"Use custom character encoding [locale: %default]"}),
+    (('-u', '--username'),{
+        'help':"del.icio.us username (defaults to config or loginname)"}),
+    (('-p', '--password'),{
+        'help':"Password for the del.icio.us user (usage not recommended, but this will override the config)"}),
+    (('-I', '--ignore-case'),{'dest':'ignore_case','action':'store_true','default':False,
+        'help':"Ignore case for string searches"}),
+    (('-d', '--dump'),{'default':False,
+        'help':"Dump entire response (`req` only)"}),
+    (('-o', '--outf'),{'choices':['text','json','prettyjson'],'default':'text',
+        'help':"Output formatting"}),
+    (('-s', '--shared'),{'default':True,
+        'help':"When posting a URL, set the 'shared' parameter."}),
+    (('-r', '--replace'),{'default':False,
+        'help':"When posting a URL, set the 'replace' parameter."}),
+    (('-v', '--verboseness'),{'default':0,
+        'help':"TODO: Increase or set DEBUG (defaults to 0 or the DLCS_DEBUG env. var.)"})
+]
+
+def parse_argv_split(options, argv, usage="%prog [args] [options]"):
+    """Parse argument vector to a tuple with an arguments list and an
+       option dictionary.
+    """
+    parser = optparse.OptionParser(usage)
+
+    optnames = []
+    has_default = []
+    for opt in options:
+        parser.add_option(*opt[0], **opt[1])
+        # remember destination name
+        if 'dest' in opt[1]:
+            optnames.append(opt[1]['dest'])
+        else:
+            optnames.append(opt[0][1][2:]) # strip dest. name from long-opt
+        # remember opts with defaults (in case def. is neg.)
+        if 'default' in opt[1]:
+            has_default.append(optnames[len(optnames)-1])
+
+    optsv, args = parser.parse_args(argv)
+
+    # create dictionary for opt values by using dest. names
+    opts = {}
+    for name in optnames:
+        v = getattr(optsv, name)
+        if v or name in has_default:
+            opts[name] = v
+
+    return parser, opts, args
+
 def prettify_json(json, level=0):
 
     """Formats a JSON string to separated, indented lines.
@@ -226,7 +288,77 @@ def output_prettyjson(data):
 def output(cmd, opts, data):
     return data
     #TODO:
-    return globals()['output_'+opts['outf']](data)
+    #return globals()['output_'+opts['outf']](data)
+
+# Debugwrappers
+def shortrepr(object):
+    if type(object) is type([]):
+        return "[" + ", ".join(map(shortrepr, object)) + "]"
+    elif type(object) is type(()):
+        return "(" + ", ".join(map(shortrepr, object)) + ")"
+    elif type(object) is type(''):
+        if len(object) > 20: return repr(object[:20]) + "..."
+        else: return repr(object)
+    else:
+        return str(object)
+
+debugindent = {}
+debugmidline = {}
+
+class MethodWrapper:
+    def __init__(self, name, method, base, log):
+        self.name = name
+        self.method = method
+        self.base = base
+        self.log = log
+
+    def __call__(self, *args):
+        indent = debugindent[self.log]
+        if debugmidline[self.log]:
+            self.log.write("\n")
+
+        self.log.write("%s%s \x1b[32m%s\x1b[0m%s: " %
+                       (indent, repr(self.base), self.name, shortrepr(args)))
+        self.log.flush()
+        debugmidline[self.log] = 1
+
+        debugindent[self.log] = indent + "  "
+
+        try:
+            result = apply(self.method, args)
+
+            if not debugmidline[self.log]:
+                basename = self.base.__class__.__name__
+                self.log.write("%s%s.\x1b[32m%s\x1b[0m: " %
+                               (indent, basename, self.name))
+            self.log.write("\x1b[36m%s\x1b[0m\n" % shortrepr(result))
+            self.log.flush()
+            debugmidline[self.log] = 0
+
+        finally:
+            debugindent[self.log] = indent
+        return result
+
+class DebugWrapper:
+    def __init__(self, base, log):
+        self.__dict__["__base__"] = base
+        self.__dict__["__log__"] = log
+        if not debugindent.has_key(log):
+            debugindent[log] = ""
+            debugmidline[log] = 0
+
+    def __getattr__(self, name):
+        base = self.__dict__["__base__"]
+        log = self.__dict__["__log__"]
+        value = getattr(base, name)
+        if callable(value) and name[:2] != "__":
+            return MethodWrapper(name, value, base, log)
+        else:
+            return value
+
+    def __setattr__(self, name, value):
+        base = self.__dict__["__base__"]
+        setattr(base, name, value)
 
 
 ### Main
@@ -239,15 +371,18 @@ def main(*argv):
     Configuration file is loaded and used to store username/password.
     """
 
+    global DEBUG
+
     if not argv:
         argv = sys.argv[1:]
 
     ### Parse argument vector
-    import optionparse
-    defaults = {
-        'DLCS_CONFIG': DLCS_CONFIG,
-        'ENCODING': locale.getpreferredencoding()}
-    optparser, opts, args = optionparse.parse(__usage__, list(argv), defaults=defaults)
+    #import optionparse
+    #defaults = {
+    #    'DLCS_CONFIG': DLCS_CONFIG,
+    #    'ENCODING': locale.getpreferredencoding()}
+    #optparser, opts, args = optionparse.parse(__usage__, list(argv), defaults=defaults)
+    optparser, opts, args = parse_argv_split(__options__, argv, __usage__)
 
     if opts['verboseness']:
         v = int(opts['verboseness'])
@@ -261,7 +396,7 @@ def main(*argv):
         cmdid = 'info'
 
     if not cmdid in __cmds__:
-        optionparse.exit("Command must be one of %s" % ", ".join(__cmds__))
+        optparser.exit("Command must be one of %s" % ", ".join(__cmds__))
 
     ### Parse config file
     conf = ConfigParser()
@@ -302,10 +437,15 @@ def main(*argv):
 
     # Force output encoding
     sys.stdout = codecs.getwriter(options['encoding'])(sys.stdout)
+    # TODO: run tests, args = [a.decode(options['encoding']) for a in args]
 
     # DeliciousAPI instance to pass to the command functions
     dlcs = DeliciousAPI(options['username'], options['password'],
         codec=options['encoding'])
+
+    # TODO: integrate debugwrapper if DEBUG:
+    if DEBUG > 2:
+        dlcs = DebugWrapper(dlcs, sys.stderr)
 
     ### Defer processing to command function
     cmd = getattr(sys.modules[__name__], cmdid)
@@ -516,14 +656,17 @@ def postit(conf, dlcs, url, shared='yes', replace='no', **opts):
     # Let post handle rest of command
     post(conf, dlcs, url, description, extended, *tags, **opts)
 
-def posts(conf, dlcs, **opts):
+def posts(conf, dlcs, *urls, **opts):
 
-    """Retrieves ALL posts and prints the URLs.
+    """Either prints the ALL URLs or posts of given urls.
     """
 
     posts = cached_posts(conf, dlcs, opts['keep_cache'])
     for post in posts['posts']:
-        print post['href']
+        if urls and not post['href'] in urls:
+            continue
+        else:
+            print output('posts', opts, post)
 
 def postsupdate(conf, dlcs, **opts):
 
@@ -795,25 +938,30 @@ def untag(conf, dlcs, tags, *urls, **opts):
             print '* untagged "%s" from "%s"' % (" ".join(untagged),
                 url)
 
-def tagged(conf, dlcs, tag, **opts):
+def tagged(conf, dlcs, *tags, **opts):
 
-    """Request all posts for a tag and print their URLs.
+    """Request all posts for a tag or overlap of tags. Print URLs.
 
-        % dlcs tagged tag
+        % dlcs tagged tag [tag2 ...]
     """
 
     posts = cached_posts(conf, dlcs, opts['keep_cache'])
     for post in posts['posts']:
 
         if opts['ignore_case']:
-            tags = post['tag'].lower().split(' ')
+            post_tags = post['tag'].lower().split(' ')
+            tags = map(lambda t: t.lower(), tags)
         else:
-            tags = post['tag'].split(' ')
+            post_tags = post['tag'].split(' ')
 
-        if opts['ignore_case'] and tag.lower() in tags:
-            print post['href']
-        elif tag in tags:
-            print post['href']
+        for tag in tags:
+            if '+' in tag:
+                andq = tag.split('+')
+                if Set(post_tags).issuperset(Set(andq)):
+                    print post['href']
+            elif tag in post_tags:
+                print post['href']
+
 
 def tags(conf, dlcs, *count, **opts):
 
@@ -849,6 +997,40 @@ def tags(conf, dlcs, *count, **opts):
                     print tag['tag'],
         else:            
             print tag['tag'],
+
+def tagrel(conf, dlcs, *tags, **opts):
+
+    """Print related tags.
+
+    Finds all posts tagged `tags` and gather other tags for post.
+    """
+
+    reltags = []
+
+    posts = cached_posts(conf, dlcs, opts['keep_cache'])
+    for post in posts['posts']:
+
+        if opts['ignore_case']:
+            post_tags = post['tag'].lower().split(' ')
+            tags = map(lambda t: t.lower(), tags)
+        else:
+            post_tags = post['tag'].split(' ')
+
+
+        for tag in tags:
+            if '+' in tag:
+                andq = tag.split('+')
+                if Set(post_tags).issuperset(Set(andq)):
+                    for ntag in post['tag'].split(' '):
+                        if ntag != tag and not ntag in reltags:
+                            reltags.append(ntag)
+            elif tag in post_tags:
+                for ntag in post['tag'].split(' '):
+                    if ntag != tag and not ntag in reltags:
+                        reltags.append(ntag)
+
+    for tag in reltags:
+        print tag,
 
 def gettags(conf, dlcs, *tags, **opts):
 
@@ -1036,5 +1218,3 @@ if __name__ == '__main__':
         sys.exit(main(*sys.argv[1:]))
     except KeyboardInterrupt:
         print >>sys.stderr, "User interrupt"
-
-# vim:set expandtab:

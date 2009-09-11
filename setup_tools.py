@@ -9,19 +9,16 @@ This file is in the public domain.
 """
 from setuptools import setup
 
-import sys
-sys.exit("Don't use this, installing tools is broken at the moment.")
+#import sys
+#sys.exit("Don't use this, installing tools is broken at the moment.")
 
 
 # http://www.bud.ca/blog/how-to-install-python-shell-scripts-with-buildout
 # writes it is better to use buildout, but this works for me (@ Debian
 # GNU/Linux)
 
-# XXX: this has no uninstall, and using a package gets slightly more complicated
-# than a module
-
 setup(
-    name = 'Pydelicious Tools',
+    name = 'pydelicious-tools',
     version = '0.1',
     license = 'BSD',
     description = '',

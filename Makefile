@@ -4,14 +4,12 @@
 API = src/__init__.py
 TOOLS = tools/dlcs.py tools/optionparse.py #tools/cache.py
 RST = README.rst HACKING.rst
-
-DOC = $(RST:%.rst=doc/docbook/%.xml) #doc/docbook/index.xml 
-	#$(API:%.py=doc/docbook/%.xml) $(TOOLS:tools/%.py=doc/docbook/%.xml) 
-REF = $(DOC:doc/docbook/%.xml=doc/htmlref/%.html) \
+REF = $(RST:%.rst=doc/htmlref/%.html) \
 	$(TOOLS:tools/%.py=doc/htmlref/%.html) $(API:src/%.py=doc/htmlref/%.html) 
-MAN = doc/man/dlcs.man1.gz
+#MAN = doc/man/dlcs.man1.gz
 
-TRGTS = $(REF)
+TRGTS := $(REF)
+CLN := $(REF) build/ pydelicious-*.zip dist *.egg-info
 
 # Docutils flags
 DU_GEN = --traceback --no-generator --no-footnote-backlinks --date -i utf-8 -o utf-8
@@ -21,24 +19,21 @@ DU_XML =
 
 
 ## Default target
+# see below for all recipies
 .PHONY: help
 help:
-	@echo "No default build targets."
-	@echo
-	@echo " - install: install pydelicious API lib"
-	@echo " - doc: build documentation targets"
-	@echo " - clean: remove all build targets"
-	@echo "	- test: run unittests, see test/main.py"
-	@echo "	- test-server: run tests against delicious server"
-	@echo "	- test-all: run all tests"
+	@echo "- install: install pydelicious API lib"
+	@echo "- doc: build documentation targets"
+	@echo "- clean: remove all build targets"
+	@echo "- test: run unittests, see tests/main.py"
+	@echo "- test-server: run tests against delicious server"
+	@echo "- test-all: run all tests"
 
 
 ## Local targets
-.PHONY: doc docbook install clean clean-make clean-setup all pre-dict clean-pyc test test-all test-server refresh-test-data
+.PHONY: all test doc install clean clean-setup clean-pyc test-all test-server refresh-test-data zip
 
 all: test doc
-
-docbook: $(DOC)
 
 doc: $(REF)
 #$(DOC) 
@@ -52,28 +47,23 @@ test:
 	python tests/main.py test_api
 
 test-all:
-	python tests/main.py
+	python tests/main.py test_all
 
 test-server:
 	DLCS_DEBUG=1 python tests/main.py test_server
 
 install:
 	python setup.py install
+	python setup_tools.py install
 
-clean: clean-setup clean-pyc clean-make
+clean: clean-setup clean-pyc
+	@rm -rf $(CLN)
 
 clean-setup:
 	python setup.py clean
 
-clean-make:
-	rm -rf $(TRGTS) build/ pydelicious-*.zip
-
 clean-pyc:
 	-find -name '*.pyc' | xargs rm
-
-clean-setuptools:
-	# cleanup after setuptools..
-	rm -rf dist build *.egg-info
 
 refresh-test-data:
 	# refetch cached test data to var/
@@ -82,27 +72,23 @@ refresh-test-data:
 zip: src/*.py Makefile $(RST) doc/htmlref var/* tests/* setup.py
 	zip -9 pydelicious-`python -c "import src;print src.__version__"`.zip $^
 
-
-%.xml: %.rst
-	@rst2xml $(DU_GEN) $(DU_READ) $(DU_HTML) $< $@
-	@echo "* $^ -> $@"
-
 %.html: %.rst
 	@rst2html $(DU_GEN) $(DU_READ) $(DU_HTML) $< $@
 	@-tidy -q -m -wrap 0 -asxhtml -utf8 -i $@
 	@echo "* $^ -> $@"
 
-#doc/htmlref/HACKING.html doc/htmlref/README.html: README.html HACKING.html
 doc/htmlref/README.html: README.html
 doc/htmlref/HACKING.html: HACKING.html
 
 doc/htmlref/%.html: %.html
-	-mkdir doc/htmlref    
-	mv *.html doc/htmlref/
+	@if test ! -d doc/htmlref; then mkdir doc/htmlref; fi;
+	@mv *.html doc/htmlref/
+	@echo "* $^ -> $@"
 
 doc/htmlref/__init__.html doc/htmlref/dlcs.html doc/htmlref/optionparse.html: $(API) $(TOOLS)
-	-mkdir doc/htmlref    
-	pydoc -w $^
-	mv {dlcs,__init__,optionparse}.html doc/htmlref/
+	@if test ! -d doc/htmlref; then mkdir doc/htmlref; fi;
+	@pydoc -w $^
+	@mv {dlcs,__init__,optionparse}.html doc/htmlref/
+	@echo "* $^ -> $@"
 
 # vim:set noexpandtab:

@@ -18,4 +18,5 @@
 0.5.2-rc2
     raiseFor code fixed (thnx to me.gooz), added test
     getpreferredencoding on Mac OS X 10.5 returning empty defaults to iso8859-1 (thnx to mohangk)
+    added first HTTP proxy support (suggestion by aman.coe)
 

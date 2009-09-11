@@ -31,12 +31,6 @@ from urllib import urlencode, quote_plus
 from StringIO import StringIO
 from pprint import pformat
 
-DEBUG = 0
-if 'DLCS_DEBUG' in os.environ:
-    DEBUG = int(os.environ['DLCS_DEBUG'])
-    print >>sys.stderr, \
-        "Set DEBUG to %i from DLCS_DEBUG env." % DEBUG
-
 try:
     from elementtree.ElementTree import parse as parse_xml
 except ImportError:
@@ -92,6 +86,19 @@ ISO_8601_DATETIME = '%Y-%m-%dT%H:%M:%SZ'
 
 USER_AGENT = 'pydelicious/%s %s' % (__version__, __url__)
 
+DEBUG = 0
+if 'DLCS_DEBUG' in os.environ:
+    DEBUG = int(os.environ['DLCS_DEBUG'])
+    if DEBUG:
+        print >>sys.stderr, \
+            "Set DEBUG to %i from DLCS_DEBUG env." % DEBUG
+
+HTTP_PROXY = None
+if 'HTTP_PROXY' in os.environ:
+    HTTP_PROXY = os.environ['HTTP_PROXY']
+    if DEBUG:
+        print >>sys.stderr, \
+            "Set HTTP_PROXY to %i from env." % HTTP_PROXY
 
 ### Timeoutsocket hack taken from FeedParser.py
 
@@ -160,7 +167,7 @@ class DeliciousError(Exception):
         if error_string == 'item already exists':
             raise DeliciousItemExistsError, params['url']
         else:
-            raise DeliciousError, "%s for calling <%s>" % (error_string,
+            raise DeliciousError, "%s while calling  <%s>" % (error_string,
                     path+urlencode(params))
 
 class DeliciousItemExistsError(DeliciousError):
@@ -231,20 +238,26 @@ def http_request(url, user_agent=USER_AGENT, retry=4, opener=None):
             "Unable to retrieve data at '%s', %s" % (url, e)
 
 
-def build_api_opener(host, user, passwd, extra_handlers=()):
+def build_api_opener(host, user, passwd, extra_handlers=() ):
     """
     Build a urllib2 style opener with HTTP Basic authorization for one host
-    and additional error handling.
+    and additional error handling. If HTTP_PROXY is set a proxyhandler is also
+    added.
     """
+
+    global DEBUG
+
     if DEBUG: httplib.HTTPConnection.debuglevel = 1
 
     password_manager = urllib2.HTTPPasswordMgrWithDefaultRealm()
     password_manager.add_password(None, host, user, passwd)
     auth_handler = urllib2.HTTPBasicAuthHandler(password_manager)
 
-    http_error_handler = HTTPErrorHandler()
+    extra_handlers += ( HTTPErrorHandler(), )
+    if HTTP_PROXY:
+        extra_handlers += ( urllib2.ProxyHandler( {'http': HTTP_PROXY} ), )
 
-    return urllib2.build_opener(auth_handler, http_error_handler, *extra_handlers)
+    return urllib2.build_opener(auth_handler, *extra_handlers)
 
 
 def dlcs_api_opener(user, passwd):
