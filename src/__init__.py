@@ -24,12 +24,17 @@ import os
 import time
 import datetime
 import locale
-import md5
 import httplib
 import urllib2
 from urllib import urlencode, quote_plus
 from StringIO import StringIO
 from pprint import pformat
+
+v = sys.version_info
+if v[0] >= 2 and v[1] >= 5:
+    from hashlib import md5
+else:
+    from md5 import md5
 
 try:
     from elementtree.ElementTree import parse as parse_xml
@@ -407,7 +412,7 @@ def dlcs_rss_request(tag="", popular=0, user="", url=''):
 
     if url != '':
         # http://del.icio.us/rss/url/efbfb246d886393d48065551434dab54
-        url = DLCS_RSS + 'url/%s' % md5.new(url).hexdigest()
+        url = DLCS_RSS + 'url/%s' % md5(url).hexdigest()
 
     elif user != '' and tag != '':
         url = DLCS_RSS + '%(user)s/%(tag)s' % {'user':user, 'tag':tag}

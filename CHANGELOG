@@ -19,4 +19,5 @@
     raiseFor code fixed (thnx to me.gooz), added test
     getpreferredencoding on Mac OS X 10.5 returning empty defaults to iso8859-1 (thnx to mohangk)
     added first HTTP proxy support (suggestion by aman.coe)
-
+    fixed issue 28, thanks ZebraShaSha
+    worked around stdlib deprecation warning (Py2.6), fixed issue 27 (thanks, stumble.then.rise)

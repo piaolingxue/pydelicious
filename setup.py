@@ -48,7 +48,7 @@ setup(
     install_requires = requires,
 
     packages = ['pydelicious'],
-    package_dir = { 'pydelicious': 'src/' },
+    package_dir = { 'pydelicious': 'src' },
 
     cmdclass = {
         'test': Test,
