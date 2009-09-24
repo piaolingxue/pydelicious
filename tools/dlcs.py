@@ -319,7 +319,7 @@ class DebugWrapper:
 
 ### Main
 
-def dlcs(argv):
+def main(argv):
 
     """This will prepare al input data and call a command function to perform
     the operations. Default command is `info()`.
@@ -407,12 +407,6 @@ def dlcs(argv):
     except pydelicious.DeliciousError, e:
         print >> sys.stderr, e
 
-def main():
-    try:
-        sys.exit(dlcs(sys.argv[1:]))
-    except KeyboardInterrupt:
-        print >>sys.stderr, "User interrupt"
-
 ### Command functions
 
 def help(conf, dlcs, cmd='', **opts):
@@ -420,7 +414,7 @@ def help(conf, dlcs, cmd='', **opts):
     """Prints the docstring for a command or DeliciousAPI method.
     """
 
-    thismod = sys.modules['__main__']
+    thismod = sys.modules[__name__]
 
     if cmd == 'command':
         print "Available commands: %s " % ", ".join(__cmds__)
@@ -432,19 +426,19 @@ def help(conf, dlcs, cmd='', **opts):
         # cmd is an API path
         print DeliciousAPI.paths[cmd].__doc__
 
-    elif not cmd:
-        print thismod.__doc__
-        # XXX: mage help work again in new dist
-        # print pydelicious.tools.dlcs.__doc__
-
     elif not hasattr(thismod, cmd):
         print "No such command or API path: %s" % (cmd,)
 
     elif not hasattr(getattr(thismod, cmd), '__doc__'):
         print "No docstring for %s" % (cmd,)
 
-    else:
+    elif cmd:
         print getattr(thismod, cmd).__doc__
+
+    else:
+        print thismod.__doc__
+        # XXX: mage help work again in new dist
+        # print pydelicious.tools.dlcs.__doc__
 
 def info(conf, dlcs, **opts):
 
@@ -1172,4 +1166,7 @@ def value_sorted(dic):
 
 
 if __name__ == '__main__':
-    main()
+    try:
+        sys.exit(main(sys.argv[1:]))
+    except KeyboardInterrupt:
+        print >>sys.stderr, "User interrupt"

@@ -21,7 +21,7 @@ from setuptools import setup
 
 setup(
     name = 'pydelicious-tools',
-    version = '0.1',
+    version = '0.2',
     license = 'BSD',
     description = '',
     long_description = """
@@ -38,7 +38,7 @@ setup(
 
     entry_points = {
         'console_scripts': [
-            'dlcs = pydelicious.tools.dlcs:main'
+            'dlcs = pydelicious.tools.pkg_dlcs:main'
         ]
     }
 )

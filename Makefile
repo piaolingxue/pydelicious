@@ -54,13 +54,16 @@ test-server:
 
 install:
 	python setup.py install
+	python setup.py clean
 	python setup_tools.py install
+	python setup_tools.py clean
 
 clean: clean-setup clean-pyc
 	@rm -rf $(CLN)
 
 clean-setup:
 	python setup.py clean
+	python setup_tools.py clean
 
 clean-pyc:
 	-find -name '*.pyc' | xargs rm
