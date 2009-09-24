@@ -94,7 +94,7 @@ except:
     try:
         from json import read as jsonread, write as jsonwrite
     except:
-        print >>sys.stderr, "No JSON decoder installed"
+        pass #print >>sys.stderr, "No JSON decoder installed"
 
 __cmds__ = [
     'bundle',
@@ -999,7 +999,7 @@ def gettags(conf, dlcs, *tags, **opts):
 
 def findtags(conf, dlcs, *tags, **opts):
 
-    """Search all tags with (a part of) a tag.
+    """Search all tags for (a part of) a tag.
     """
 
     for tag in cached_tags(conf, dlcs, opts['keep_cache'])['tags']:
