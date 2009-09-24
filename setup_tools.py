@@ -13,9 +13,10 @@ from setuptools import setup
 #sys.exit("Don't use this, installing tools is broken at the moment.")
 
 
+# http://swik.net/Zope/Planet+Zope/How-to:+Install+Python+shell+scripts+with+Buildout/cfdy0
 # http://www.bud.ca/blog/how-to-install-python-shell-scripts-with-buildout
-# writes it is better to use buildout, but this works for me (@ Debian
-# GNU/Linux)
+# writes it is better to use buildout, and i'm not entirely satisfied with the
+# current installer.
 
 # FIXME: after editing needs to run twice because of broken header in egg.. clean up something.. ?
 
