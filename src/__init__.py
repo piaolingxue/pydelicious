@@ -172,8 +172,8 @@ class DeliciousError(Exception):
         if error_string == 'item already exists':
             raise DeliciousItemExistsError, params['url']
         else:
-            raise DeliciousError, "%s while calling  <%s>" % (error_string,
-                    path+urlencode(params))
+            raise DeliciousError, "%s, while calling <%s?%s>" % (error_string,
+                    path, urlencode(params))
 
 class DeliciousItemExistsError(DeliciousError):
     """Raised then adding an already existing post."""

@@ -17,6 +17,8 @@ from setuptools import setup
 # writes it is better to use buildout, but this works for me (@ Debian
 # GNU/Linux)
 
+# FIXME: after editing needs to run twice because of broken header in egg.. clean up something.. ?
+
 setup(
     name = 'pydelicious-tools',
     version = '0.1',

@@ -319,7 +319,7 @@ class DebugWrapper:
 
 ### Main
 
-def main(*argv):
+def dlcs(argv):
 
     """This will prepare al input data and call a command function to perform
     the operations. Default command is `info()`.
@@ -404,7 +404,14 @@ def main(*argv):
         return cmd(conf, dlcs, *args, **options)
     except PyDeliciousException, e:
         print >> sys.stderr, e
+    except pydelicious.DeliciousError, e:
+        print >> sys.stderr, e
 
+def main():
+    try:
+        sys.exit(dlcs(sys.argv[1:]))
+    except KeyboardInterrupt:
+        print >>sys.stderr, "User interrupt"
 
 ### Command functions
 
@@ -1165,7 +1172,4 @@ def value_sorted(dic):
 
 
 if __name__ == '__main__':
-    try:
-        sys.exit(main(*sys.argv[1:]))
-    except KeyboardInterrupt:
-        print >>sys.stderr, "User interrupt"
+    main()

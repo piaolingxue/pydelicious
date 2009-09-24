@@ -1,6 +1,7 @@
 import os
 import urllib2
 import pydelicious
+from StringIO import StringIO
 
 
 DLCS_CACHE = os.expanduser('~/.dlcs-cache/')
