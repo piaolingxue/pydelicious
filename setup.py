@@ -3,7 +3,7 @@
 # This file is in the public domain.
 import sys
 from setuptools import setup, Command
-import src
+import pydelicious
 
 
 class Test(Command):
@@ -36,19 +36,19 @@ dependency_links = [
 
 setup(
     name = 'pydelicious',
-    version = src.__version__,
+    version = pydelicious.__version__,
     license = 'BSD',
-    description = src.__description__,
-    long_description = src.__long_description__,
+    description = pydelicious.__description__,
+    long_description = pydelicious.__long_description__,
 
-    author = src.__author__,
-    author_email = src.__author_email__,
-    url = src.__url__,
+    author = pydelicious.__author__,
+    author_email = pydelicious.__author_email__,
+    url = pydelicious.__url__,
 
     install_requires = requires,
 
     packages = ['pydelicious'],
-    package_dir = { 'pydelicious': 'src' },
+    package_dir = { 'pydelicious': 'pydelicious' },
 
     cmdclass = {
         'test': Test,
