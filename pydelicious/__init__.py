@@ -53,7 +53,7 @@ except ImportError:
 
 ### Static config
 
-__rcs_id__ = "$Id$"[1:-1]
+__rcs_id__ = "$Id$"[3:-1]
 __version__ = '0.6'
 __author__ = 'Frank Timmermann <regenkind_at_gmx_dot_de>'
     # GP: does not respond to emails
