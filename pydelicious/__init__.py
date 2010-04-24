@@ -30,6 +30,7 @@ from urllib import urlencode, quote_plus
 from StringIO import StringIO
 from pprint import pformat
 
+
 v = sys.version_info
 if v[0] >= 2 and v[1] >= 5:
     from hashlib import md5
@@ -52,7 +53,8 @@ except ImportError:
 
 ### Static config
 
-__version__ = '0.5.3'
+__rcs_id__ = "$Id$"[1:-1]
+__version__ = '0.6'
 __author__ = 'Frank Timmermann <regenkind_at_gmx_dot_de>'
     # GP: does not respond to emails
 __contributors__ = [
@@ -73,7 +75,7 @@ DLCS_WAIT_TIME = 4
 "Time to wait between API requests"
 DLCS_REQUEST_TIMEOUT = 444
 "Seconds before socket triggers timeout"
-#DLCS_API_REALM = 'del.icio.us API'
+DLCS_API_REALM = 'del.icio.us API'
 DLCS_API_HOST = 'api.del.icio.us'
 DLCS_API_PATH = 'v1'
 DLCS_API = "https://%s/%s" % (DLCS_API_HOST, DLCS_API_PATH)
@@ -179,7 +181,7 @@ class DeliciousItemExistsError(DeliciousError):
     """Raised then adding an already existing post."""
 
 
-class HTTPErrorHandler(urllib2.HTTPDefaultErrorHandler):
+class DeliciousHTTPErrorHandler(urllib2.HTTPDefaultErrorHandler):
 
     def http_error_401(self, req, fp, code, msg, headers):
         raise PyDeliciousUnauthorized, "Check credentials."
@@ -250,20 +252,24 @@ def build_api_opener(host, user, passwd, extra_handlers=() ):
     added.
     """
 
-    global DEBUG
+    global DEBUG, HTTP_PROXY, DLCS_API_REALM
 
-    if DEBUG: httplib.HTTPConnection.debuglevel = 1
-
-    password_manager = urllib2.HTTPPasswordMgrWithDefaultRealm()
-    password_manager.add_password(None, host, user, passwd)
+    password_manager = urllib2.HTTPPasswordMgr()
+    password_manager.add_password(DLCS_API_REALM, host, user, passwd)
     auth_handler = urllib2.HTTPBasicAuthHandler(password_manager)
 
-    extra_handlers += ( HTTPErrorHandler(), )
+    handlers = ( auth_handler, DeliciousHTTPErrorHandler(), ) + extra_handlers
+
+    if DEBUG:
+        httpdebug = urllib2.HTTPHandler(debuglevel=DEBUG)
+        handlers += ( httpdebug, )
+
     if HTTP_PROXY:
-        extra_handlers += ( urllib2.ProxyHandler( {'http': HTTP_PROXY} ), )
+        handlers += ( urllib2.ProxyHandler( {'http': HTTP_PROXY} ), )
 
-    return urllib2.build_opener(auth_handler, *extra_handlers)
+    o = urllib2.build_opener(*handlers)
 
+    return o
 
 def dlcs_api_opener(user, passwd):
     "Build an opener for DLCS_API_HOST, see build_api_opener()"
