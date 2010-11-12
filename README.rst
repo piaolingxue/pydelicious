@@ -13,8 +13,7 @@ And either import the (documented) class::
   >>> api = DeliciousAPI('username', 'password', 'encoding')
 
 or use the functions on the module, listed below.
-Please `report <http://code.google.com/p/pydelicious/issues/>`_ any bugs and other
-frustrating misbehaviours.
+Please do `report <http://code.google.com/p/pydelicious/issues/>`_ any bugs.
 
 Overview
 --------

@@ -1,11 +1,11 @@
 # pydelicious Makefile
 
 ## Local vars
-API = src/__init__.py
-TOOLS = tools/dlcs.py tools/optionparse.py #tools/cache.py
+API = pydelicious/__init__.py
+TOOLS = tools/dlcs.py #tools/cache.py
 RST = README.rst HACKING.rst
 REF = $(RST:%.rst=doc/htmlref/%.html) \
-	$(TOOLS:tools/%.py=doc/htmlref/%.html) $(API:src/%.py=doc/htmlref/%.html) 
+	$(TOOLS:tools/%.py=doc/htmlref/%.html) doc/htmlref/pydelicious.html
 #MAN = doc/man/dlcs.man1.gz
 
 TRGTS := $(REF)
@@ -58,12 +58,12 @@ install:
 	python setup_tools.py install
 	python setup_tools.py clean
 
-clean: clean-setup clean-pyc
+clean: clean-setup clean-pyc 
 	@rm -rf $(CLN)
 
 clean-setup:
-	python setup.py clean
-	python setup_tools.py clean
+	-python setup.py clean
+	-python setup_tools.py clean
 
 clean-pyc:
 	-find -name '*.pyc' | xargs rm
@@ -91,10 +91,11 @@ doc/htmlref/%.html: %.html
 	@mv *.html doc/htmlref/
 	@echo "* $^ -> $@"
 
-doc/htmlref/__init__.html doc/htmlref/dlcs.html doc/htmlref/optionparse.html: $(API) $(TOOLS)
+doc/htmlref/pydelicious.html doc/htmlref/dlcs.html: $(API) $(TOOLS)
 	@if test ! -d doc/htmlref; then mkdir doc/htmlref; fi;
 	@pydoc -w $^
-	@mv {dlcs,__init__,optionparse}.html doc/htmlref/
+	@mv __init__.html doc/htmlref/pydelicious.html
+	@mv dlcs.html doc/htmlref/
 	@echo "* $^ -> $@"
 
 # vim:set noexpandtab:

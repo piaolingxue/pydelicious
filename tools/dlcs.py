@@ -78,9 +78,8 @@ import getpass
 import time
 import locale
 import codecs
-from sets import Set
 import math
-import md5
+import hashlib
 from os.path import expanduser, getmtime, exists, abspath
 from ConfigParser import ConfigParser
 import pydelicious
@@ -89,12 +88,26 @@ from pydelicious import DeliciousAPI, dlcs_parse_xml, PyDeliciousException, \
 from pprint import pformat    
 
 try:
+    # Python >= 2.4
+    assert set and frozenset
+except AssertionError:
+    # Python < 2.6
+    from sets import Set as set
+
+try:
+    # Python >= 2.5
+    from hashlib import md5
+except ImportError:
+    from md5 import md5
+
+try:
     from simplejson import dumps as jsonwrite, loads as jsonread
 except:
     try:
         from json import read as jsonread, write as jsonwrite
     except:
-        pass #print >>sys.stderr, "No JSON decoder installed"
+        print >>sys.stderr, "No JSON decoder installed"
+
 
 __cmds__ = [
     'bundle',
@@ -352,39 +365,43 @@ def main(argv):
     ### Parse config file
     conf = ConfigParser()
     conf_file = opts['config']
+    # reads whatever it can or nothing:
     conf.read(conf_file)
 
-    # Check for default section
+    # Check for section and initialize using options if needed
     if not 'dlcs' in conf.sections():
-        if not 'username' in opts or not 'password' in opts:
-            if not 'username' in opts:
-                opts['username'] = os.getlogin()
+        # initialize a new configuration?
+        if not 'username' in opts:
+            opts['username'] = os.getlogin()
 
-            if not 'password' in opts:
-                opts['password'] = getpass.getpass("Password for %s: " % opts['username'])
+        if not 'password' in opts:
+            opts['password'] = getpass.getpass("Password for %s: " % opts['username'])
 
-            v = raw_input("Save username, password and other defaults to config (%s)? [Y]es/No: " % conf_file)
-            if v in ('y', 'Y', ''):
-                conf.add_section('dlcs')
-                conf.set('dlcs', 'username', opts['username'])
-                conf.set('dlcs', 'password', opts['password'])
-                # Other default settings:
-                conf.add_section('local-files')
-                conf.set('local-files', 'tags', expanduser("~/.dlcs-tags.xml"))
-                conf.set('local-files', 'posts', expanduser("~/.dlcs-posts.xml"))
-                conf.write(open(conf_file, 'w'))
-                return "Config written. Just run dlcs again or review the default config first."
+        v = raw_input("Save username, password and other defaults to config (%s)? [Y]es/No/nEver: " % conf_file)
+        if v in ('y','Y',''):
+            conf.add_section('dlcs')
+            conf.set('dlcs', 'username', opts['username'])
+            conf.set('dlcs', 'password', opts['password'])
+            conf.write(open(conf_file, 'w'))
 
-            else:
-                return "Aborted"
+        elif v in ('e','E'):
+            conf.add_section('dlcs')
+            conf.write(open(conf_file, 'w'))
 
-        options = opts
+    if not 'local-files' in conf.sections():        
+        # Other default settings:
+        conf.add_section('local-files')
+        conf.set('local-files', 'tags', expanduser("~/.dlcs-tags.xml"))
+        conf.set('local-files', 'posts', expanduser("~/.dlcs-posts.xml"))
+        conf.write(open(conf_file, 'w'))
+    #return "Config written. Just run dlcs again or review the default config first."
 
-    else:
-        ### Merge config items under 'dlcs' with opts
-        # conf provides defaults, command line options override
-        options = dict(conf.items('dlcs'))
-        options.update(opts)
+
+    ### Merge config items under 'dlcs' with opts
+    # conf provides defaults, command line options override
+    options = dict(conf.items('dlcs'))
+    options.update(opts)
+
 
     # Force output encoding
     sys.stdout = codecs.getwriter(options['encoding'])(sys.stdout)
@@ -644,6 +661,9 @@ def getposts(conf, dlcs, *urls, **opts):
     """
 
     out = []
+    if not urls:
+        print >>sys.stderr, "dlcs: getposts: No arguments"
+
     for url in urls:
         posts = dlcs.posts_get(url=url)['posts']
 

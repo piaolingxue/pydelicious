@@ -53,10 +53,15 @@ except ImportError:
 
 ### Static config
 
-__rcs_id__ = "$Id$"[3:-1]
+# pydoc supported exports
 __version__ = '0.6'
 __author__ = 'Frank Timmermann <regenkind_at_gmx_dot_de>'
     # GP: does not respond to emails
+#__date__ = "$Date: $"[]
+#__credits__ = ""
+
+
+__rcs_id__ = "$Id$"[3:-1]
 __contributors__ = [
     'Greg Pinero',
     'Berend van Berkum <berend+pydelicious@dotmpe.com>']
@@ -68,6 +73,7 @@ __description__ = "pydelicious.py allows you to access the web service of " \
     "del.icio.us via it's API through Python."
 __long_description__ = "The goal is to design an easy to use and fully " \
     "functional Python interface to del.icio.us."
+
 
 DLCS_OK_MESSAGES = ('done', 'ok')
 "Known text values of positive del.icio.us <result/> answers"
