@@ -24,3 +24,7 @@
 
 0.5.3
     make install now installs tools also
+
+0.6
+    HTTP_PROXY for https too
+

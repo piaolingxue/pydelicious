@@ -55,10 +55,10 @@ except ImportError:
 
 # pydoc supported exports
 __version__ = '0.6'
-__author__ = 'Frank Timmermann <regenkind_at_gmx_dot_de>'
-    # GP: does not respond to emails
+__author__ = "Berend (.mpe)  <dev@dotmpe.com>"
 #__date__ = "$Date: $"[]
-#__credits__ = ""
+__credits__ = """Frank Timmermann (original author), and in no
+particular order: Greg Pinero, me.gooz, mohangk, stumble.then.rise, clupprich"""
 
 
 __rcs_id__ = "$Id$"[3:-1]
@@ -106,12 +106,10 @@ if 'DLCS_DEBUG' in os.environ:
         print >>sys.stderr, \
             "Set DEBUG to %i from DLCS_DEBUG env." % DEBUG
 
-HTTP_PROXY = None
-if 'HTTP_PROXY' in os.environ:
-    HTTP_PROXY = os.environ['HTTP_PROXY']
-    if DEBUG:
-        print >>sys.stderr, \
-            "Set HTTP_PROXY to %i from env." % HTTP_PROXY
+HTTP_PROXY = os.environ.get('HTTP_PROXY', None)
+if DEBUG and HTTP_PROXY:
+    print >>sys.stderr, \
+        "Set HTTP_PROXY to %i from env." % HTTP_PROXY
 
 ### Timeoutsocket hack taken from FeedParser.py
 
@@ -271,7 +269,8 @@ def build_api_opener(host, user, passwd, extra_handlers=() ):
         handlers += ( httpdebug, )
 
     if HTTP_PROXY:
-        handlers += ( urllib2.ProxyHandler( {'http': HTTP_PROXY} ), )
+        handlers += ( urllib2.ProxyHandler( 
+            {'http': HTTP_PROXY, 'https': HTTP_PROXY } ), )
 
     o = urllib2.build_opener(*handlers)
 
