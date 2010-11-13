@@ -24,7 +24,7 @@ DU_XML =
 help:
 	@echo "- install: install pydelicious API lib"
 	@echo "- doc: build documentation targets"
-	@echo "- zip: pack project essentials into compressed file"
+	@echo "- zip: pack project into compressed file"
 	@echo "- clean: remove all build targets"
 	@echo "- test: run unittests, see tests/main.py"
 	@echo "- test-server: run tests against delicious server"
@@ -72,8 +72,8 @@ refresh-test-data:
 
 zip: pydelicious.zip
 	
-pydelicious.zip: pydelicious/*.py Makefile $(RST) doc/htmlref var/* tests/* setup.py
-	zip -9 pydelicious-`python -c "import src;print src.__version__"`.zip $^
+pydelicious.zip: pydelicious/*.py tools/dlcs.py Makefile $(RST) doc/htmlref var/* tests/* setup.py
+	zip -9 pydelicious-`python -c "import pydelicious;print pydelicious.__version__"`.zip $^
 
 %.html: %.rst
 	@rst2html $(DU_GEN) $(DU_READ) $(DU_HTML) $< $@

@@ -1,8 +1,9 @@
 """Library to access del.icio.us data via Python.
 
 An introduction to the project is given in the README.
-pydelicious is released under the BSD license. See license.txt for details
-and the copyright holders.
+
+pydelicious is released under the FreeBSD License. 
+See license.txt for details and the copyright holders.
 
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
 ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
@@ -14,10 +15,6 @@ LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
 ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
-TODO:
- - distribute license, readme docs via setup.py?
- - automatic release build?
 """
 import sys
 import os
@@ -59,12 +56,9 @@ __author__ = "Berend (.mpe)  <dev@dotmpe.com>"
 #__date__ = "$Date: $"[]
 __credits__ = """Frank Timmermann (original author), and in no
 particular order: Greg Pinero, me.gooz, mohangk, stumble.then.rise, clupprich"""
-__license__ = ''
-
+# other meta used by setup.py
+__license__ = 'FreeBSD'
 __rcs_id__ = "$Id$"[3:-1]
-__contributors__ = [
-    'Greg Pinero',
-    'Berend van Berkum <berend+pydelicious@dotmpe.com>']
 __url__ = 'http://code.google.com/p/pydelicious/'
 # Old URL: 'http://deliciouspython.python-hosting.com/'
 __author_email__ = ""

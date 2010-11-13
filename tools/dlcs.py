@@ -56,6 +56,11 @@ Something like the following::
 
     set document.uri_passing.dlcs = "bash -c \"dlcs postit %c\""
 
+License
+-------
+Same as `pydelicious`, FreeBSD or Simplified BSD license.
+See license.txt for details and the copyright holders.
+
 TODO
 ----
 - adapt to new meta attr's
