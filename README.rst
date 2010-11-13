@@ -70,6 +70,11 @@ For TODO's, progress reports, etc. see `HACKING`__.
 Note that for non-pydelicious related questions there is also a
 `del.icio.us user discussion list at yahoo`__.
 
+Historical
+----------
+Originally written by Frank Timmermann and hosted at:
+<http://deliciouspython.python-hosting.com/> (defunkt).
+
 ----
 
 .. [#] Google Code, ``pydelicious`` (http://code.google.com/p/pydelicious/).

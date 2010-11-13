@@ -50,23 +50,19 @@ except ImportError:
 
 ### Static config
 
-# pydoc supported exports
+# pydoc and distutils supported exports
 __version__ = '0.6'
-__author__ = "Berend (.mpe)  <dev@dotmpe.com>"
-#__date__ = "$Date: $"[]
+__author__ = "Berend (.mpe)"
+__author_email__ = "dev,pydelicious@dotmpe.com"
+#__date__ = "$Date$"[]
 __credits__ = """Frank Timmermann (original author), and in no
 particular order: Greg Pinero, me.gooz, mohangk, stumble.then.rise, clupprich"""
-# other meta used by setup.py
 __license__ = 'FreeBSD'
 __rcs_id__ = "$Id$"[3:-1]
 __url__ = 'http://code.google.com/p/pydelicious/'
-# Old URL: 'http://deliciouspython.python-hosting.com/'
-__author_email__ = ""
 __docformat__ = "restructuredtext en"
-__description__ = "pydelicious.py allows you to access the web service of " \
-    "del.icio.us via it's API through Python."
-__long_description__ = "The goal is to design an easy to use and fully " \
-    "functional Python interface to del.icio.us."
+__description__ = "Access delicious.com API's with Python"
+__long_description__ = "A complete Python interface to del.icio.us Bookmarks' HTTP API's."
 
 
 DLCS_OK_MESSAGES = ('done', 'ok')

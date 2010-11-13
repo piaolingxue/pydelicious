@@ -5,8 +5,9 @@ API = pydelicious/__init__.py
 TOOLS = tools/dlcs.py #tools/cache.py
 RST = README.rst HACKING.rst
 REF = $(RST:%.rst=doc/htmlref/%.html) \
-	$(TOOLS:tools/%.py=doc/htmlref/%.html) doc/htmlref/pydelicious.html
-#MAN = doc/man/dlcs.man1.gz
+	$(TOOLS:tools/%.py=doc/htmlref/%.html) \
+	doc/htmlref/pydelicious.html \
+	doc/htmlref/index.html
 
 TRGTS := $(REF)
 CLN := $(REF) build/ pydelicious.zip dist *.egg-info
@@ -70,13 +71,22 @@ refresh-test-data:
 	# refetch cached test data to var/
 	python tests/pydelicioustest.py refresh_test_data
 
-zip: pydelicious.zip
+zip: pydelicious.zip pydelicious-docs.zip
 	
 pydelicious.zip: pydelicious/*.py tools/dlcs.py Makefile $(RST) doc/htmlref var/* tests/* setup.py
 	zip -9 pydelicious-`python -c "import pydelicious;print pydelicious.__version__"`.zip $^
+	ln -s pydelicious-`python -c "import pydelicious;print pydelicious.__version__"`.zip $@
+
+pydelicious-docs.zip: doc/htmlref
+	cd $<; zip -9 pydelicious-docs.zip * ../../license.txt; mv pydelicious-docs.zip ../../
 
 %.html: %.rst
-	@rst2html $(DU_GEN) $(DU_READ) $(DU_HTML) $< $@
+	@rst2html $(DU_GEN) $(DU_READ) $(DU_HTML) $< $@.tmp1
+	@sed \
+		-e "s/href=\"\(.\+\)\.rst\"/href=\"\1\.html\"/g" \
+		-e "s/<table/<table summary=\"Docutils rSt table\"/g" \
+			$@.tmp1 > $@ 
+	@rm $@.tmp1
 	@-tidy -q -m -wrap 0 -asxhtml -utf8 -i $@
 	@echo "* $^ -> $@"
 
