@@ -75,10 +75,11 @@ zip: pydelicious.zip pydelicious-docs.zip
 	
 pydelicious.zip: pydelicious/*.py tools/dlcs.py Makefile $(RST) doc/htmlref var/* tests/* setup.py
 	zip -9 pydelicious-`python -c "import pydelicious;print pydelicious.__version__"`.zip $^
-	ln -s pydelicious-`python -c "import pydelicious;print pydelicious.__version__"`.zip $@
+	-ln -s pydelicious-`python -c "import pydelicious;print pydelicious.__version__"`.zip $@
 
 pydelicious-docs.zip: doc/htmlref
-	cd $<; zip -9 pydelicious-docs.zip * ../../license.txt; mv pydelicious-docs.zip ../../
+	cp license.txt doc/htmlref/
+	cd $<; zip -9 pydelicious-docs.zip * license.txt; mv pydelicious-docs.zip ../../
 
 %.html: %.rst
 	@rst2html $(DU_GEN) $(DU_READ) $(DU_HTML) $< $@.tmp1
