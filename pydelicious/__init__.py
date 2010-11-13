@@ -31,10 +31,10 @@ from StringIO import StringIO
 from pprint import pformat
 
 
-v = sys.version_info
-if v[0] >= 2 and v[1] >= 5:
+try:
+    # Python >= 2.5
     from hashlib import md5
-else:
+except ImportError:
     from md5 import md5
 
 try:
@@ -59,7 +59,7 @@ __author__ = "Berend (.mpe)  <dev@dotmpe.com>"
 #__date__ = "$Date: $"[]
 __credits__ = """Frank Timmermann (original author), and in no
 particular order: Greg Pinero, me.gooz, mohangk, stumble.then.rise, clupprich"""
-
+__license__ = ''
 
 __rcs_id__ = "$Id$"[3:-1]
 __contributors__ = [
@@ -107,9 +107,10 @@ if 'DLCS_DEBUG' in os.environ:
             "Set DEBUG to %i from DLCS_DEBUG env." % DEBUG
 
 HTTP_PROXY = os.environ.get('HTTP_PROXY', None)
-if DEBUG and HTTP_PROXY:
+HTTPS_PROXY = os.environ.get('HTTPS_PROXY', HTTP_PROXY)
+if DEBUG and (HTTP_PROXY or HTTPS_PROXY):
     print >>sys.stderr, \
-        "Set HTTP_PROXY to %i from env." % HTTP_PROXY
+        "Set proxies to %s, %s from env." % (HTTP_PROXY, HTTPS_PROXY, )
 
 ### Timeoutsocket hack taken from FeedParser.py
 
@@ -256,7 +257,7 @@ def build_api_opener(host, user, passwd, extra_handlers=() ):
     added.
     """
 
-    global DEBUG, HTTP_PROXY, DLCS_API_REALM
+    global DEBUG, HTTP_PROXY, HTTPS_PROXY, DLCS_API_REALM
 
     password_manager = urllib2.HTTPPasswordMgr()
     password_manager.add_password(DLCS_API_REALM, host, user, passwd)
@@ -268,9 +269,13 @@ def build_api_opener(host, user, passwd, extra_handlers=() ):
         httpdebug = urllib2.HTTPHandler(debuglevel=DEBUG)
         handlers += ( httpdebug, )
 
-    if HTTP_PROXY:
-        handlers += ( urllib2.ProxyHandler( 
-            {'http': HTTP_PROXY, 'https': HTTP_PROXY } ), )
+    if HTTP_PROXY or HTTPS_PROXY:
+        proto = {}
+        if HTTPS_PROXY:
+            proto['https'] = HTTPS_PROXY
+        if HTTP_PROXY:
+            proto['http'] = HTTP_PROXY
+        handlers += ( urllib2.ProxyHandler( proto ), )
 
     o = urllib2.build_opener(*handlers)
 

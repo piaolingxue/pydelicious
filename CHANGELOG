@@ -26,5 +26,6 @@
     make install now installs tools also
 
 0.6
-    HTTP_PROXY for https too
+    HTTP(S)_PROXY for https too
+	merge setup_tools into setup, dlcs for command line del.icio.us now available
 

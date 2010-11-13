@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-# 
+#
 # This file is in the public domain.
 import sys
 from setuptools import setup, Command
@@ -37,7 +37,7 @@ dependency_links = [
 setup(
     name = 'pydelicious',
     version = pydelicious.__version__,
-    license = 'BSD',
+    license = pydelicious.__license__,
     description = pydelicious.__description__,
     long_description = pydelicious.__long_description__,
 
@@ -47,10 +47,15 @@ setup(
 
     install_requires = requires,
 
-    packages = ['pydelicious'],
-    package_dir = { 'pydelicious': 'pydelicious' },
-
+    packages = ['pydelicious', 'pydelicious.tools'],
+    package_dir = { 'pydelicious': 'pydelicious',
+            'pydelicious.tools': 'tools'},
     cmdclass = {
         'test': Test,
     },
+    entry_points = {
+        'console_scripts': [
+            'dlcs = pydelicious.tools.dlcs:_main'
+        ]
+    }
 )

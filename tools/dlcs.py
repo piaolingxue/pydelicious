@@ -1,8 +1,6 @@
 #!/usr/bin/env python
-"""dlcs - Operate on a del.icio.us bookmark collection from the command-line.
+"""dlcs - Manage a del.icio.us bookmark collection from the command-line.
 
-XXX: dlcs has no installer and is not integrated into pydelicious' installer.
-     replace 'dlcs' below with the path to dlcs.py.
 
 Overview
 --------
@@ -79,7 +77,6 @@ import time
 import locale
 import codecs
 import math
-import hashlib
 from os.path import expanduser, getmtime, exists, abspath
 from ConfigParser import ConfigParser
 import pydelicious
@@ -152,6 +149,8 @@ elif exists(abspath('./.dlcs-rc')):
 else:
     DLCS_CONFIG = expanduser('~/.dlcs-rc')
 
+NEW_CONFIG = not os.path.exists(DLCS_CONFIG)
+
 ENCODING = locale.getpreferredencoding()
 
 __usage__ = """%prog [options] [command] [args...] """ + """
@@ -163,7 +162,8 @@ Use `help [command]` to get more information about a command."""\
 
 __options__ = [
     (('-c', '--config'), {"default":DLCS_CONFIG,
-      "help":"Use custom config file [%default]"}),
+      "help":"Use custom config file [%%default%s]" % 
+      {False:'',True:' (new)'}[NEW_CONFIG]}),
     (('-C', '--keep-cache'), {'dest':'keep_cache','action':'store_true','default':False,
         'help':"Don't update locally cached file(s) if they're out of date."}),
     (('-e', '--encoding'),{'default':ENCODING,
@@ -377,16 +377,14 @@ def main(argv):
         if not 'password' in opts:
             opts['password'] = getpass.getpass("Password for %s: " % opts['username'])
 
-        v = raw_input("Save username, password and other defaults to config (%s)? [Y]es/No/nEver: " % conf_file)
-        if v in ('y','Y',''):
-            conf.add_section('dlcs')
-            conf.set('dlcs', 'username', opts['username'])
-            conf.set('dlcs', 'password', opts['password'])
-            conf.write(open(conf_file, 'w'))
+        conf.add_section('dlcs')
+        conf.set('dlcs', 'username', opts['username'])
 
-        elif v in ('e','E'):
-            conf.add_section('dlcs')
-            conf.write(open(conf_file, 'w'))
+        v = raw_input("Save password to config (%s)? [Y]es/No: " % conf_file)
+        if v in ('y','Y',''):
+            conf.set('dlcs', 'password', opts['password'])
+
+        conf.write(open(conf_file, 'w'))
 
     if not 'local-files' in conf.sections():        
         # Other default settings:
@@ -401,6 +399,9 @@ def main(argv):
     # conf provides defaults, command line options override
     options = dict(conf.items('dlcs'))
     options.update(opts)
+
+    if not 'password' in options:
+        options['password'] = getpass.getpass("Password for %s: " % options['username'])
 
 
     # Force output encoding
@@ -1185,8 +1186,12 @@ def value_sorted(dic):
     return l
 
 
-if __name__ == '__main__':
+def _main():    
     try:
         sys.exit(main(sys.argv[1:]))
     except KeyboardInterrupt:
         print >>sys.stderr, "User interrupt"
+
+# Entry point
+if __name__ == '__main__':
+    _main()

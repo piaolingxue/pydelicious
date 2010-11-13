@@ -9,10 +9,8 @@
 <font color="#ffffff" face="helvetica, arial">&nbsp;<br><big><big><strong>dlcs</strong></big></big></font></td
 ><td align=right valign=bottom
 ><font color="#ffffff" face="helvetica, arial"><a href=".">index</a><br><a href="file:/home/berend/project/pydelicious/trunk/tools/dlcs.py">/home/berend/project/pydelicious/trunk/tools/dlcs.py</a></font></td></tr></table>
-    <p><tt>dlcs&nbsp;-&nbsp;Operate&nbsp;on&nbsp;a&nbsp;del.icio.us&nbsp;bookmark&nbsp;collection&nbsp;from&nbsp;the&nbsp;command-line.<br>
+    <p><tt>dlcs&nbsp;-&nbsp;Manage&nbsp;a&nbsp;del.icio.us&nbsp;bookmark&nbsp;collection&nbsp;from&nbsp;the&nbsp;command-line.<br>
 &nbsp;<br>
-XXX:&nbsp;dlcs&nbsp;has&nbsp;no&nbsp;installer&nbsp;and&nbsp;is&nbsp;not&nbsp;integrated&nbsp;into&nbsp;pydelicious'&nbsp;installer.<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;replace&nbsp;'dlcs'&nbsp;below&nbsp;with&nbsp;the&nbsp;path&nbsp;to&nbsp;dlcs.py.<br>
 &nbsp;<br>
 Overview<br>
 --------<br>
@@ -89,15 +87,14 @@ TODO<br>
 <tr><td bgcolor="#aa55cc"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
 <td width="100%"><table width="100%" summary="list"><tr><td width="25%" valign=top><a href="codecs.html">codecs</a><br>
 <a href="getpass.html">getpass</a><br>
-<a href="hashlib.html">hashlib</a><br>
-</td><td width="25%" valign=top><a href="locale.html">locale</a><br>
-<a href="math.html">math</a><br>
+<a href="locale.html">locale</a><br>
+</td><td width="25%" valign=top><a href="math.html">math</a><br>
 <a href="optparse.html">optparse</a><br>
-</td><td width="25%" valign=top><a href="os.html">os</a><br>
-<a href="pydelicious.html">pydelicious</a><br>
+<a href="os.html">os</a><br>
+</td><td width="25%" valign=top><a href="pydelicious.html">pydelicious</a><br>
 <a href="sys.html">sys</a><br>
-</td><td width="25%" valign=top><a href="time.html">time</a><br>
-</td></tr></table></td></tr></table><p>
+<a href="time.html">time</a><br>
+</td><td width="25%" valign=top></td></tr></table></td></tr></table><p>
 <table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
 <tr bgcolor="#ee77aa">
 <td colspan=3 valign=bottom>&nbsp;<br>
@@ -252,6 +249,7 @@ Setting&nbsp;--ignore-case&nbsp;will&nbsp;lowercase&nbsp;all&nbsp;tags&nbsp;for&
 <td width="100%"><strong>DEBUG</strong> = 0<br>
 <strong>DLCS_CONFIG</strong> = '/home/berend/.dlcs-rc'<br>
 <strong>ENCODING</strong> = 'UTF-8'<br>
+<strong>NEW_CONFIG</strong> = False<br>
 <strong>__cmds__</strong> = ['bundle', 'bundleadd', 'bundleremove', 'bundles', 'clearcache', 'deletebundle', 'deleteposts', 'findposts', 'findtags', 'getbundle', 'getposts', 'gettags', 'help', 'info', 'mates', 'post', 'postit', 'posts', 'postsupdate', 'recent', ...]<br>
 <strong>__options__</strong> = [(('-c', '--config'), {'default': '/home/berend/.dlcs-rc', 'help': 'Use custom config file [%default]'}), (('-C', '--keep-cache'), {'action': 'store_true', 'default': False, 'dest': 'keep_cache', 'help': "Don't update locally cached file(s) if they're out of date."}), (('-e', '--encoding'), {'default': 'UTF-8', 'help': 'Use custom character encoding [locale: %default]'}), (('-u', '--username'), {'help': 'del.icio.us username (defaults to config or loginname)'}), (('-p', '--password'), {'help': 'Password for the del.icio.us user (usage not recommended, but this will override the config)'}), (('-I', '--ignore-case'), {'action': 'store_true', 'default': False, 'dest': 'ignore_case', 'help': 'Ignore case for string searches'}), (('-d', '--dump'), {'default': False, 'help': 'Dump entire response (`req` only)'}), (('-o', '--outf'), {'choices': ['text', 'json', 'prettyjson'], 'default': 'text', 'help': 'Output formatting'}), (('-s', '--shared'), {'default': True, 'help': "When posting a URL, set the 'shared' parameter."}), (('-r', '--replace'), {'default': False, 'help': "When posting a URL, set the 'replace' parameter."}), (('-v', '--verboseness'), {'default': 0, 'help': 'TODO: Increase or set DEBUG (defaults to 0 or the DLCS_DEBUG env. var.)'})]<br>
 <strong>__usage__</strong> = '%prog [options] [command] [args...] <font color="#c040c0">\n</font>command can...ommand]` to get more information about a command.'<br>

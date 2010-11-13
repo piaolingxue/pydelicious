@@ -9,7 +9,7 @@ REF = $(RST:%.rst=doc/htmlref/%.html) \
 #MAN = doc/man/dlcs.man1.gz
 
 TRGTS := $(REF)
-CLN := $(REF) build/ pydelicious*.zip dist *.egg-info
+CLN := $(REF) build/ pydelicious.zip dist *.egg-info
 
 # Docutils flags
 DU_GEN = --traceback --no-generator --no-footnote-backlinks --date -i utf-8 -o utf-8
@@ -24,6 +24,7 @@ DU_XML =
 help:
 	@echo "- install: install pydelicious API lib"
 	@echo "- doc: build documentation targets"
+	@echo "- zip: pack project essentials into compressed file"
 	@echo "- clean: remove all build targets"
 	@echo "- test: run unittests, see tests/main.py"
 	@echo "- test-server: run tests against delicious server"
@@ -31,7 +32,7 @@ help:
 
 
 ## Local targets
-.PHONY: all test doc install clean clean-setup clean-pyc test-all test-server refresh-test-data zip-all zip-pydelicious
+.PHONY: all test doc install clean clean-setup clean-pyc test-all test-server refresh-test-data zip
 
 all: test doc
 
@@ -55,15 +56,12 @@ test-server:
 install:
 	python setup.py install
 	python setup.py clean
-	python setup_tools.py install
-	python setup_tools.py clean
 
 clean: clean-setup clean-pyc 
 	@rm -rf $(CLN)
 
 clean-setup:
 	-python setup.py clean
-	-python setup_tools.py clean
 
 clean-pyc:
 	-find -name '*.pyc' | xargs rm
@@ -72,11 +70,10 @@ refresh-test-data:
 	# refetch cached test data to var/
 	python tests/pydelicioustest.py refresh_test_data
 
-zip-pydelicous: src/*.py Makefile $(RST) doc/htmlref var/* tests/* setup.py
+zip: pydelicious.zip
+	
+pydelicious.zip: pydelicious/*.py Makefile $(RST) doc/htmlref var/* tests/* setup.py
 	zip -9 pydelicious-`python -c "import src;print src.__version__"`.zip $^
-
-zip-all: src/*.py Makefile $(RST) doc/htmlref var/* tests/* tools/* setup.py setup_tools.py
-	zip -9 pydelicious+tools-`python -c "import src;print src.__version__"`.zip $^
 
 %.html: %.rst
 	@rst2html $(DU_GEN) $(DU_READ) $(DU_HTML) $< $@
