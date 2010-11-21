@@ -64,7 +64,8 @@ if Command:
         install_requires = requires,
         entry_points = {
             'console_scripts': [
-                'dlcs = pydelicious.tools.dlcs:_main'
+                'dlcs = pydelicious.tools.dlcs:_main',
+                'dlcs_feeds = pydelicious.tools.dlcs_feeds:_main'
             ]
         }
     ))

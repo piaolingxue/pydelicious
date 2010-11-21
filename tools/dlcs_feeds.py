@@ -39,8 +39,8 @@ def parse_argv(options, argv, usage="%prog [args] [options]"):
 		parser.add_option(*opt[0], **opt[1])
 	optsv, args = parser.parse_args(argv)
 
-	if optsv.url and not optsv.urimd5:
-		opts.urimd5 = md5(optsv.url).hexdigest()
+	if optsv.url and not optsv.urlmd5:
+		optsv.urlmd5 = md5(optsv.url).hexdigest()
 	if optsv.tags:
 		optsv.tag = ' '.join(optsv.tags)
 	else:
@@ -76,8 +76,8 @@ def main(argv):
 			os.system('clear')
 		else:
 			os.system('cls')
+	matches, candidates = feeds_for_params(**kwds)
 	if opts.list_feeds:
-		matches, candidates = feeds_for_params(**kwds)
 		print >>sys.stderr,"Feeds for current parameters (%s)" % kwds
 		if matches:
 			print "Exact matches:"
@@ -87,10 +87,17 @@ def main(argv):
 			print "Candidates:"
 		for m in candidates:
 			print '\t'+pydelicious.delicious_v2_feeds[m]
-	else:
-		path = args and args.pop(0) or 'hotlist'
-		assert path in pydelicious.delicious_v2_feeds
-		return pydelicious.dlcs_feed(path, **kwds)
+		sys.exit()
+	path = args and args.pop(0)
+	if not path:
+		if len(matches) == 1:
+			path = matches[0]
+			print >>sys.stderr, "Setting path to %s" % path
+		elif matches:
+			print >>sys.stderr, "Multiple paths for given parameters, see -L"
+			sys.exit()
+	assert path in pydelicious.delicious_v2_feeds
+	return pydelicious.dlcs_feed(path, **kwds)
 
 def _main():
 	try:
