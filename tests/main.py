@@ -1,4 +1,5 @@
 import unittest
+from itertools import chain
 
 
 def init_unittest_suite():

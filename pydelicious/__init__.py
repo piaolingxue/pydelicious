@@ -75,7 +75,8 @@ DLCS_API_REALM = 'del.icio.us API'
 DLCS_API_HOST = 'api.del.icio.us'
 DLCS_API_PATH = 'v1'
 DLCS_API = "https://%s/%s" % (DLCS_API_HOST, DLCS_API_PATH)
-DLCS_RSS = 'http://del.icio.us/rss/'
+DLCS_RSS = 'http://feeds.delicious.com/rss/'
+"Old RSS feeds, formerly <http://del.icio.us/rss/>"
 DLCS_FEEDS = 'http://feeds.delicious.com/v2/'
 
 PREFERRED_ENCODING = locale.getpreferredencoding()
@@ -277,7 +278,7 @@ def dlcs_api_opener(user, passwd):
     return build_api_opener(DLCS_API_HOST, user, passwd)
 
 
-def dlcs_api_request(path, params='', user='', passwd='', throttle=True,
+def dlcs_api_request(path, params=None, user='', passwd='', throttle=True,
         opener=None):
     """Retrieve/query a path within the del.icio.us API.
 
@@ -308,7 +309,7 @@ def dlcs_api_request(path, params='', user='', passwd='', throttle=True,
     return fl
 
 
-def dlcs_encode_params(params, usercodec=PREFERRED_ENCODING):
+def dlcs_encode_params(params, usercodec=PREFERRED_ENCODING, encoded=False):
     """Turn all param values (int, list, bool) into utf8 encoded strings.
     """
 
@@ -331,13 +332,16 @@ def dlcs_encode_params(params, usercodec=PREFERRED_ENCODING):
             elif isinstance(params[key], list):
                 params[key] = " ".join(params[key])
 
-            elif not isinstance(params[key], unicode):
+            if encoded:
+            	assert isinstance(params[key], str)
+            else:
                 params[key] = params[key].decode(usercodec)
 
             assert isinstance(params[key], basestring)
 
-        params = dict([ (k, v.encode('utf8'))
-                for k, v in params.items() if v])
+        if not encoded:
+            params = dict([ (k, v.encode('utf8'))
+                    for k, v in params.items() if v])
 
     return params
 
@@ -407,32 +411,38 @@ def dlcs_parse_xml(data, split_tags=False):
         raise PyDeliciousException, "Unknown XML document format '%s'" % fmt
 
 
+## Feed util
+
 def dlcs_rss_request(tag="", popular=0, user="", url=''):
-    """Parse a RSS request.
+    """Parse a RSS request, old style.
 
     This requests old (now undocumented?) URL paths that still seem to work.
+
+    - http://del.icio.us/rss/url/{urimd5}
+    - http://del.icio.us/rss/{user}/{tag}
+    - http://del.icio.us/rss/{user}
+    - http://del.icio.us/rss
+    - http://del.icio.us/rss/tag/{tag}
+    - http://del.icio.us/rss/popular
+    - http://del.icio.us/rss/popular/{tag}
     """
 
     tag = quote_plus(tag)
     user = quote_plus(user)
 
     if url != '':
-        # http://del.icio.us/rss/url/efbfb246d886393d48065551434dab54
         url = DLCS_RSS + 'url/%s' % md5(url).hexdigest()
 
     elif user != '' and tag != '':
         url = DLCS_RSS + '%(user)s/%(tag)s' % {'user':user, 'tag':tag}
 
     elif user != '' and tag == '':
-        # http://del.icio.us/rss/delpy
         url = DLCS_RSS + '%s' % user
 
     elif popular == 0 and tag == '':
         url = DLCS_RSS
 
     elif popular == 0 and tag != '':
-        # http://del.icio.us/rss/tag/apple
-        # http://del.icio.us/rss/tag/web2.0
         url = DLCS_RSS + "tag/%s" % tag
 
     elif popular == 1 and tag == '':
@@ -446,7 +456,7 @@ def dlcs_rss_request(tag="", popular=0, user="", url=''):
 
     rss = http_request(url).read()
 
-    # assert feedparser, "dlcs_rss_request requires feedparser to be installed."
+    # assert feedparser, "requires feedparser to be installed."
     if not feedparser:
         return rss
 
@@ -495,23 +505,67 @@ def dlcs_rss_request(tag="", popular=0, user="", url=''):
     return posts
 
 
+"""
+    Bookmarks from the hotlist:
+        {format}
+    Recent bookmarks:
+        {format}/recent
+    Recent bookmarks by tag:
+        {format}/tag/{tag[+tag+...+tag]}
+    Popular bookmarks:
+        {format}/popular
+    Popular bookmarks by tag:
+        {format}/popular/{tag}
+    Recent site alerts (as seen in the top-of-page alert bar on the site):
+        {format}/alerts
+    Public summary information about a user (as seen in the network badge):
+        {format}/userinfo/{username}
+    A list of all public tags for a user:
+        {format}/tags/{username}
+    A list of related public tags for a user tag comination:
+        {format}/tags/{username}/{tag[+tag+...+tag]}
+    Bookmarks from a user's subscriptions:
+        {format}/subscriptions/{username}
+    Private feed for a user's inbox bookmarks from others:
+        {format}/inbox/{username}?private={key}
+    Bookmarks from members of a user's network:
+        {format}/network/{username}
+    Bookmarks from members of a user's private network:
+        {format}/network/{username}?private={key}
+    Bookmarks from members of a user's network by tag:
+        {format}/network/{username}/{tag[+tag+...+tag]}
+    Bookmarks from members of a user's private network by tag:
+        {format}/network/{username}/{tag[+tag+...+tag]}?private={key}
+    A list of a user's network members:
+        {format}/networkmembers/{username}
+    A list of a user's network fans:
+        {format}/networkfans/{username}
+    Recent bookmarks for a URL:
+        {format}/url/{url md5}
+    Summary information about a URL (as seen in the tagometer):
+        json/urlinfo/{url md5}
+"""
 delicious_v2_feeds = {
-    #"Bookmarks from the hotlist"
-    '': "%(format)s",
+    # Bookmarks from the hotlist
+    'hotlist': "%(format)s",
     #"Recent bookmarks"
     'recent': "%(format)s/recent",
     #"Recent bookmarks by tag"
-    'tagged': "%(format)s/tag/%(tags)s",
+    'tagged': "%(format)s/tag/%(tag)s",
     #"Popular bookmarks"
     'popular': "%(format)s/popular",
     #"Popular bookmarks by tag"
     'popular_tagged': "%(format)s/popular/%(tag)s",
     #"Recent site alerts (as seen in the top-of-page alert bar on the site)"
     'alerts': "%(format)s/alerts",
-    #"Bookmarks for a specific user"
+    # Bookmarks for a specific user:
     'user': "%(format)s/%(username)s",
-    #"Bookmarks for a specific user by tag(s)"
-    'user_tagged': "%(format)s/%(username)s/%(tags)s",
+    # Private bookmarks for a specific user:
+    'user_private': "%(format)s/%(username)s?private=%(key)s",
+    # Bookmarks for a specific user by tag(s)
+    'user_tagged': "%(format)s/%(username)s/%(tag)s",
+    # Private bookmarks for a specific user by tag(s):
+    'user_tagged_private': "%(format)s/%(username)s/%(tag)s?private=%(key)s",
     #"Public summary information about a user (as seen in the network badge)"
     'user_info': "%(format)s/userinfo/%(username)s",
     #"A list of all public tags for a user"
@@ -523,7 +577,7 @@ delicious_v2_feeds = {
     #"Bookmarks from members of a user's network"
     'user_network': "%(format)s/network/%(username)s",
     #"Bookmarks from members of a user's network by tag"
-    'user_network_tagged': "%(format)s/network/%(username)s/%(tags)s",
+    'user_network_tagged': "%(format)s/network/%(username)s/%(tag)s",
     #"A list of a user's network members"
     'user_network_member': "%(format)s/networkmembers/%(username)s",
     #"A list of a user's network fans"
@@ -534,26 +588,29 @@ delicious_v2_feeds = {
     'urlinfo': "json/urlinfo/%(urlmd5)s",
 }
 
-def dlcs_feed(name_or_url, url_map=delicious_v2_feeds, count=15, **params):
+
+def dlcs_feed(name_or_url, url_map=delicious_v2_feeds, count=15, **kwds):
 
     """
-    Request and parse a feed. See delicious_v2_feeds for available names and
-    required parameters. Format defaults to json.
+    Request and parse a feed.
+    Count should be between 1 and 100, default 15.
+    Format values include 'rss' and 'json', defaults to json.
+
+    - http://www.delicious.com/help/feeds
     """
 
-# http://delicious.com/help/feeds
-# TODO: plain or fancy
+    #if fancy == True:
+    #    '?fancy'
+    #elif fancy != None:        
+    #    '?plain'
+    format = kwds.setdefault('format', 'json')
+    kwds.setdefault('count', count)
 
-    format = params.setdefault('format', 'json')
-    if count == 'all':
-# TODO: fetch all
-        print >>sys.stderr, "! Maxcount 100 "
-        count = 100
-
+    if not name_or_url:
+        name_or_url = 'hotlist'
     if name_or_url in url_map:
-        params['count'] = count
+        params = dict([(k, quote_plus(str(v))) for k,v in kwds.items()])
         url = DLCS_FEEDS + url_map[name_or_url] % params
-
     else:
         url = name_or_url
 
@@ -566,10 +623,8 @@ def dlcs_feed(name_or_url, url_map=delicious_v2_feeds, count=15, **params):
         if feedparser:
             rss = feedparser.parse(feed)
             return rss
-
         else:
             return feed
-
     elif format == 'json':
         return feed
 
@@ -589,7 +644,8 @@ class DeliciousAPI:
 
     def __init__(self, user, passwd, codec=PREFERRED_ENCODING,
             api_request=dlcs_api_request, xml_parser=dlcs_parse_xml,
-            build_opener=dlcs_api_opener, encode_params=dlcs_encode_params):
+            build_opener=dlcs_api_opener, encode_params=dlcs_encode_params,
+            encoded=False):
 
         """Initialize access to the API for ``user`` with ``passwd``.
 
@@ -618,6 +674,7 @@ class DeliciousAPI:
         # Implement communication to server and parsing of respons messages:
         assert callable(encode_params)
         self._encode_params = encode_params
+        self._encoded = encoded
         assert callable(build_opener)
         self._opener = build_opener(user, passwd)
         assert callable(api_request)
@@ -654,7 +711,8 @@ class DeliciousAPI:
             return self.request_raw(path, **params)
 
         else:
-            params = self._encode_params(params, self.codec)
+            params = self._encode_params(params, self.codec,
+                    encoded=self._encoded)
 
             # get answer and parse
             fl = self._api_request(path, params=params, opener=self._opener)
@@ -681,7 +739,7 @@ class DeliciousAPI:
         ``urllib2.openurl`` documentation.
         """
         # see `request()` on how the response can be handled
-        params = self._encode_params(params, self.codec)
+        params = self._encode_params(params, self.codec, encoded=self._encoded)
         return self._api_request(path, params=params, opener=self._opener)
 
     ### Explicit declarations of API paths, their parameters and docs
@@ -915,7 +973,7 @@ class DeliciousAPI:
         return "DeliciousAPI(%s)" % self.user
 
 
-### Convenience functions on this package
+### Quick API access
 
 def apiNew(user, passwd):
     "Creates a new DeliciousAPI object, requires user(name) and passwd."
@@ -923,18 +981,19 @@ def apiNew(user, passwd):
 
 def add(user, passwd, url, description, tags="", extended="", dt=None,
         replace=False):
+    "Add a post for user. "
     apiNew(user, passwd).posts_add(url=url, description=description,
             extended=extended, tags=tags, dt=dt, replace=replace)
 
 def get(user, passwd, tag="", dt=None, count=0, hashes=[]):
-    "Returns a list of posts for the user"
+    "Returns a list of posts for the user using the API. "
     posts = apiNew(user, passwd).posts_get(
             tag=tag, dt=dt, hashes=hashes)['posts']
     if count: posts = posts[:count]
     return posts
 
 def get_update(user, passwd):
-    "Returns the last update time for the user."
+    "Returns the last update time for the user. "
     return apiNew(user, passwd).posts_update()['update']['time']
 
 def get_all(user, passwd, tag="", start=0, results=100, fromdt=None,
@@ -956,7 +1015,7 @@ def rename_tag(user, passwd, oldtag, newtag):
     apiNew(user=user, passwd=passwd).tags_rename(old=oldtag, new=newtag)
 
 
-### RSS functions
+### Old RSS
 
 def getrss(tag="", popular=0, url='', user=""):
     """Get posts from del.icio.us via parsing RSS.
@@ -985,22 +1044,29 @@ def get_popular(tag=""):
     return getrss(tag=tag, popular=1)
 
 
-### JSON feeds
-# TODO: untested
+### Feeds (RSS/JSON/?)
 
-def json_posts(user, count=15, tag=None, raw=True):
+def user_posts(user=None, tag=None, key=None, **params):
     """
-    user
-    count=###   the number of posts you want to get (default is 15, maximum 
-                is 100)
-    raw         a raw JSON object is returned, instead of an object named 
-                Delicious.posts
+    Bookmarks for a specific user:
+        {format}/{username}
+    Private bookmarks for a specific user:
+        {format}/{username}?private={key}
+    Bookmarks for a specific user by tag(s):
+        {format}/{username}/{tag[+tag+...+tag]}
+    Private bookmarks for a specific user by tag(s):
+        {format}/{username}/{tag[+tag+...+tag]}?private={key}
     """
-    url = "http://del.icio.us/feeds/json/" + \
-            dlcs_encode_params({0:user})[0]
-    if tag: url += '/'+dlcs_encode_params({0:tag})[0]
-
-    return dlcs_feed(url, count=count, raw=raw)
+    assert username
+    if tag and key:
+        path = 'user_tagged_private'
+    elif tag:
+        path = 'user_tagged'
+    elif key:
+        path = 'user_private'
+    else:
+        path = 'user'
+    return dlcs_feed(path, user=user, tag=tag, key=key, **params)    	
 
 
 def json_tags(user, atleast, count, sort='alpha', raw=True, callback=None):
