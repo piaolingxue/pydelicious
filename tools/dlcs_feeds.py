@@ -21,6 +21,7 @@ __usage__ = """%prog [options] [command] [args...] """
 __options__ = [
 #	(('-e', '--encoding'),{'default':ENCODING,
 #		'help':"Use custom character encoding [locale: %default]"}),
+	(('-C', '--clear-screen'),{'action':'store_true'}),
 	(('-L', '--list-feeds'),{'action':'store_true','help':'List available feeds for given parameters. '}),
 	(('-f', '--format'),{'default':'rss'}),
 	(('-k', '--key'),{}),
@@ -70,6 +71,11 @@ def main(argv):
 		v = getattr(opts, k)
 		if type(v) != type(None):
 			kwds[k] = v
+	if opts.clear_screen:
+		if os.name == 'posix':
+			os.system('clear')
+		else:
+			os.system('cls')
 	if opts.list_feeds:
 		matches, candidates = feeds_for_params(**kwds)
 		print >>sys.stderr,"Feeds for current parameters (%s)" % kwds
@@ -87,10 +93,6 @@ def main(argv):
 		return pydelicious.dlcs_feed(path, **kwds)
 
 def _main():
-	if os.name == 'posix':
-		os.system('clear')
-	else:
-		os.system('cls')
 	try:
 		print sys.exit(main(sys.argv[1:]))
 	except KeyboardInterrupt:
