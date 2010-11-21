@@ -88,7 +88,7 @@ paths&nbsp;there&nbsp;are&nbsp;furthermore&nbsp;methods&nbsp;(e.g.&nbsp;posts_ad
 an&nbsp;explicit&nbsp;declaration&nbsp;of&nbsp;parameters&nbsp;and&nbsp;documentation.<br>&nbsp;</tt></td></tr>
 <tr><td>&nbsp;</td>
 <td width="100%">Methods defined here:<br>
-<dl><dt><a name="DeliciousAPI-__init__"><strong>__init__</strong></a>(self, user, passwd, codec<font color="#909090">='UTF-8'</font>, api_request<font color="#909090">=&lt;function dlcs_api_request&gt;</font>, xml_parser<font color="#909090">=&lt;function dlcs_parse_xml&gt;</font>, build_opener<font color="#909090">=&lt;function dlcs_api_opener&gt;</font>, encode_params<font color="#909090">=&lt;function dlcs_encode_params&gt;</font>)</dt><dd><tt>Initialize&nbsp;access&nbsp;to&nbsp;the&nbsp;API&nbsp;for&nbsp;``user``&nbsp;with&nbsp;``passwd``.<br>
+<dl><dt><a name="DeliciousAPI-__init__"><strong>__init__</strong></a>(self, user, passwd, codec<font color="#909090">='UTF-8'</font>, api_request<font color="#909090">=&lt;function dlcs_api_request&gt;</font>, xml_parser<font color="#909090">=&lt;function dlcs_parse_xml&gt;</font>, build_opener<font color="#909090">=&lt;function dlcs_api_opener&gt;</font>, encode_params<font color="#909090">=&lt;function dlcs_encode_params&gt;</font>, encoded<font color="#909090">=False</font>)</dt><dd><tt>Initialize&nbsp;access&nbsp;to&nbsp;the&nbsp;API&nbsp;for&nbsp;``user``&nbsp;with&nbsp;``passwd``.<br>
 &nbsp;<br>
 ``codec``&nbsp;sets&nbsp;the&nbsp;encoding&nbsp;of&nbsp;the&nbsp;arguments,&nbsp;which&nbsp;defaults&nbsp;to&nbsp;the<br>
 users&nbsp;preferred&nbsp;locale.<br>
@@ -633,7 +633,7 @@ Data descriptors inherited from <a href="exceptions.html#BaseException">exceptio
 <font color="#ffffff" face="helvetica, arial"><big><strong>Functions</strong></big></font></td></tr>
     
 <tr><td bgcolor="#eeaa77"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
-<td width="100%"><dl><dt><a name="-add"><strong>add</strong></a>(user, passwd, url, description, tags<font color="#909090">=''</font>, extended<font color="#909090">=''</font>, dt<font color="#909090">=None</font>, replace<font color="#909090">=False</font>)</dt></dl>
+<td width="100%"><dl><dt><a name="-add"><strong>add</strong></a>(user, passwd, url, description, tags<font color="#909090">=''</font>, extended<font color="#909090">=''</font>, dt<font color="#909090">=None</font>, replace<font color="#909090">=False</font>)</dt><dd><tt>Add&nbsp;a&nbsp;post&nbsp;for&nbsp;user.</tt></dd></dl>
  <dl><dt><a name="-apiNew"><strong>apiNew</strong></a>(user, passwd)</dt><dd><tt>Creates&nbsp;a&nbsp;new&nbsp;<a href="#DeliciousAPI">DeliciousAPI</a>&nbsp;object,&nbsp;requires&nbsp;user(name)&nbsp;and&nbsp;passwd.</tt></dd></dl>
  <dl><dt><a name="-build_api_opener"><strong>build_api_opener</strong></a>(host, user, passwd, extra_handlers<font color="#909090">=()</font>)</dt><dd><tt>Build&nbsp;a&nbsp;urllib2&nbsp;style&nbsp;opener&nbsp;with&nbsp;HTTP&nbsp;Basic&nbsp;authorization&nbsp;for&nbsp;one&nbsp;host<br>
 and&nbsp;additional&nbsp;error&nbsp;handling.&nbsp;If&nbsp;HTTP_PROXY&nbsp;is&nbsp;set&nbsp;a&nbsp;proxyhandler&nbsp;is&nbsp;also<br>
@@ -642,15 +642,18 @@ added.</tt></dd></dl>
  <dl><dt><a name="-delicious_datetime"><strong>delicious_datetime</strong></a>(str)</dt><dd><tt>Parse&nbsp;a&nbsp;ISO&nbsp;8601&nbsp;formatted&nbsp;string&nbsp;to&nbsp;a&nbsp;Python&nbsp;datetime&nbsp;...</tt></dd></dl>
  <dl><dt><a name="-dict0"><strong>dict0</strong></a>(d)</dt><dd><tt>Removes&nbsp;empty&nbsp;string&nbsp;values&nbsp;from&nbsp;dictionary</tt></dd></dl>
  <dl><dt><a name="-dlcs_api_opener"><strong>dlcs_api_opener</strong></a>(user, passwd)</dt><dd><tt>Build&nbsp;an&nbsp;opener&nbsp;for&nbsp;DLCS_API_HOST,&nbsp;see&nbsp;<a href="#-build_api_opener">build_api_opener</a>()</tt></dd></dl>
- <dl><dt><a name="-dlcs_api_request"><strong>dlcs_api_request</strong></a>(path, params<font color="#909090">=''</font>, user<font color="#909090">=''</font>, passwd<font color="#909090">=''</font>, throttle<font color="#909090">=True</font>, opener<font color="#909090">=None</font>)</dt><dd><tt>Retrieve/query&nbsp;a&nbsp;path&nbsp;within&nbsp;the&nbsp;del.icio.us&nbsp;API.<br>
+ <dl><dt><a name="-dlcs_api_request"><strong>dlcs_api_request</strong></a>(path, params<font color="#909090">=None</font>, user<font color="#909090">=''</font>, passwd<font color="#909090">=''</font>, throttle<font color="#909090">=True</font>, opener<font color="#909090">=None</font>)</dt><dd><tt>Retrieve/query&nbsp;a&nbsp;path&nbsp;within&nbsp;the&nbsp;del.icio.us&nbsp;API.<br>
 &nbsp;<br>
 This&nbsp;implements&nbsp;a&nbsp;minimum&nbsp;interval&nbsp;between&nbsp;calls&nbsp;to&nbsp;avoid<br>
 throttling.&nbsp;[#]_&nbsp;Use&nbsp;param&nbsp;'throttle'&nbsp;to&nbsp;turn&nbsp;this&nbsp;behaviour&nbsp;off.<br>
 &nbsp;<br>
 ..&nbsp;[#]&nbsp;<a href="http://del.icio.us/help/api/">http://del.icio.us/help/api/</a></tt></dd></dl>
- <dl><dt><a name="-dlcs_encode_params"><strong>dlcs_encode_params</strong></a>(params, usercodec<font color="#909090">='UTF-8'</font>)</dt><dd><tt>Turn&nbsp;all&nbsp;param&nbsp;values&nbsp;(int,&nbsp;list,&nbsp;bool)&nbsp;into&nbsp;utf8&nbsp;encoded&nbsp;strings.</tt></dd></dl>
- <dl><dt><a name="-dlcs_feed"><strong>dlcs_feed</strong></a>(name_or_url, url_map<font color="#909090">={'': '%(format)s', 'alerts': '%(format)s/alerts', 'popular': '%(format)s/popular', 'popular_tagged': '%(format)s/popular/%(tag)s', 'recent': '%(format)s/recent', 'tagged': '%(format)s/tag/%(tags)s', 'url': '%(format)s/url/%(urlmd5)s', 'urlinfo': 'json/urlinfo/%(urlmd5)s', 'user': '%(format)s/%(username)s', 'user_inbox': '%(format)s/inbox/%(username)s?private=%(key)s', ...}</font>, count<font color="#909090">=15</font>, **params)</dt><dd><tt>Request&nbsp;and&nbsp;parse&nbsp;a&nbsp;feed.&nbsp;See&nbsp;delicious_v2_feeds&nbsp;for&nbsp;available&nbsp;names&nbsp;and<br>
-required&nbsp;parameters.&nbsp;Format&nbsp;defaults&nbsp;to&nbsp;json.</tt></dd></dl>
+ <dl><dt><a name="-dlcs_encode_params"><strong>dlcs_encode_params</strong></a>(params, usercodec<font color="#909090">='UTF-8'</font>, encoded<font color="#909090">=False</font>)</dt><dd><tt>Turn&nbsp;all&nbsp;param&nbsp;values&nbsp;(int,&nbsp;list,&nbsp;bool)&nbsp;into&nbsp;utf8&nbsp;encoded&nbsp;strings.</tt></dd></dl>
+ <dl><dt><a name="-dlcs_feed"><strong>dlcs_feed</strong></a>(name_or_url, url_map<font color="#909090">={'alerts': '%(format)s/alerts', 'hotlist': '%(format)s', 'popular': '%(format)s/popular', 'popular_tagged': '%(format)s/popular/%(tag)s', 'recent': '%(format)s/recent', 'tagged': '%(format)s/tag/%(tag)s', 'url': '%(format)s/url/%(urlmd5)s', 'urlinfo': 'json/urlinfo/%(urlmd5)s', 'user': '%(format)s/%(username)s', 'user_inbox': '%(format)s/inbox/%(username)s?private=%(key)s', ...}</font>, count<font color="#909090">=15</font>, **kwds)</dt><dd><tt>Request&nbsp;and&nbsp;parse&nbsp;a&nbsp;feed.<br>
+Count&nbsp;should&nbsp;be&nbsp;between&nbsp;1&nbsp;and&nbsp;100,&nbsp;default&nbsp;15.<br>
+Format&nbsp;values&nbsp;include&nbsp;'rss'&nbsp;and&nbsp;'json',&nbsp;defaults&nbsp;to&nbsp;json.<br>
+&nbsp;<br>
+-&nbsp;<a href="http://www.delicious.com/help/feeds">http://www.delicious.com/help/feeds</a></tt></dd></dl>
  <dl><dt><a name="-dlcs_parse_xml"><strong>dlcs_parse_xml</strong></a>(data, split_tags<font color="#909090">=False</font>)</dt><dd><tt>Parse&nbsp;any&nbsp;del.icio.us&nbsp;XML&nbsp;document&nbsp;and&nbsp;return&nbsp;Python&nbsp;data&nbsp;structure.<br>
 &nbsp;<br>
 Recognizes&nbsp;all&nbsp;XML&nbsp;document&nbsp;formats&nbsp;as&nbsp;returned&nbsp;by&nbsp;the&nbsp;version&nbsp;1&nbsp;API&nbsp;and<br>
@@ -663,10 +666,18 @@ Returned&nbsp;instance&nbsp;is&nbsp;always&nbsp;a&nbsp;dictionary.&nbsp;Examples
 &nbsp;{'dates':&nbsp;[{'count':'...','date':'...'},],&nbsp;'tag':'',&nbsp;'user':'...'}<br>
 &nbsp;{'result':(True,&nbsp;"done")}<br>
 &nbsp;#&nbsp;etcetera.</tt></dd></dl>
- <dl><dt><a name="-dlcs_rss_request"><strong>dlcs_rss_request</strong></a>(tag<font color="#909090">=''</font>, popular<font color="#909090">=0</font>, user<font color="#909090">=''</font>, url<font color="#909090">=''</font>)</dt><dd><tt>Parse&nbsp;a&nbsp;RSS&nbsp;request.<br>
+ <dl><dt><a name="-dlcs_rss_request"><strong>dlcs_rss_request</strong></a>(tag<font color="#909090">=''</font>, popular<font color="#909090">=0</font>, user<font color="#909090">=''</font>, url<font color="#909090">=''</font>)</dt><dd><tt>Parse&nbsp;a&nbsp;RSS&nbsp;request,&nbsp;old&nbsp;style.<br>
 &nbsp;<br>
-This&nbsp;requests&nbsp;old&nbsp;(now&nbsp;undocumented?)&nbsp;URL&nbsp;paths&nbsp;that&nbsp;still&nbsp;seem&nbsp;to&nbsp;work.</tt></dd></dl>
- <dl><dt><a name="-get"><strong>get</strong></a>(user, passwd, tag<font color="#909090">=''</font>, dt<font color="#909090">=None</font>, count<font color="#909090">=0</font>, hashes<font color="#909090">=[]</font>)</dt><dd><tt>Returns&nbsp;a&nbsp;list&nbsp;of&nbsp;posts&nbsp;for&nbsp;the&nbsp;user</tt></dd></dl>
+This&nbsp;requests&nbsp;old&nbsp;(now&nbsp;undocumented?)&nbsp;URL&nbsp;paths&nbsp;that&nbsp;still&nbsp;seem&nbsp;to&nbsp;work.<br>
+&nbsp;<br>
+-&nbsp;<a href="http://del.icio.us/rss/url/{urimd5">http://del.icio.us/rss/url/{urimd5</a>}<br>
+-&nbsp;<a href="http://del.icio.us/rss/{user}/{tag">http://del.icio.us/rss/{user}/{tag</a>}<br>
+-&nbsp;<a href="http://del.icio.us/rss/{user">http://del.icio.us/rss/{user</a>}<br>
+-&nbsp;<a href="http://del.icio.us/rss">http://del.icio.us/rss</a><br>
+-&nbsp;<a href="http://del.icio.us/rss/tag/{tag">http://del.icio.us/rss/tag/{tag</a>}<br>
+-&nbsp;<a href="http://del.icio.us/rss/popular">http://del.icio.us/rss/popular</a><br>
+-&nbsp;<a href="http://del.icio.us/rss/popular/{tag">http://del.icio.us/rss/popular/{tag</a>}</tt></dd></dl>
+ <dl><dt><a name="-get"><strong>get</strong></a>(user, passwd, tag<font color="#909090">=''</font>, dt<font color="#909090">=None</font>, count<font color="#909090">=0</font>, hashes<font color="#909090">=[]</font>)</dt><dd><tt>Returns&nbsp;a&nbsp;list&nbsp;of&nbsp;posts&nbsp;for&nbsp;the&nbsp;user&nbsp;using&nbsp;the&nbsp;API.</tt></dd></dl>
  <dl><dt><a name="-get_all"><strong>get_all</strong></a>(user, passwd, tag<font color="#909090">=''</font>, start<font color="#909090">=0</font>, results<font color="#909090">=100</font>, fromdt<font color="#909090">=None</font>, todt<font color="#909090">=None</font>)</dt><dd><tt>Returns&nbsp;a&nbsp;list&nbsp;with&nbsp;all&nbsp;posts.&nbsp;Please&nbsp;use&nbsp;sparingly.&nbsp;See&nbsp;`get_updated`</tt></dd></dl>
  <dl><dt><a name="-get_popular"><strong>get_popular</strong></a>(tag<font color="#909090">=''</font>)</dt><dd><tt>parse&nbsp;RSS&nbsp;for&nbsp;popular&nbsp;URLS&nbsp;for&nbsp;tag</tt></dd></dl>
  <dl><dt><a name="-get_tagposts"><strong>get_tagposts</strong></a>(tag)</dt><dd><tt>parse&nbsp;RSS&nbsp;for&nbsp;tag</tt></dd></dl>
@@ -690,11 +701,6 @@ Retries&nbsp;up&nbsp;to&nbsp;four&nbsp;times&nbsp;(default)&nbsp;on&nbsp;excepti
  <dl><dt><a name="-json_network"><strong>json_network</strong></a>(user, raw<font color="#909090">=True</font>, callback<font color="#909090">=None</font>)</dt><dd><tt>callback=NAME&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;wrap&nbsp;the&nbsp;object&nbsp;definition&nbsp;in&nbsp;a&nbsp;function&nbsp;call&nbsp;NAME(...)<br>
 ?raw&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;a&nbsp;raw&nbsp;JSON&nbsp;object&nbsp;is&nbsp;returned,&nbsp;instead&nbsp;of&nbsp;an&nbsp;object&nbsp;named&nbsp;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Delicious.posts</tt></dd></dl>
- <dl><dt><a name="-json_posts"><strong>json_posts</strong></a>(user, count<font color="#909090">=15</font>, tag<font color="#909090">=None</font>, raw<font color="#909090">=True</font>)</dt><dd><tt>user<br>
-count=###&nbsp;&nbsp;&nbsp;the&nbsp;number&nbsp;of&nbsp;posts&nbsp;you&nbsp;want&nbsp;to&nbsp;get&nbsp;(default&nbsp;is&nbsp;15,&nbsp;maximum&nbsp;<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;is&nbsp;100)<br>
-raw&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;a&nbsp;raw&nbsp;JSON&nbsp;object&nbsp;is&nbsp;returned,&nbsp;instead&nbsp;of&nbsp;an&nbsp;object&nbsp;named&nbsp;<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Delicious.posts</tt></dd></dl>
  <dl><dt><a name="-json_tags"><strong>json_tags</strong></a>(user, atleast, count, sort<font color="#909090">='alpha'</font>, raw<font color="#909090">=True</font>, callback<font color="#909090">=None</font>)</dt><dd><tt>user<br>
 atleast=###&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;include&nbsp;only&nbsp;tags&nbsp;for&nbsp;which&nbsp;there&nbsp;are&nbsp;at&nbsp;least&nbsp;###&nbsp;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;number&nbsp;of&nbsp;posts.<br>
@@ -707,6 +713,14 @@ raw&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;will&nbsp;construct&nbsp;an&nbsp;object&nbsp;named&nbsp;Delicious.tags.</tt></dd></dl>
  <dl><dt><a name="-md5"><strong>md5</strong></a> = openssl_md5(...)</dt><dd><tt>Returns&nbsp;a&nbsp;md5&nbsp;hash&nbsp;object;&nbsp;optionally&nbsp;initialized&nbsp;with&nbsp;a&nbsp;string</tt></dd></dl>
  <dl><dt><a name="-rename_tag"><strong>rename_tag</strong></a>(user, passwd, oldtag, newtag)</dt><dd><tt>Rename&nbsp;the&nbsp;tag&nbsp;for&nbsp;the&nbsp;del.icio.us&nbsp;account.</tt></dd></dl>
+ <dl><dt><a name="-user_posts"><strong>user_posts</strong></a>(user<font color="#909090">=None</font>, tag<font color="#909090">=None</font>, key<font color="#909090">=None</font>, **params)</dt><dd><tt>Bookmarks&nbsp;for&nbsp;a&nbsp;specific&nbsp;user:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;{format}/{username}<br>
+Private&nbsp;bookmarks&nbsp;for&nbsp;a&nbsp;specific&nbsp;user:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;{format}/{username}?private={key}<br>
+Bookmarks&nbsp;for&nbsp;a&nbsp;specific&nbsp;user&nbsp;by&nbsp;tag(s):<br>
+&nbsp;&nbsp;&nbsp;&nbsp;{format}/{username}/{tag[+tag+...+tag]}<br>
+Private&nbsp;bookmarks&nbsp;for&nbsp;a&nbsp;specific&nbsp;user&nbsp;by&nbsp;tag(s):<br>
+&nbsp;&nbsp;&nbsp;&nbsp;{format}/{username}/{tag[+tag+...+tag]}?private={key}</tt></dd></dl>
 </td></tr></table><p>
 <table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
 <tr bgcolor="#55aa55">
@@ -722,10 +736,10 @@ raw&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp
 <strong>DLCS_FEEDS</strong> = 'http://feeds.delicious.com/v2/'<br>
 <strong>DLCS_OK_MESSAGES</strong> = ('done', 'ok')<br>
 <strong>DLCS_REQUEST_TIMEOUT</strong> = 444<br>
-<strong>DLCS_RSS</strong> = 'http://del.icio.us/rss/'<br>
+<strong>DLCS_RSS</strong> = 'http://feeds.delicious.com/rss/'<br>
 <strong>DLCS_WAIT_TIME</strong> = 4<br>
-<strong>HTTPS_PROXY</strong> = 'http://localhost:8080/'<br>
-<strong>HTTP_PROXY</strong> = 'http://localhost:8080/'<br>
+<strong>HTTPS_PROXY</strong> = 'http://sam:8080/'<br>
+<strong>HTTP_PROXY</strong> = 'http://sam:8080/'<br>
 <strong>ISO_8601_DATETIME</strong> = '%Y-%m-%dT%H:%M:%SZ'<br>
 <strong>PREFERRED_ENCODING</strong> = 'UTF-8'<br>
 <strong>USER_AGENT</strong> = 'pydelicious/0.6 http://code.google.com/p/pydelicious/'<br>
@@ -737,10 +751,10 @@ raw&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp
 <strong>__docformat__</strong> = 'restructuredtext en'<br>
 <strong>__license__</strong> = 'FreeBSD'<br>
 <strong>__long_description__</strong> = "A complete Python interface to del.icio.us Bookmarks' HTTP API's."<br>
-<strong>__rcs_id__</strong> = ': __init__.py 64 2010-11-13 12:43:28Z berend.van.berkum '<br>
+<strong>__rcs_id__</strong> = ': __init__.py 68 2010-11-21 13:58:04Z berend.van.berkum '<br>
 <strong>__url__</strong> = 'http://code.google.com/p/pydelicious/'<br>
 <strong>__version__</strong> = '0.6'<br>
-<strong>delicious_v2_feeds</strong> = {'': '%(format)s', 'alerts': '%(format)s/alerts', 'popular': '%(format)s/popular', 'popular_tagged': '%(format)s/popular/%(tag)s', 'recent': '%(format)s/recent', 'tagged': '%(format)s/tag/%(tags)s', 'url': '%(format)s/url/%(urlmd5)s', 'urlinfo': 'json/urlinfo/%(urlmd5)s', 'user': '%(format)s/%(username)s', 'user_inbox': '%(format)s/inbox/%(username)s?private=%(key)s', ...}</td></tr></table><p>
+<strong>delicious_v2_feeds</strong> = {'alerts': '%(format)s/alerts', 'hotlist': '%(format)s', 'popular': '%(format)s/popular', 'popular_tagged': '%(format)s/popular/%(tag)s', 'recent': '%(format)s/recent', 'tagged': '%(format)s/tag/%(tag)s', 'url': '%(format)s/url/%(urlmd5)s', 'urlinfo': 'json/urlinfo/%(urlmd5)s', 'user': '%(format)s/%(username)s', 'user_inbox': '%(format)s/inbox/%(username)s?private=%(key)s', ...}</td></tr></table><p>
 <table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
 <tr bgcolor="#7799ee">
 <td colspan=3 valign=bottom>&nbsp;<br>
