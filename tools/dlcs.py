@@ -103,10 +103,10 @@ except ImportError:
     from md5 import md5
 
 try:
-    from simplejson import dumps as jsonwrite, loads as jsonread
+    from json import dumps as jsonwrite, loads as jsonread
 except:
     try:
-        from json import read as jsonread, write as jsonwrite
+        from simplejson import dumps as jsonwrite, loads as jsonread
     except:
         print >>sys.stderr, "No JSON decoder installed"
 
